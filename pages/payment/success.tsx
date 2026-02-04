@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { withAuth } from '@/lib/auth/withAuth'
+import { useAuth } from '@/contexts/AuthContext'
 import { useUser } from '@/contexts/UserContext'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/landing/Footer'
@@ -16,7 +17,8 @@ const TELEGRAM_GROUP_URL = 'https://t.me/+wKbaL8tiEZs4Y2E9'
 
 function PaymentSuccessPage() {
   const router = useRouter()
-  const { user, hasActiveSubscription, loading: userLoading, refreshProfile } = useUser()
+  const { user } = useAuth()
+  const { hasActiveSubscription, loading: userLoading, refreshProfile } = useUser()
   const [activating, setActivating] = useState(false)
   const [activationError, setActivationError] = useState<string | null>(null)
 
