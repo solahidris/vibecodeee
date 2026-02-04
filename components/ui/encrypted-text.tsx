@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { cn } from '@/lib/utils/cn'
 
 interface EncryptedTextProps {
@@ -23,8 +23,13 @@ export function EncryptedText({
   const [displayText, setDisplayText] = useState(text)
   const [revealedIndices, setRevealedIndices] = useState<Set<number>>(new Set())
   const [isRevealing, setIsRevealing] = useState(false)
+  const hasAnimated = useRef(false)
 
   useEffect(() => {
+    // Only animate once
+    if (hasAnimated.current) return
+    hasAnimated.current = true
+
     // Start revealing on mount
     setIsRevealing(true)
 
@@ -55,6 +60,14 @@ export function EncryptedText({
           chars[index] = text[index]
           return chars.join('')
         })
+
+        // Stop revealing after all characters are revealed
+        if (index === text.length - 1) {
+          setTimeout(() => {
+            setIsRevealing(false)
+            clearInterval(scrambleInterval)
+          }, 100)
+        }
       }, index * revealDelayMs)
       revealTimeouts.push(timeout)
     })
@@ -64,7 +77,7 @@ export function EncryptedText({
       clearInterval(scrambleInterval)
       revealTimeouts.forEach(clearTimeout)
     }
-  }, [text, revealDelayMs, isRevealing])
+  }, [])
 
   return (
     <span className={cn('inline-block', className)}>

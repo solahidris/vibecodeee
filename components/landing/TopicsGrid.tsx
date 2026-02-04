@@ -2,19 +2,49 @@ import { useScrollAnimation } from '@/hooks/useScrollAnimation'
 import type { Topic } from '@/types'
 
 const topics: Topic[] = [
-  { name: 'General Discussion', icon: '💬', description: 'Connect and share ideas' },
-  { name: 'Job Opportunities', icon: '💼', description: 'Career postings' },
-  { name: 'Best Prompts', icon: '✨', description: 'AI prompt library' },
-  { name: 'Fitness & Wellness', icon: '💪', description: 'Health & workout tips' },
-  { name: 'Announcements', icon: '📢', description: 'Community updates' },
-  { name: 'Showcase', icon: '🚀', description: 'Project highlights' },
-  { name: 'Career Growth', icon: '📈', description: 'Development resources' },
-  { name: 'AI Fundamentals', icon: '🤖', description: 'Learn from scratch' },
-  { name: 'AI News', icon: '📰', description: 'Latest developments' },
-  { name: 'Tips & Tricks', icon: '💡', description: 'Productivity hacks' },
-  { name: 'Tools & Resources', icon: '🛠️', description: 'Essential tools' },
-  { name: 'Community Events', icon: '🎉', description: 'Workshops & networking' },
+  { name: 'General Discussion', icon: '💬' },
+  { name: 'Job Opportunities', icon: '💼' },
+  { name: 'Best Prompts', icon: '✨' },
+  { name: 'Fitness & Wellness', icon: '💪' },
+  { name: 'Announcements', icon: '📢' },
+  { name: 'Showcase', icon: '🚀' },
+  { name: 'Career Growth', icon: '📈' },
+  { name: 'AI Fundamentals', icon: '🤖' },
+  { name: 'AI News', icon: '📰' },
+  { name: 'Tips & Tricks', icon: '💡' },
+  { name: 'Tools & Resources', icon: '🛠️' },
+  { name: 'Community Events', icon: '🎉' },
 ]
+
+// Split topics into 3 rows for marquee
+const row1 = topics.slice(0, 4)
+const row2 = topics.slice(4, 8)
+const row3 = topics.slice(8, 12)
+
+function MarqueeRow({ items, reverse = false }: { items: Topic[]; reverse?: boolean }) {
+  return (
+    <div className="relative overflow-hidden py-4">
+      <div
+        className={`flex gap-4 ${
+          reverse ? 'animate-marquee-right' : 'animate-marquee-left'
+        }`}
+      >
+        {/* Duplicate items for seamless loop */}
+        {[...items, ...items, ...items].map((topic, index) => (
+          <div
+            key={`${topic.name}-${index}`}
+            className="flex-shrink-0 flex items-center gap-3 rounded-full border border-zinc-200 bg-white px-6 py-3 shadow-sm transition-all duration-300 hover:border-zinc-900 hover:shadow-md"
+          >
+            <span className="text-2xl">{topic.icon}</span>
+            <span className="text-sm font-semibold text-zinc-900 whitespace-nowrap">
+              {topic.name}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
 
 export function TopicsGrid() {
   const { ref, isVisible } = useScrollAnimation()
@@ -25,7 +55,7 @@ export function TopicsGrid() {
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#00000005_1px,transparent_1px),linear-gradient(to_bottom,#00000005_1px,transparent_1px)] bg-[size:4rem_4rem]"></div>
 
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="mb-16 text-center">
+        <div className="mb-12 text-center">
           <span className="mb-4 inline-block rounded-full bg-zinc-100 border border-zinc-200 px-4 py-1.5 text-sm font-semibold text-zinc-700 transition-all duration-300 hover:border-zinc-300 hover:scale-105">
             Join the Telegram Community
           </span>
@@ -35,51 +65,26 @@ export function TopicsGrid() {
               Access To
             </span>
           </h2>
-          <p className="mx-auto max-w-3xl text-xl text-zinc-600">
-            Exclusive channels, premium resources, and a vibrant community.
-            <span className="block mt-2 text-zinc-500">All for RM10/month.</span>
-          </p>
         </div>
 
         <div
           ref={ref as React.RefObject<HTMLDivElement>}
           className={`transition-all duration-1000 ${
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+            isVisible ? 'opacity-100' : 'opacity-0'
           }`}
         >
-          {/* Badge Grid - Compact Layout */}
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 max-w-6xl mx-auto">
-            {topics.map((topic, index) => (
-              <div
-                key={topic.name}
-                className="group relative overflow-hidden rounded-2xl border border-zinc-200 bg-white p-6 transition-all duration-300 hover:-translate-y-1 hover:border-zinc-900 hover:shadow-xl hover:shadow-zinc-900/5"
-                style={{
-                  animationDelay: `${index * 30}ms`,
-                }}
-              >
-                {/* Icon & Content */}
-                <div className="flex items-start gap-4">
-                  <div className="text-3xl transition-transform duration-300 group-hover:scale-110">
-                    {topic.icon}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="mb-1 text-base font-bold text-zinc-900 transition-colors">
-                      {topic.name}
-                    </h3>
-                    <p className="text-sm text-zinc-600 line-clamp-1">
-                      {topic.description}
-                    </p>
-                  </div>
-                </div>
+          {/* 3-Part Marquee */}
+          <div className="space-y-4">
+            <MarqueeRow items={row1} />
+            <MarqueeRow items={row2} reverse />
+            <MarqueeRow items={row3} />
+          </div>
 
-                {/* Hover indicator */}
-                <div className="absolute right-4 top-6 opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0 translate-x-2">
-                  <svg className="h-4 w-4 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
-                  </svg>
-                </div>
-              </div>
-            ))}
+          {/* And Many More */}
+          <div className="mt-8 text-center">
+            <p className="text-xl font-semibold text-zinc-500">
+              and many more...
+            </p>
           </div>
 
           {/* Key Benefits List */}
@@ -156,6 +161,35 @@ export function TopicsGrid() {
           </p>
         </div>
       </div>
+
+      {/* Marquee CSS Animations */}
+      <style jsx>{`
+        @keyframes marquee-left {
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(-33.333%);
+          }
+        }
+
+        @keyframes marquee-right {
+          0% {
+            transform: translateX(-33.333%);
+          }
+          100% {
+            transform: translateX(0);
+          }
+        }
+
+        .animate-marquee-left {
+          animation: marquee-left 20s linear infinite;
+        }
+
+        .animate-marquee-right {
+          animation: marquee-right 20s linear infinite;
+        }
+      `}</style>
     </section>
   )
 }
