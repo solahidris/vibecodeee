@@ -66,7 +66,7 @@ export function Footer() {
               <li>
                 <button
                   onClick={() => router.push('/resources')}
-                  className="text-zinc-600 transition-colors duration-300 hover:text-zinc-900"
+                  className="cursor-pointer text-zinc-600 transition-colors duration-300 hover:text-zinc-900"
                 >
                   Resources
                 </button>
@@ -74,7 +74,7 @@ export function Footer() {
               <li>
                 <button
                   onClick={() => router.push('/basicprompt')}
-                  className="text-zinc-600 transition-colors duration-300 hover:text-zinc-900"
+                  className="cursor-pointer text-zinc-600 transition-colors duration-300 hover:text-zinc-900"
                 >
                   Courses
                 </button>
@@ -82,20 +82,18 @@ export function Footer() {
               <li>
                 <button
                   onClick={() => router.push('/profile')}
-                  className="text-zinc-600 transition-colors duration-300 hover:text-zinc-900"
+                  className="cursor-pointer text-zinc-600 transition-colors duration-300 hover:text-zinc-900"
                 >
                   Profile
                 </button>
               </li>
               <li>
-                <a
-                  href="https://tinyurl.com/a1-community"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <button
+                  onClick={() => router.push('/payment/subscribe')}
                   className="text-zinc-600 transition-colors duration-300 hover:text-zinc-900"
                 >
                   Telegram Community
-                </a>
+                </button>
               </li>
             </ul>
           </div>
@@ -107,22 +105,34 @@ export function Footer() {
             </h3>
             <ul className="space-y-3">
               <li>
-                <button className="text-zinc-600 transition-colors duration-300 hover:text-zinc-900">
+                <button
+                  onClick={() => router.push('/privacy')}
+                  className="cursor-pointer text-zinc-600 transition-colors duration-300 hover:text-zinc-900"
+                >
                   Privacy Policy
                 </button>
               </li>
               <li>
-                <button className="text-zinc-600 transition-colors duration-300 hover:text-zinc-900">
+                <button
+                  onClick={() => router.push('/terms')}
+                  className="cursor-pointer text-zinc-600 transition-colors duration-300 hover:text-zinc-900"
+                >
                   Terms of Service
                 </button>
               </li>
               <li>
-                <button className="text-zinc-600 transition-colors duration-300 hover:text-zinc-900">
+                <button
+                  onClick={() => router.push('/cookies')}
+                  className="cursor-pointer text-zinc-600 transition-colors duration-300 hover:text-zinc-900"
+                >
                   Cookie Policy
                 </button>
               </li>
               <li>
-                <button className="text-zinc-600 transition-colors duration-300 hover:text-zinc-900">
+                <button
+                  onClick={() => router.push('/contact')}
+                  className="cursor-pointer text-zinc-600 transition-colors duration-300 hover:text-zinc-900"
+                >
                   Contact Us
                 </button>
               </li>

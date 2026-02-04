@@ -94,9 +94,7 @@ export function TopicsGrid() {
         {/* CTA */}
         <div className="mt-16 text-center">
           <a
-            href="https://tinyurl.com/a1-community"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="/payment/subscribe"
             className="group inline-flex items-center gap-2 rounded-full bg-zinc-900 px-8 py-4 text-lg font-semibold text-white shadow-xl transition-all duration-300 hover:scale-105 hover:bg-zinc-800 hover:shadow-2xl"
           >
             Join Telegram Community
