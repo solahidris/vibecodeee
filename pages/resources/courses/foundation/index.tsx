@@ -37,11 +37,12 @@ function FoundationPage() {
     [progressData]
   )
 
+  const courseCount = foundationCourses.length
   const completedCount = foundationCourses.filter(
     (course) => foundationProgress[course.id]
   ).length
   const completionPercent = Math.round(
-    (completedCount / foundationCourses.length) * 100
+    (completedCount / courseCount) * 100
   )
 
   useEffect(() => {
@@ -136,6 +137,45 @@ function FoundationPage() {
           </p>
         </div>
 
+        <div className="mb-10 grid gap-6 md:grid-cols-3">
+          <Card hover={false} className="flex h-full flex-col gap-3">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
+              Lane snapshot
+            </p>
+            <p className="text-3xl font-semibold text-gray-900">
+              {courseCount} core courses
+            </p>
+            <p className="text-sm text-gray-600">
+              A focused sequence that builds confident, repeatable developer
+              habits.
+            </p>
+          </Card>
+          <Card hover={false} className="flex h-full flex-col gap-3">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
+              Practice loop
+            </p>
+            <p className="text-3xl font-semibold text-gray-900">
+              Learn by doing
+            </p>
+            <p className="text-sm text-gray-600">
+              Every course includes hands-on exercises with instant checks so you
+              can build muscle memory.
+            </p>
+          </Card>
+          <Card hover={false} className="flex h-full flex-col gap-3">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
+              Track momentum
+            </p>
+            <p className="text-3xl font-semibold text-gray-900">
+              Progress that sticks
+            </p>
+            <p className="text-sm text-gray-600">
+              Your completion status is saved locally and synced to your account
+              when you are signed in.
+            </p>
+          </Card>
+        </div>
+
         {syncError && (
           <div className="mb-8 rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm text-amber-700">
             {syncError}
@@ -149,7 +189,7 @@ function FoundationPage() {
               <p className="mt-2 text-2xl font-bold text-gray-900">
                 {loading
                   ? 'Loading your progress...'
-                  : `${completedCount} of ${foundationCourses.length} completed`}
+                  : `${completedCount} of ${courseCount} completed`}
               </p>
               <p className="mt-2 text-sm text-gray-500">
                 {lastSyncedAt
@@ -173,6 +213,119 @@ function FoundationPage() {
             </div>
           </div>
         </Card>
+
+        <div className="mb-12 grid gap-8 lg:grid-cols-[1.2fr_1fr]">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
+              Outcomes
+            </p>
+            <h2 className="mt-3 text-2xl font-semibold text-gray-900">
+              What you will be able to do
+            </h2>
+            <p className="mt-3 text-sm text-gray-600">
+              These fundamentals show up in every codebase. By the end, you will
+              move faster, collaborate cleanly, and document with confidence.
+            </p>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <ul className="space-y-3 text-sm text-gray-600">
+              {[
+                'Navigate the terminal without guesswork or fear of breaking things.',
+                'Chain file and folder commands to keep projects organized.',
+                'Initialize repos, stage work, and commit with clarity.',
+              ].map((item) => (
+                <li key={item} className="flex items-start gap-2">
+                  <span className="mt-2 h-1.5 w-1.5 rounded-full bg-zinc-900" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+            <ul className="space-y-3 text-sm text-gray-600">
+              {[
+                'Collaborate with GitHub branches, push/pull flows, and pull requests.',
+                'Resolve merge conflicts with a repeatable checklist.',
+                'Write clean documentation using Markdown best practices.',
+              ].map((item) => (
+                <li key={item} className="flex items-start gap-2">
+                  <span className="mt-2 h-1.5 w-1.5 rounded-full bg-zinc-900" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <div className="mb-12">
+          <div className="mb-6">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
+              How it works
+            </p>
+            <h2 className="mt-3 text-2xl font-semibold text-gray-900">
+              A simple, repeatable learning loop
+            </h2>
+          </div>
+          <div className="grid gap-6 md:grid-cols-3">
+            {[
+              {
+                title: 'Start with the overview',
+                description:
+                  'Each course opens with context and outcomes so you know exactly what you are practicing.',
+              },
+              {
+                title: 'Complete the exercises',
+                description:
+                  'Work through hands-on prompts and get instant feedback as you answer.',
+              },
+              {
+                title: 'Lock in the habit',
+                description:
+                  'Mark the course complete, review anytime, and keep your progress synced.',
+              },
+            ].map((step, index) => (
+              <Card key={step.title} hover={false} className="flex h-full flex-col">
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
+                  Step {String(index + 1).padStart(2, '0')}
+                </p>
+                <h3 className="mt-3 text-lg font-semibold text-gray-900">
+                  {step.title}
+                </h3>
+                <p className="mt-2 text-sm text-gray-600">{step.description}</p>
+              </Card>
+            ))}
+          </div>
+        </div>
+
+        <div className="mb-12">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
+            Toolkit
+          </p>
+          <h2 className="mt-3 text-2xl font-semibold text-gray-900">
+            Build your everyday developer stack
+          </h2>
+          <p className="mt-3 text-sm text-gray-600">
+            These are the tools and workflows you will use in almost every
+            project. Master them once and reuse them everywhere.
+          </p>
+          <div className="mt-6 flex flex-wrap gap-3">
+            {[
+              'Terminal navigation',
+              'Command chaining',
+              'Git commits',
+              'Branching',
+              'GitHub collaboration',
+              'Merge conflict recovery',
+              'Markdown docs',
+              'README structure',
+            ].map((item) => (
+              <span
+                key={item}
+                className="rounded-full bg-gray-100 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-gray-600"
+              >
+                {item}
+              </span>
+            ))}
+          </div>
+        </div>
 
         <div className="grid gap-6">
           {foundationCourses.map((course, index) => {
@@ -226,15 +379,72 @@ function FoundationPage() {
           })}
         </div>
 
-        <div className="mt-10">
-          <Button
-            variant="secondary"
-            size="md"
-            onClick={() => router.push('/resources/courses')}
-          >
-            Back to Courses
-          </Button>
+        <div className="mt-12">
+          <div className="mb-8">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
+              FAQs
+            </p>
+            <h2 className="mt-3 text-2xl font-semibold text-gray-900">
+              Common questions before you start
+            </h2>
+          </div>
+          <div className="grid gap-6 md:grid-cols-2">
+            {[
+              {
+                question: 'Do I need experience to start?',
+                answer:
+                  'No. This lane is designed to be friendly for new developers while still giving experienced builders a clean, structured refresh.',
+              },
+              {
+                question: 'Can I take the courses out of order?',
+                answer:
+                  'Yes. The sequence is recommended, but you can jump to any course whenever you want.',
+              },
+              {
+                question: 'Will my progress be saved?',
+                answer:
+                  'Your progress is stored locally and synced to your account when you are signed in.',
+              },
+              {
+                question: 'What should I do after Foundations?',
+                answer:
+                  'Once you finish, move on to the next lane to deepen project skills and start building real-world workflows.',
+              },
+            ].map((faq) => (
+              <Card key={faq.question} hover={false}>
+                <h3 className="text-lg font-semibold text-gray-900">
+                  {faq.question}
+                </h3>
+                <p className="mt-2 text-sm text-gray-600">{faq.answer}</p>
+              </Card>
+            ))}
+          </div>
         </div>
+
+        <div className="mt-12">
+          <Card hover={false} className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
+                Ready to begin?
+              </p>
+              <h2 className="mt-2 text-2xl font-semibold text-gray-900">
+                Pick a course and start building momentum today.
+              </h2>
+              <p className="mt-2 text-sm text-gray-600">
+                Start at course one for the full sequence or jump to a topic you
+                need right now.
+              </p>
+            </div>
+            <Button
+              variant="secondary"
+              size="md"
+              onClick={() => router.push('/resources/courses')}
+            >
+              Back to Courses
+            </Button>
+          </Card>
+        </div>
+
       </main>
     </div>
   )
