@@ -1,4 +1,5 @@
 import crypto from 'crypto'
+import { createClient } from '@supabase/supabase-js'
 
 export const config = { runtime: 'edge' }
 
@@ -84,22 +85,40 @@ export default async function handler(req: Request) {
 
     // Handle successful payment
     if (status === 'succeeded') {
-      // TODO: Grant telegram access to user
-      // Update user's subscription status in database
-      // You can use the reference field to identify the user (e.g., user_id or email)
-
       console.log(`Payment successful for reference: ${reference}`)
 
-      // You could call Supabase here to update user subscription status
-      // const supabase = createClient()
-      // await supabase.from('subscriptions').insert({
-      //   user_id: reference,
-      //   payment_id,
-      //   recurring_billing_id,
-      //   amount: parseFloat(amount),
-      //   currency,
-      //   status: 'active',
-      // })
+      // Update user subscription status in Supabase
+      try {
+        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+        const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+
+        if (!supabaseUrl || !supabaseServiceKey) {
+          console.error('Supabase configuration missing')
+          return new Response(JSON.stringify({ error: 'Server configuration error' }), {
+            status: 500,
+            headers: { 'Content-Type': 'application/json' },
+          })
+        }
+
+        const supabase = createClient(supabaseUrl, supabaseServiceKey)
+
+        // Update user's profile with subscription status
+        const { error: updateError } = await supabase
+          .from('profiles')
+          .update({
+            has_active_subscription: true,
+            subscription_started_at: new Date().toISOString(),
+          })
+          .eq('id', reference)
+
+        if (updateError) {
+          console.error('Error updating subscription status:', updateError)
+        } else {
+          console.log(`Successfully activated subscription for user: ${reference}`)
+        }
+      } catch (error) {
+        console.error('Error updating Supabase:', error)
+      }
     } else {
       console.error(`Payment failed for reference: ${reference}`)
     }
