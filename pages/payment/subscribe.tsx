@@ -114,7 +114,7 @@ function SubscribePage() {
               <button
                 onClick={handleSubscribe}
                 disabled={loading}
-                className="group w-full inline-flex items-center justify-center gap-3 rounded-2xl bg-zinc-900 px-8 py-4 text-lg font-semibold text-white shadow-xl transition-all duration-300 hover:scale-105 hover:bg-zinc-800 hover:shadow-2xl disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                className="group w-full inline-flex items-center justify-center gap-3 rounded-2xl bg-zinc-900 px-8 py-4 text-lg font-semibold text-white shadow-xl transition-all duration-300 hover:scale-105 hover:bg-zinc-800 hover:shadow-2xl cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
               >
                 {loading ? (
                   <>
