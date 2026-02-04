@@ -55,15 +55,9 @@ export function Header({ showNavigation = true }: HeaderProps) {
               {/* Avatar */}
               <button
                 onClick={() => router.push('/profile')}
-                className="flex items-center gap-3 transition-opacity hover:opacity-80 cursor-pointer"
+                className="transition-opacity hover:opacity-80 cursor-pointer"
                 aria-label="Go to profile"
               >
-                <div className="hidden sm:block text-right">
-                  <p className="text-sm font-medium text-gray-900">
-                    {user.user_metadata?.full_name || user.email}
-                  </p>
-                  <p className="text-xs text-gray-500">Member</p>
-                </div>
                 <Avatar
                   src={user.user_metadata?.avatar_url}
                   name={user.user_metadata?.full_name || user.email}
