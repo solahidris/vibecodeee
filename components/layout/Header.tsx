@@ -22,7 +22,7 @@ export function Header({ showNavigation = true }: HeaderProps) {
           {/* Logo/Brand */}
           <button
             onClick={() => router.push('/')}
-            className="flex items-center gap-2 transition-opacity hover:opacity-80"
+            className="flex items-center gap-2 transition-opacity hover:opacity-80 cursor-pointer"
           >
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-zinc-900 shadow-lg">
               <span className="text-lg font-bold text-white">V</span>
@@ -40,7 +40,7 @@ export function Header({ showNavigation = true }: HeaderProps) {
                     <button
                       key={link.path}
                       onClick={() => router.push(link.path)}
-                      className={`text-sm font-medium transition-colors ${
+                      className={`text-sm font-medium transition-colors cursor-pointer ${
                         currentPath === link.path
                           ? 'text-zinc-900'
                           : 'text-zinc-600 hover:text-zinc-900'
@@ -55,7 +55,7 @@ export function Header({ showNavigation = true }: HeaderProps) {
               {/* Avatar */}
               <button
                 onClick={() => router.push('/profile')}
-                className="flex items-center gap-3 transition-opacity hover:opacity-80"
+                className="flex items-center gap-3 transition-opacity hover:opacity-80 cursor-pointer"
                 aria-label="Go to profile"
               >
                 <div className="hidden sm:block text-right">
