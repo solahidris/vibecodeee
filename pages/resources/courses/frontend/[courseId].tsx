@@ -495,7 +495,7 @@ function FrontendCoursePage() {
                       >
                         Submit
                       </Button>
-                      {result?.status !== 'idle' && (
+                      {(isPassed || isFailed) && (
                         <span
                           className={cn(
                             'rounded-full px-3 py-1 text-xs font-semibold',
@@ -507,7 +507,7 @@ function FrontendCoursePage() {
                         </span>
                       )}
                     </div>
-                    {result?.status !== 'idle' && (
+                    {(isPassed || isFailed) && (
                       <p
                         className={cn(
                           'mt-3 text-sm',
@@ -516,7 +516,7 @@ function FrontendCoursePage() {
                         role="status"
                         aria-live="polite"
                       >
-                        {result.message}
+                        {result?.message}
                       </p>
                     )}
                   </div>
