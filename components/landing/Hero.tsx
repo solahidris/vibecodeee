@@ -2,6 +2,7 @@ import { useRouter } from 'next/router'
 import { useAuth } from '@/contexts/AuthContext'
 import { Button } from '@/components/ui/Button'
 import { ThreeBackground } from '@/components/ThreeBackground'
+import { EncryptedText } from '@/components/ui/encrypted-text'
 import Image from 'next/image'
 
 export function Hero() {
@@ -29,19 +30,16 @@ export function Hero() {
               Welcome to VibeCodeee
             </div>
 
-            {/* Main Heading - Monochrome */}
-            <h1 className="mb-8 text-6xl font-black leading-[1.1] tracking-tight text-zinc-900 sm:text-7xl lg:text-8xl">
-              <span className="inline-block transition-all duration-300 hover:tracking-tighter">
-                Connect.
-              </span>
-              <br />
-              <span className="inline-block transition-all duration-300 hover:tracking-tighter">
-                Learn.
-              </span>
-              <br />
-              <span className="bg-gradient-to-r from-zinc-600 via-zinc-700 to-zinc-900 bg-clip-text text-transparent inline-block transition-all duration-300 hover:from-zinc-900 hover:via-zinc-800 hover:to-zinc-700">
-                Grow.
-              </span>
+            {/* Main Heading - Encrypted Animation */}
+            <h1 className="mb-8 text-6xl font-black leading-[1.1] tracking-tight sm:text-7xl lg:text-8xl">
+              <EncryptedText
+                text="Connect.
+Learn.
+Grow."
+                encryptedClassName="text-zinc-400"
+                revealedClassName="text-zinc-900"
+                revealDelayMs={30}
+              />
             </h1>
 
             {/* Subheading */}
