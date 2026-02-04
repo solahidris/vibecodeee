@@ -11,6 +11,7 @@ import { cn } from '@/lib/utils/cn'
 import { formatDate } from '@/lib/utils/formatters'
 import { Geist } from 'next/font/google'
 import { getBackendCourseDetail } from '@/lib/courses/backendCourseDetails'
+import { evaluateExercise } from '@/lib/courses/evaluateExercise'
 import type {
   BackendCourseDetail,
   CourseExercise,
@@ -23,6 +24,9 @@ import {
   getLocalProgress,
   getLocalExerciseAnswers,
   getLocalExerciseResults,
+  getProgressExerciseAnswers,
+  getProgressExerciseResults,
+  mergeCourseProgress,
   mergeExerciseAnswers,
   mergeExerciseResults,
   parseCourseProgress,
@@ -48,32 +52,6 @@ const buildInitialResults = (exercises: CourseExercise[]) =>
     acc[exercise.id] = { status: 'idle', message: '' }
     return acc
   }, {})
-
-const evaluateExercise = (input: string, exercise: CourseExercise) => {
-  const trimmed = input.trim()
-  if (!trimmed) {
-    return {
-      passed: false,
-      message: 'Add your answer first, then submit again.',
-    }
-  }
-
-  const patternsAll = exercise.expected.all ?? []
-  const patternsAny = exercise.expected.any ?? []
-  const matchesAll = patternsAll.every((pattern) =>
-    new RegExp(pattern, 'im').test(trimmed)
-  )
-  const matchesAny =
-    patternsAny.length === 0 ||
-    patternsAny.some((pattern) => new RegExp(pattern, 'im').test(trimmed))
-
-  const passed = matchesAll && matchesAny
-
-  return {
-    passed,
-    message: passed ? exercise.success : exercise.failure,
-  }
-}
 
 function BackendCoursePage() {
   const router = useRouter()
@@ -164,18 +142,22 @@ function BackendCoursePage() {
     const initialAnswers = buildInitialAnswers(exercises)
     const initialResults = buildInitialResults(exercises)
 
-    if (!user?.id) {
-      setAnswers(initialAnswers)
-      setResults(initialResults)
-      return
+    const progressAnswers = getProgressExerciseAnswers(progressData, course.id)
+    const progressResults = getProgressExerciseResults(progressData, course.id)
+
+    let mergedAnswers = mergeExerciseAnswers(initialAnswers, progressAnswers)
+    let mergedResults = mergeExerciseResults(initialResults, progressResults)
+
+    if (user?.id) {
+      const storedAnswers = getLocalExerciseAnswers(user.id, course.id)
+      const storedResults = getLocalExerciseResults(user.id, course.id)
+      mergedAnswers = mergeExerciseAnswers(mergedAnswers, storedAnswers)
+      mergedResults = mergeExerciseResults(mergedResults, storedResults)
     }
 
-    const storedAnswers = getLocalExerciseAnswers(user.id, course.id)
-    const storedResults = getLocalExerciseResults(user.id, course.id)
-
-    setAnswers(mergeExerciseAnswers(initialAnswers, storedAnswers))
-    setResults(mergeExerciseResults(initialResults, storedResults))
-  }, [course, exercises, user?.id])
+    setAnswers(mergedAnswers)
+    setResults(mergedResults)
+  }, [course, exercises, progressData, user?.id])
 
   useEffect(() => {
     let isMounted = true
@@ -199,17 +181,22 @@ function BackendCoursePage() {
           throw error
         }
 
-        const parsedProgress =
+        const serverProgress =
           data?.course_progress !== null && data?.course_progress !== undefined
             ? parseCourseProgress(data?.course_progress)
-            : localProgress || {}
+            : {}
+
+        const mergedProgress = mergeCourseProgress(
+          serverProgress,
+          localProgress || {}
+        )
 
         if (data?.course_progress !== null && data?.course_progress !== undefined) {
-          setLocalProgress(user.id, parsedProgress)
+          setLocalProgress(user.id, mergedProgress)
         }
 
         if (isMounted) {
-          setProgressData(parsedProgress)
+          setProgressData(mergedProgress)
           setLastSyncedAt(data?.updated_at ?? null)
           setSyncError(null)
         }
@@ -310,6 +297,14 @@ function BackendCoursePage() {
       }
       if (user?.id && course?.id) {
         setLocalExerciseResults(user.id, course.id, next)
+        setProgressData((current) => {
+          const updated = mergeCourseProgress(current, {
+            exerciseResults: { [course.id]: next },
+            exerciseAnswers: { [course.id]: answers },
+          })
+          void saveProgress(updated)
+          return updated
+        })
       }
       return next
     })

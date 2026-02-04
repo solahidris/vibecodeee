@@ -22,6 +22,8 @@ import {
   buildFrontendProgress,
   CourseProgressData,
   getLocalProgress,
+  mergeCourseProgress,
+  needsProgressSync,
   parseCourseProgress,
   setLocalProgress,
 } from '@/lib/courses/progress'
@@ -30,63 +32,6 @@ const geistSans = Geist({
   variable: '--font-geist-sans',
   subsets: ['latin'],
 })
-
-const mergeChecklistProgress = (
-  server: boolean[] | undefined,
-  local: boolean[] | undefined
-): boolean[] | undefined => {
-  if (!server && !local) return undefined
-  const maxLen = Math.max(server?.length ?? 0, local?.length ?? 0)
-  if (!maxLen) return undefined
-  return Array.from({ length: maxLen }, (_, index) =>
-    Boolean(server?.[index] || local?.[index])
-  )
-}
-
-const mergeProgressLane = (
-  server: Record<string, boolean> | undefined,
-  local: Record<string, boolean> | undefined
-): Record<string, boolean> => {
-  const merged: Record<string, boolean> = {}
-  for (const [key, value] of Object.entries(server ?? {})) {
-    merged[key] = Boolean(value)
-  }
-  for (const [key, value] of Object.entries(local ?? {})) {
-    merged[key] = Boolean(merged[key] || value)
-  }
-  return merged
-}
-
-const mergeCourseProgress = (
-  server: CourseProgressData,
-  local: CourseProgressData
-): CourseProgressData => {
-  const merged: CourseProgressData = {
-    foundation: mergeProgressLane(server.foundation, local.foundation),
-    frontend: mergeProgressLane(server.frontend, local.frontend),
-    backend: mergeProgressLane(server.backend, local.backend),
-    aiDataScience: mergeProgressLane(server.aiDataScience, local.aiDataScience),
-    careerDevops: mergeProgressLane(server.careerDevops, local.careerDevops),
-  }
-
-  const crashcourse = mergeChecklistProgress(
-    server.crashcourse,
-    local.crashcourse
-  )
-  if (crashcourse) {
-    merged.crashcourse = crashcourse
-  }
-
-  const basicprompt = mergeChecklistProgress(
-    server.basicprompt,
-    local.basicprompt
-  )
-  if (basicprompt) {
-    merged.basicprompt = basicprompt
-  }
-
-  return merged
-}
 
 const ProgressSummary = ({
   completed,
@@ -118,43 +63,6 @@ const ProgressSummary = ({
       </p>
     </div>
   )
-}
-
-const needsProgressSync = (
-  server: CourseProgressData,
-  merged: CourseProgressData
-): boolean => {
-  const hasNewProgress = (
-    serverLane: Record<string, boolean> | undefined,
-    mergedLane: Record<string, boolean> | undefined
-  ) =>
-    Object.entries(mergedLane ?? {}).some(
-      ([key, value]) => value && !serverLane?.[key]
-    )
-
-  if (hasNewProgress(server.foundation, merged.foundation)) return true
-  if (hasNewProgress(server.frontend, merged.frontend)) return true
-  if (hasNewProgress(server.backend, merged.backend)) return true
-  if (hasNewProgress(server.aiDataScience, merged.aiDataScience)) return true
-  if (hasNewProgress(server.careerDevops, merged.careerDevops)) return true
-
-  const serverCrashcourse = server.crashcourse ?? []
-  const mergedCrashcourse = merged.crashcourse ?? []
-  for (let index = 0; index < mergedCrashcourse.length; index += 1) {
-    if (mergedCrashcourse[index] && !serverCrashcourse[index]) {
-      return true
-    }
-  }
-
-  const serverBasicprompt = server.basicprompt ?? []
-  const mergedBasicprompt = merged.basicprompt ?? []
-  for (let index = 0; index < mergedBasicprompt.length; index += 1) {
-    if (mergedBasicprompt[index] && !serverBasicprompt[index]) {
-      return true
-    }
-  }
-
-  return false
 }
 
 function CoursesPage() {

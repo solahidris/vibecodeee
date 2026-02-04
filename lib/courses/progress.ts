@@ -17,6 +17,10 @@ export type ExerciseResults = Record<string, ExerciseResult>
 
 export type ExerciseAnswers = Record<string, string>
 
+export type ExerciseResultsByCourse = Record<string, ExerciseResults>
+
+export type ExerciseAnswersByCourse = Record<string, ExerciseAnswers>
+
 export type CourseProgressData = {
   backend?: Record<string, boolean>
   careerDevops?: Record<string, boolean>
@@ -25,6 +29,8 @@ export type CourseProgressData = {
   aiDataScience?: Record<string, boolean>
   crashcourse?: boolean[]
   basicprompt?: boolean[]
+  exerciseResults?: ExerciseResultsByCourse
+  exerciseAnswers?: ExerciseAnswersByCourse
 }
 
 const buildProgressMap = (
@@ -76,20 +82,67 @@ const normalizeExerciseAnswers = (value: unknown): ExerciseAnswers | null => {
   return entries
 }
 
+const normalizeExerciseResultsByCourse = (
+  value: unknown
+): ExerciseResultsByCourse => {
+  if (!isRecord(value)) return {}
+  return Object.entries(value).reduce<ExerciseResultsByCourse>(
+    (acc, [courseId, results]) => {
+      const normalized = normalizeExerciseResults(results)
+      if (normalized) {
+        acc[courseId] = normalized
+      }
+      return acc
+    },
+    {}
+  )
+}
+
+const normalizeExerciseAnswersByCourse = (
+  value: unknown
+): ExerciseAnswersByCourse => {
+  if (!isRecord(value)) return {}
+  return Object.entries(value).reduce<ExerciseAnswersByCourse>(
+    (acc, [courseId, answers]) => {
+      const normalized = normalizeExerciseAnswers(answers)
+      if (normalized) {
+        acc[courseId] = normalized
+      }
+      return acc
+    },
+    {}
+  )
+}
+
+const normalizeCourseProgress = (value: CourseProgressData): CourseProgressData => {
+  const exerciseResults = normalizeExerciseResultsByCourse(value.exerciseResults)
+  const exerciseAnswers = normalizeExerciseAnswersByCourse(value.exerciseAnswers)
+
+  return {
+    ...value,
+    exerciseResults: Object.keys(exerciseResults).length
+      ? exerciseResults
+      : undefined,
+    exerciseAnswers: Object.keys(exerciseAnswers).length
+      ? exerciseAnswers
+      : undefined,
+  }
+}
+
 export const parseCourseProgress = (value: unknown): CourseProgressData => {
   if (!value) return {}
   if (typeof value === 'string') {
     try {
       const parsed = JSON.parse(value)
       if (parsed && typeof parsed === 'object') {
-        return parsed as CourseProgressData
+        return normalizeCourseProgress(parsed as CourseProgressData)
       }
     } catch {
       return {}
     }
   }
   if (typeof value === 'object' && !Array.isArray(value)) {
-    return value as CourseProgressData
+    return normalizeCourseProgress(value as CourseProgressData)
   }
   return {}
 }
@@ -173,6 +226,42 @@ export const setLocalProgress = (userId: string, progress: CourseProgressData) =
   }
 }
 
+export const getProgressExerciseAnswers = (
+  progressData: CourseProgressData,
+  courseId: string
+): ExerciseAnswers | null =>
+  normalizeExerciseAnswers(progressData.exerciseAnswers?.[courseId])
+
+export const getProgressExerciseResults = (
+  progressData: CourseProgressData,
+  courseId: string
+): ExerciseResults | null =>
+  normalizeExerciseResults(progressData.exerciseResults?.[courseId])
+
+export const setProgressExerciseAnswers = (
+  progressData: CourseProgressData,
+  courseId: string,
+  answers: ExerciseAnswers
+): CourseProgressData => ({
+  ...progressData,
+  exerciseAnswers: {
+    ...(progressData.exerciseAnswers ?? {}),
+    [courseId]: answers,
+  },
+})
+
+export const setProgressExerciseResults = (
+  progressData: CourseProgressData,
+  courseId: string,
+  results: ExerciseResults
+): CourseProgressData => ({
+  ...progressData,
+  exerciseResults: {
+    ...(progressData.exerciseResults ?? {}),
+    [courseId]: results,
+  },
+})
+
 export const getLocalExerciseAnswers = (
   userId: string,
   courseId: string
@@ -243,7 +332,11 @@ export const mergeExerciseAnswers = (
 ): ExerciseAnswers => {
   if (!stored) return base
   return Object.keys(base).reduce<ExerciseAnswers>((acc, key) => {
-    acc[key] = typeof stored[key] === 'string' ? stored[key] : base[key]
+    const storedValue = stored[key]
+    acc[key] =
+      typeof storedValue === 'string' && storedValue.trim().length > 0
+        ? storedValue
+        : base[key]
     return acc
   }, {})
 }
@@ -253,8 +346,203 @@ export const mergeExerciseResults = (
   stored: ExerciseResults | null
 ): ExerciseResults => {
   if (!stored) return base
+  const priority: Record<ExerciseResultStatus, number> = {
+    idle: 0,
+    failed: 1,
+    passed: 2,
+  }
   return Object.keys(base).reduce<ExerciseResults>((acc, key) => {
-    acc[key] = stored[key] ?? base[key]
+    const baseResult = base[key]
+    const storedResult = stored[key]
+    if (!storedResult) {
+      acc[key] = baseResult
+      return acc
+    }
+    if (!baseResult) {
+      acc[key] = storedResult
+      return acc
+    }
+    acc[key] =
+      priority[storedResult.status] >= priority[baseResult.status]
+        ? storedResult
+        : baseResult
     return acc
   }, {})
+}
+
+const mergeChecklistProgress = (
+  server: boolean[] | undefined,
+  local: boolean[] | undefined
+): boolean[] | undefined => {
+  if (!server && !local) return undefined
+  const maxLen = Math.max(server?.length ?? 0, local?.length ?? 0)
+  if (!maxLen) return undefined
+  return Array.from({ length: maxLen }, (_, index) =>
+    Boolean(server?.[index] || local?.[index])
+  )
+}
+
+const mergeProgressLane = (
+  server: Record<string, boolean> | undefined,
+  local: Record<string, boolean> | undefined
+): Record<string, boolean> => {
+  const merged: Record<string, boolean> = {}
+  for (const [key, value] of Object.entries(server ?? {})) {
+    merged[key] = Boolean(value)
+  }
+  for (const [key, value] of Object.entries(local ?? {})) {
+    merged[key] = Boolean(merged[key] || value)
+  }
+  return merged
+}
+
+const mergeExerciseAnswersByCourse = (
+  server: ExerciseAnswersByCourse,
+  local: ExerciseAnswersByCourse
+): ExerciseAnswersByCourse => {
+  const merged: ExerciseAnswersByCourse = { ...server }
+  for (const [courseId, localAnswers] of Object.entries(local)) {
+    const baseAnswers = server[courseId] ?? {}
+    const mergedAnswers: ExerciseAnswers = { ...baseAnswers }
+    for (const [exerciseId, answer] of Object.entries(localAnswers)) {
+      if (typeof answer === 'string' && answer.trim().length > 0) {
+        mergedAnswers[exerciseId] = answer
+      }
+    }
+    merged[courseId] = mergedAnswers
+  }
+  return merged
+}
+
+const mergeExerciseResultsByCourse = (
+  server: ExerciseResultsByCourse,
+  local: ExerciseResultsByCourse
+): ExerciseResultsByCourse => {
+  const merged: ExerciseResultsByCourse = { ...server }
+  const priority: Record<ExerciseResultStatus, number> = {
+    idle: 0,
+    failed: 1,
+    passed: 2,
+  }
+  for (const [courseId, localResults] of Object.entries(local)) {
+    const baseResults = server[courseId] ?? {}
+    const mergedResults: ExerciseResults = { ...baseResults }
+    for (const [exerciseId, result] of Object.entries(localResults)) {
+      const baseResult = baseResults[exerciseId]
+      if (!baseResult) {
+        mergedResults[exerciseId] = result
+        continue
+      }
+      mergedResults[exerciseId] =
+        priority[result.status] >= priority[baseResult.status]
+          ? result
+          : baseResult
+    }
+    merged[courseId] = mergedResults
+  }
+  return merged
+}
+
+export const mergeCourseProgress = (
+  server: CourseProgressData,
+  local: CourseProgressData
+): CourseProgressData => {
+  const merged: CourseProgressData = {
+    foundation: mergeProgressLane(server.foundation, local.foundation),
+    frontend: mergeProgressLane(server.frontend, local.frontend),
+    backend: mergeProgressLane(server.backend, local.backend),
+    aiDataScience: mergeProgressLane(server.aiDataScience, local.aiDataScience),
+    careerDevops: mergeProgressLane(server.careerDevops, local.careerDevops),
+  }
+
+  const crashcourse = mergeChecklistProgress(
+    server.crashcourse,
+    local.crashcourse
+  )
+  if (crashcourse) {
+    merged.crashcourse = crashcourse
+  }
+
+  const basicprompt = mergeChecklistProgress(
+    server.basicprompt,
+    local.basicprompt
+  )
+  if (basicprompt) {
+    merged.basicprompt = basicprompt
+  }
+
+  const serverResults = normalizeExerciseResultsByCourse(server.exerciseResults)
+  const localResults = normalizeExerciseResultsByCourse(local.exerciseResults)
+  const mergedResults = mergeExerciseResultsByCourse(serverResults, localResults)
+  if (Object.keys(mergedResults).length) {
+    merged.exerciseResults = mergedResults
+  }
+
+  const serverAnswers = normalizeExerciseAnswersByCourse(server.exerciseAnswers)
+  const localAnswers = normalizeExerciseAnswersByCourse(local.exerciseAnswers)
+  const mergedAnswers = mergeExerciseAnswersByCourse(serverAnswers, localAnswers)
+  if (Object.keys(mergedAnswers).length) {
+    merged.exerciseAnswers = mergedAnswers
+  }
+
+  return merged
+}
+
+export const needsProgressSync = (
+  server: CourseProgressData,
+  merged: CourseProgressData
+): boolean => {
+  const hasNewProgress = (
+    serverLane: Record<string, boolean> | undefined,
+    mergedLane: Record<string, boolean> | undefined
+  ) =>
+    Object.entries(mergedLane ?? {}).some(
+      ([key, value]) => value && !serverLane?.[key]
+    )
+
+  if (hasNewProgress(server.foundation, merged.foundation)) return true
+  if (hasNewProgress(server.frontend, merged.frontend)) return true
+  if (hasNewProgress(server.backend, merged.backend)) return true
+  if (hasNewProgress(server.aiDataScience, merged.aiDataScience)) return true
+  if (hasNewProgress(server.careerDevops, merged.careerDevops)) return true
+
+  const serverCrashcourse = server.crashcourse ?? []
+  const mergedCrashcourse = merged.crashcourse ?? []
+  for (let index = 0; index < mergedCrashcourse.length; index += 1) {
+    if (mergedCrashcourse[index] && !serverCrashcourse[index]) {
+      return true
+    }
+  }
+
+  const serverBasicprompt = server.basicprompt ?? []
+  const mergedBasicprompt = merged.basicprompt ?? []
+  for (let index = 0; index < mergedBasicprompt.length; index += 1) {
+    if (mergedBasicprompt[index] && !serverBasicprompt[index]) {
+      return true
+    }
+  }
+
+  const priority: Record<ExerciseResultStatus, number> = {
+    idle: 0,
+    failed: 1,
+    passed: 2,
+  }
+
+  const serverResults = normalizeExerciseResultsByCourse(server.exerciseResults)
+  const mergedResults = normalizeExerciseResultsByCourse(merged.exerciseResults)
+
+  for (const [courseId, results] of Object.entries(mergedResults)) {
+    const serverCourse = serverResults[courseId] ?? {}
+    for (const [exerciseId, result] of Object.entries(results)) {
+      const serverResult = serverCourse[exerciseId]
+      const serverPriority = serverResult
+        ? priority[serverResult.status]
+        : 0
+      if (priority[result.status] > serverPriority) {
+        return true
+      }
+    }
+  }
+
+  return false
 }
