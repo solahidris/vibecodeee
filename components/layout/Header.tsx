@@ -21,55 +21,56 @@ export function Header({ showNavigation = true }: HeaderProps) {
       <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
           {/* Logo/Brand */}
-          <div className="flex items-center gap-8">
-            <button
-              onClick={() => router.push('/')}
-              className="flex items-center gap-2 transition-opacity hover:opacity-80"
-            >
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-zinc-900 shadow-lg">
-                <span className="text-lg font-bold text-white">V</span>
-              </div>
-              <span className="text-xl font-bold text-zinc-900">VibeCodeee</span>
-            </button>
+          <button
+            onClick={() => router.push('/')}
+            className="flex items-center gap-2 transition-opacity hover:opacity-80"
+          >
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-zinc-900 shadow-lg">
+              <span className="text-lg font-bold text-white">V</span>
+            </div>
+            <span className="text-xl font-bold text-zinc-900">VibeCodeee</span>
+          </button>
 
-            {/* Navigation Links */}
-            {showNavigation && user && (
-              <nav className="hidden sm:flex items-center gap-6">
-                {navigationLinks.map((link) => (
-                  <button
-                    key={link.path}
-                    onClick={() => router.push(link.path)}
-                    className={`text-sm font-medium transition-colors ${
-                      currentPath === link.path
-                        ? 'text-zinc-900'
-                        : 'text-zinc-600 hover:text-zinc-900'
-                    }`}
-                  >
-                    {link.label}
-                  </button>
-                ))}
-              </nav>
-            )}
-          </div>
-
-          {/* Right Side - Avatar only */}
+          {/* Right Side - Navigation Links + Avatar */}
           {user && (
-            <button
-              onClick={() => router.push('/profile')}
-              className="flex items-center gap-3 transition-opacity hover:opacity-80"
-              aria-label="Go to profile"
-            >
-              <div className="hidden sm:block text-right">
-                <p className="text-sm font-medium text-gray-900">
-                  {user.user_metadata?.full_name || user.email}
-                </p>
-                <p className="text-xs text-gray-500">Member</p>
-              </div>
-              <Avatar
-                src={user.user_metadata?.avatar_url}
-                name={user.user_metadata?.full_name || user.email}
-              />
-            </button>
+            <div className="flex items-center gap-6">
+              {/* Navigation Links */}
+              {showNavigation && (
+                <nav className="hidden sm:flex items-center gap-6">
+                  {navigationLinks.map((link) => (
+                    <button
+                      key={link.path}
+                      onClick={() => router.push(link.path)}
+                      className={`text-sm font-medium transition-colors ${
+                        currentPath === link.path
+                          ? 'text-zinc-900'
+                          : 'text-zinc-600 hover:text-zinc-900'
+                      }`}
+                    >
+                      {link.label}
+                    </button>
+                  ))}
+                </nav>
+              )}
+
+              {/* Avatar */}
+              <button
+                onClick={() => router.push('/profile')}
+                className="flex items-center gap-3 transition-opacity hover:opacity-80"
+                aria-label="Go to profile"
+              >
+                <div className="hidden sm:block text-right">
+                  <p className="text-sm font-medium text-gray-900">
+                    {user.user_metadata?.full_name || user.email}
+                  </p>
+                  <p className="text-xs text-gray-500">Member</p>
+                </div>
+                <Avatar
+                  src={user.user_metadata?.avatar_url}
+                  name={user.user_metadata?.full_name || user.email}
+                />
+              </button>
+            </div>
           )}
         </div>
       </div>
