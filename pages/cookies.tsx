@@ -1,10 +1,10 @@
-import { Navigation } from '@/components/landing/Navigation'
+import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/landing/Footer'
 
 export default function CookiePolicy() {
   return (
     <div className="min-h-screen bg-white">
-      <Navigation />
+      <Header />
 
       <main className="mx-auto max-w-4xl px-4 py-32 sm:px-6 lg:px-8">
         <h1 className="mb-8 text-5xl font-black text-zinc-900">Cookie Policy</h1>
