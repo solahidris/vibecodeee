@@ -36,6 +36,14 @@ export function Navigation() {
                 >
                   Resources
                 </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => router.push('/payment/subscribe')}
+                  className="hidden sm:inline-flex text-zinc-600 hover:text-zinc-900 transition-all duration-300 cursor-pointer font-normal"
+                >
+                  Telegram
+                </Button>
                 <button
                   onClick={() => router.push('/profile')}
                   className="cursor-pointer transition-opacity hover:opacity-80"
