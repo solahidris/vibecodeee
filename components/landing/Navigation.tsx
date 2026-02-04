@@ -32,7 +32,7 @@ export function Navigation() {
                   variant="ghost"
                   size="sm"
                   onClick={() => router.push('/resources')}
-                  className="hidden sm:inline-flex text-zinc-600 hover:text-zinc-900 transition-all duration-300 cursor-pointer"
+                  className="hidden sm:inline-flex text-zinc-600 hover:text-zinc-900 transition-all duration-300 cursor-pointer font-normal"
                 >
                   Resources
                 </Button>

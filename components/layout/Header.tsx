@@ -40,7 +40,7 @@ export function Header({ showNavigation = true }: HeaderProps) {
                     <button
                       key={link.path}
                       onClick={() => router.push(link.path)}
-                      className={`text-sm font-medium transition-colors cursor-pointer ${
+                      className={`text-sm font-normal transition-colors cursor-pointer ${
                         currentPath === link.path
                           ? 'text-zinc-900'
                           : 'text-zinc-600 hover:text-zinc-900'
