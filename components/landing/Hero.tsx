@@ -154,16 +154,6 @@ export function Hero() {
           </div>
         </div>
       </div>
-
-      {/* Scroll Indicator */}
-      <div className="absolute bottom-12 left-1/2 -translate-x-1/2 animate-float">
-        <div className="flex flex-col items-center gap-2">
-          <p className="text-xs font-medium uppercase tracking-wider text-zinc-400">Scroll</p>
-          <svg className="h-6 w-6 text-zinc-400 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-          </svg>
-        </div>
-      </div>
     </section>
   )
 }
