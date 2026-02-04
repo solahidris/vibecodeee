@@ -83,8 +83,8 @@ export function PhoneVerificationModal({
       <div className="relative w-full max-w-md rounded-2xl bg-white p-8 shadow-2xl">
         <div className="mb-6">
           <div className="mb-4 flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100">
-              <svg className="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl border-2 border-zinc-900">
+              <svg className="h-5 w-5 text-zinc-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
             </div>
