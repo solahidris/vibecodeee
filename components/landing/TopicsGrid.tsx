@@ -106,35 +106,6 @@ export function TopicsGrid() {
           </p>
         </div>
       </div>
-
-      {/* Marquee CSS Animations */}
-      <style jsx>{`
-        @keyframes marquee-left {
-          0% {
-            transform: translateX(0);
-          }
-          100% {
-            transform: translateX(-33.333%);
-          }
-        }
-
-        @keyframes marquee-right {
-          0% {
-            transform: translateX(-33.333%);
-          }
-          100% {
-            transform: translateX(0);
-          }
-        }
-
-        .animate-marquee-left {
-          animation: marquee-left 20s linear infinite;
-        }
-
-        .animate-marquee-right {
-          animation: marquee-right 20s linear infinite;
-        }
-      `}</style>
     </section>
   )
 }
