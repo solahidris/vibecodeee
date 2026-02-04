@@ -28,11 +28,13 @@ export const backendCourseDetails: Record<string, BackendCourseDetail> = {
     title: 'Node.js Core Concept',
     description: 'The event loop and building non-blocking applications.',
     overview:
-      'Practice how Node schedules work with the event loop and learn to spot non-blocking patterns. Each check is text-only validation.',
+      'Practice how Node schedules work with the event loop and learn to spot non-blocking patterns. Each check is text-only validation. Compare timers, microtasks, and offloading strategies to keep throughput high.',
     outcomes: [
       'Recognize non-blocking APIs and when to await them.',
       'Describe key event loop phases that schedule callbacks.',
       'Choose safe strategies for CPU-heavy workloads.',
+      'Batch independent I/O with Promise.all for speed.',
+      'Defer work with setImmediate or microtasks when needed.',
     ],
     exercises: [
       {
@@ -98,6 +100,39 @@ export const backendCourseDetails: Record<string, BackendCourseDetail> = {
         success: 'Exactly. Offloading keeps the loop responsive.',
         failure: 'Mention worker threads, child processes, or clustering.',
       },
+      {
+        id: 'node-promise-all',
+        title: 'Run Parallel I/O',
+        instruction: 'Await two async reads using Promise.all.',
+        details: [
+          'Use Promise.all with an array.',
+          'Include fs.promises.readFile twice.',
+        ],
+        placeholder:
+          "await Promise.all([fs.promises.readFile('a.txt'), fs.promises.readFile('b.txt')])",
+        expected: {
+          all: ['Promise\\.all', 'readFile', '\\['],
+        },
+        checkFor: ['Promise.all', 'array of promises', 'readFile'],
+        success: 'Nice. That batches I/O without blocking.',
+        failure: 'Use Promise.all with an array of fs.promises.readFile calls.',
+      },
+      {
+        id: 'node-setimmediate',
+        title: 'Defer Work with setImmediate',
+        instruction: 'Schedule a callback to run after I/O.',
+        details: [
+          'Use setImmediate.',
+          'Provide a callback function.',
+        ],
+        placeholder: "setImmediate(() => console.log('after io'))",
+        expected: {
+          all: ['setImmediate\\s*\\(', '(=>|function)'],
+        },
+        checkFor: ['setImmediate', 'callback function'],
+        success: 'Good. setImmediate defers work to the check phase.',
+        failure: 'Use setImmediate with a callback function.',
+      },
     ],
   },
   'express-framework': {
@@ -105,11 +140,13 @@ export const backendCourseDetails: Record<string, BackendCourseDetail> = {
     title: 'Express.js Framework',
     description: 'Routing and middleware for scalable servers.',
     overview:
-      'Build a minimal Express server with middleware and routes. Each check validates the key tokens in your answer.',
+      'Build a minimal Express server with middleware and routes. Each check validates the key tokens in your answer. Compose routers and error handlers that keep APIs maintainable.',
     outcomes: [
       'Initialize an Express app and bind a server port.',
       'Register middleware for JSON parsing and logging.',
       'Create routes with clear status responses.',
+      'Compose routers for feature-based endpoints.',
+      'Handle errors with centralized middleware.',
     ],
     exercises: [
       {
@@ -174,6 +211,41 @@ export const backendCourseDetails: Record<string, BackendCourseDetail> = {
         success: 'Perfect. That middleware keeps the chain moving.',
         failure: 'Make sure req, res, and next() appear in the snippet.',
       },
+      {
+        id: 'express-router',
+        title: 'Create a Router',
+        instruction: 'Create a router for /api with a GET /users route.',
+        details: [
+          'Use express.Router().',
+          'Mount it with app.use("/api", router).',
+        ],
+        placeholder:
+          "const router = express.Router()\nrouter.get('/users', (req, res) => res.json([]))\napp.use('/api', router)",
+        expected: {
+          all: ['Router\\s*\\(', 'router\\.get', '\\/users', 'app\\.use\\(\\s*[\"\\\']\\/api'],
+        },
+        checkFor: ['express.Router', 'router.get', 'app.use(/api)'],
+        success: 'Router looks good.',
+        failure:
+          'Include express.Router(), router.get(/users), and app.use("/api", router).',
+      },
+      {
+        id: 'express-error-middleware',
+        title: 'Handle Errors Globally',
+        instruction: 'Write error-handling middleware that returns HTTP 500.',
+        details: [
+          'Use (err, req, res, next) signature.',
+          'Send status 500.',
+        ],
+        placeholder:
+          "app.use((err, req, res, next) => {\n  console.error(err)\n  res.status(500).json({ error: 'Server error' })\n})",
+        expected: {
+          all: ['err', 'req', 'res', 'next', 'status\\(\\s*500'],
+        },
+        checkFor: ['err, req, res, next', 'status 500'],
+        success: 'Nice. Centralized error handling works.',
+        failure: 'Use (err, req, res, next) and respond with status 500.',
+      },
     ],
   },
   'sql-relational-dbs': {
@@ -181,11 +253,13 @@ export const backendCourseDetails: Record<string, BackendCourseDetail> = {
     title: 'SQL & Relational DBs',
     description: 'PostgreSQL/MySQL: Schema design and complex queries.',
     overview:
-      'Practice core SQL patterns for schema design, querying, and indexing. Each check is text-only validation.',
+      'Practice core SQL patterns for schema design, querying, and indexing. Each check is text-only validation. Reinforce joins, constraints, and aggregates you will use in production.',
     outcomes: [
       'Model tables with primary keys and constraints.',
       'Filter, order, and join data with confidence.',
       'Create indexes for common access patterns.',
+      'Define relationships with foreign keys.',
+      'Aggregate results with GROUP BY.',
     ],
     exercises: [
       {
@@ -262,6 +336,39 @@ export const backendCourseDetails: Record<string, BackendCourseDetail> = {
         success: 'Index created. Query performance helps.',
         failure: 'Use CREATE INDEX ON users(email).',
       },
+      {
+        id: 'sql-foreign-key',
+        title: 'Add a Foreign Key',
+        instruction: 'Create an orders table referencing users(id).',
+        details: [
+          'Include user_id column.',
+          'Use REFERENCES users(id).',
+        ],
+        placeholder:
+          'CREATE TABLE orders (\n  id SERIAL PRIMARY KEY,\n  user_id INT REFERENCES users(id)\n);',
+        expected: {
+          all: ['CREATE\\s+TABLE', 'orders', 'user_id', 'REFERENCES\\s+users\\s*\\(id\\)'],
+        },
+        checkFor: ['user_id', 'REFERENCES users(id)'],
+        success: 'Foreign key looks correct.',
+        failure: 'Include user_id and REFERENCES users(id).',
+      },
+      {
+        id: 'sql-group-by',
+        title: 'Aggregate with GROUP BY',
+        instruction: 'Count orders by status.',
+        details: [
+          'Use COUNT(*).',
+          'Use GROUP BY status.',
+        ],
+        placeholder: 'SELECT status, COUNT(*) FROM orders GROUP BY status;',
+        expected: {
+          all: ['COUNT\\s*\\(', 'GROUP\\s+BY', 'status'],
+        },
+        checkFor: ['COUNT', 'GROUP BY status'],
+        success: 'Aggregate query looks good.',
+        failure: 'Include COUNT(*) and GROUP BY status.',
+      },
     ],
   },
   'nosql-mongodb': {
@@ -269,11 +376,13 @@ export const backendCourseDetails: Record<string, BackendCourseDetail> = {
     title: 'NoSQL with MongoDB',
     description: 'Document-based storage for flexible data.',
     overview:
-      'Practice common MongoDB document operations for inserts, queries, and updates. Each check is text-only validation.',
+      'Practice common MongoDB document operations for inserts, queries, and updates. Each check is text-only validation. Work with filters, projections, and pipeline summaries.',
     outcomes: [
       'Insert and query documents with filters and projections.',
       'Update records using $set.',
       'Add indexes for fast lookups.',
+      'Use aggregation pipelines for summaries.',
+      'Apply bulk updates with updateMany.',
     ],
     exercises: [
       {
@@ -340,6 +449,39 @@ export const backendCourseDetails: Record<string, BackendCourseDetail> = {
         success: 'Index will enforce uniqueness.',
         failure: 'Use createIndex with email and unique: true.',
       },
+      {
+        id: 'mongo-aggregate',
+        title: 'Aggregate Orders',
+        instruction: 'Use $match and $group to sum totals for open orders.',
+        details: [
+          'Use db.orders.aggregate.',
+          'Include $match and $group.',
+        ],
+        placeholder:
+          "db.orders.aggregate([{ $match: { status: 'open' } }, { $group: { _id: '$status', total: { $sum: '$total' } } }])",
+        expected: {
+          all: ['aggregate', '\\$match', '\\$group'],
+        },
+        checkFor: ['aggregate', '$match', '$group'],
+        success: 'Pipeline looks right.',
+        failure: 'Include aggregate with $match and $group.',
+      },
+      {
+        id: 'mongo-update-many',
+        title: 'Bulk Increment a Field',
+        instruction: 'Increment views by 1 for published posts.',
+        details: [
+          'Use updateMany.',
+          'Use $inc.',
+        ],
+        placeholder: 'db.posts.updateMany({ published: true }, { $inc: { views: 1 } })',
+        expected: {
+          all: ['updateMany', '\\$inc', 'views'],
+        },
+        checkFor: ['updateMany', '$inc', 'views'],
+        success: 'Bulk update looks good.',
+        failure: 'Use updateMany with $inc on views.',
+      },
     ],
   },
   'rest-api-best-practices': {
@@ -347,11 +489,13 @@ export const backendCourseDetails: Record<string, BackendCourseDetail> = {
     title: 'REST API Best Practices',
     description: 'Versioning, status codes, and clean architecture.',
     overview:
-      'Sharpen REST fundamentals with versioned endpoints, status codes, and error design. Each check is text-only validation.',
+      'Sharpen REST fundamentals with versioned endpoints, status codes, and error design. Each check is text-only validation. Focus on consistent patterns that keep clients predictable.',
     outcomes: [
       'Design versioned endpoints for stable APIs.',
       'Pick correct status codes for common outcomes.',
       'Return consistent error and pagination structures.',
+      'Use idempotent methods for safe retries.',
+      'Apply consistent delete and update responses.',
     ],
     exercises: [
       {
@@ -412,6 +556,38 @@ export const backendCourseDetails: Record<string, BackendCourseDetail> = {
         success: 'Pagination parameters included.',
         failure: 'Include both page= and limit= parameters.',
       },
+      {
+        id: 'rest-delete-status',
+        title: 'Return 204 for Delete',
+        instruction: 'Show a DELETE endpoint with a 204 response.',
+        details: [
+          'Use DELETE.',
+          'Include 204 No Content.',
+        ],
+        placeholder: 'DELETE /api/v1/orders/123 -> 204 No Content',
+        expected: {
+          all: ['DELETE', '204'],
+        },
+        checkFor: ['DELETE', '204'],
+        success: 'Yes. 204 is the standard delete response.',
+        failure: 'Include DELETE and 204 No Content.',
+      },
+      {
+        id: 'rest-put-replace',
+        title: 'Use PUT for Full Replace',
+        instruction: 'Provide a PUT request for replacing a user resource.',
+        details: [
+          'Include /users/{id} path.',
+          'Send a full JSON body.',
+        ],
+        placeholder: 'PUT /api/v1/users/42 { "email": "ada@example.com", "name": "Ada" }',
+        expected: {
+          all: ['PUT', '\\/users\\/', 'email', 'name'],
+        },
+        checkFor: ['PUT', '/users/{id}', 'full payload'],
+        success: 'Looks like a full replace with PUT.',
+        failure: 'Include PUT /users/{id} with a full JSON body.',
+      },
     ],
   },
   'graphql-fundamentals': {
@@ -419,11 +595,13 @@ export const backendCourseDetails: Record<string, BackendCourseDetail> = {
     title: 'GraphQL Fundamentals',
     description: 'An alternative to REST for flexible data fetching.',
     overview:
-      'Practice GraphQL queries, mutations, and schema design with short snippets. Each check is text-only validation.',
+      'Practice GraphQL queries, mutations, and schema design with short snippets. Each check is text-only validation. Shape schemas and reuse field selections with fragments.',
     outcomes: [
       'Write queries and mutations with precise field selection.',
       'Define schema types with clear fields.',
       'Use variables for dynamic inputs.',
+      'Reuse field selections with fragments.',
+      'Model complex inputs with input types.',
     ],
     exercises: [
       {
@@ -490,6 +668,40 @@ export const backendCourseDetails: Record<string, BackendCourseDetail> = {
         success: 'Variables are wired correctly.',
         failure: 'Include $id and use it inside user(id: $id).',
       },
+      {
+        id: 'graphql-fragment',
+        title: 'Create a Fragment',
+        instruction: 'Define a fragment and spread it in a query.',
+        details: [
+          'Create fragment UserFields.',
+          'Use ...UserFields in query.',
+        ],
+        placeholder:
+          'fragment UserFields on User { id email }\nquery { user(id: "1") { ...UserFields } }',
+        expected: {
+          all: ['fragment\\s+UserFields', '\\.\\.\\.UserFields'],
+        },
+        checkFor: ['fragment UserFields', '...UserFields'],
+        success: 'Fragment usage looks good.',
+        failure: 'Include fragment UserFields and ...UserFields.',
+      },
+      {
+        id: 'graphql-input',
+        title: 'Define an Input Type',
+        instruction: 'Define CreatePostInput with a required title.',
+        details: [
+          'Use input CreatePostInput.',
+          'Include title: String!.',
+        ],
+        placeholder:
+          'input CreatePostInput { title: String! }\n type Mutation { createPost(input: CreatePostInput!): Post }',
+        expected: {
+          all: ['input\\s+CreatePostInput', 'title\\s*:\\s*String!'],
+        },
+        checkFor: ['input CreatePostInput', 'title: String!'],
+        success: 'Input type looks correct.',
+        failure: 'Define CreatePostInput with title: String!.',
+      },
     ],
   },
   'authentication-deep-dive': {
@@ -497,11 +709,13 @@ export const backendCourseDetails: Record<string, BackendCourseDetail> = {
     title: 'Authentication Deep Dive',
     description: 'JWT, OAuth2, and secure cookie management.',
     overview:
-      'Practice secure auth patterns with JWTs, cookies, and OAuth2 parameters. Each check is text-only validation.',
+      'Practice secure auth patterns with JWTs, cookies, and OAuth2 parameters. Each check is text-only validation. Reinforce safe defaults for tokens, cookies, and flows.',
     outcomes: [
       'Sign and verify JWT tokens safely.',
       'Configure secure cookies for sessions.',
       'Recognize the core OAuth2 parameters.',
+      'Hash passwords before storing credentials.',
+      'Use bearer tokens correctly in headers.',
     ],
     exercises: [
       {
@@ -567,6 +781,39 @@ export const backendCourseDetails: Record<string, BackendCourseDetail> = {
         success: 'OAuth2 parameters look correct.',
         failure: 'Include response_type=code, client_id, and redirect_uri.',
       },
+      {
+        id: 'auth-bcrypt-hash',
+        title: 'Hash a Password',
+        instruction: 'Hash a password using bcrypt with salt rounds.',
+        details: [
+          'Use bcrypt.hash.',
+          'Include a salt rounds value.',
+        ],
+        placeholder: 'const hash = await bcrypt.hash(password, 12)',
+        expected: {
+          all: ['bcrypt\\.hash', 'password'],
+          any: ['\\d+', 'saltRounds'],
+        },
+        checkFor: ['bcrypt.hash', 'salt rounds'],
+        success: 'Nice. Bcrypt hashing is in place.',
+        failure: 'Use bcrypt.hash with a password and salt rounds.',
+      },
+      {
+        id: 'auth-bearer',
+        title: 'Set Bearer Auth Header',
+        instruction: 'Provide an Authorization header with a bearer token.',
+        details: [
+          'Include Authorization: Bearer.',
+          'Any token value is fine.',
+        ],
+        placeholder: 'Authorization: Bearer eyJhbGciOi...',
+        expected: {
+          all: ['Authorization', 'Bearer'],
+        },
+        checkFor: ['Authorization', 'Bearer token'],
+        success: 'Header format is correct.',
+        failure: 'Include Authorization: Bearer <token>.',
+      },
     ],
   },
   'python-for-backend': {
@@ -574,11 +821,13 @@ export const backendCourseDetails: Record<string, BackendCourseDetail> = {
     title: 'Python for Backend',
     description: 'Building fast APIs with FastAPI.',
     overview:
-      'Practice FastAPI fundamentals with routes, models, and local dev commands. Each check is text-only validation.',
+      'Practice FastAPI fundamentals with routes, models, and local dev commands. Each check is text-only validation. Model requests and responses the FastAPI way.',
     outcomes: [
       'Create FastAPI apps with clear routing.',
       'Define Pydantic models for request bodies.',
       'Run FastAPI locally with uvicorn.',
+      'Create POST routes for data creation.',
+      'Return typed responses with response_model.',
     ],
     exercises: [
       {
@@ -646,6 +895,40 @@ export const backendCourseDetails: Record<string, BackendCourseDetail> = {
         success: 'That command will start FastAPI locally.',
         failure: 'Use uvicorn main:app --reload.',
       },
+      {
+        id: 'fastapi-post',
+        title: 'Create a POST Route',
+        instruction: 'Write a POST /items route that accepts an Item model.',
+        details: [
+          'Use @app.post("/items").',
+          'Accept item: Item in the signature.',
+        ],
+        placeholder:
+          '@app.post("/items")\nasync def create_item(item: Item):\n    return item',
+        expected: {
+          all: ['@app\\.post\\(\\s*["\\\']\\/items', '\\bItem\\b'],
+        },
+        checkFor: ['@app.post("/items")', 'item: Item'],
+        success: 'POST route looks good.',
+        failure: 'Include @app.post("/items") and item: Item.',
+      },
+      {
+        id: 'fastapi-response-model',
+        title: 'Add a Response Model',
+        instruction: 'Return a response_model for a GET route.',
+        details: [
+          'Use response_model=Item.',
+          'Use @app.get.',
+        ],
+        placeholder:
+          '@app.get("/items/{item_id}", response_model=Item)\nasync def read_item(item_id: int):\n    return Item(id=item_id, name="Demo")',
+        expected: {
+          all: ['response_model\\s*=\\s*Item', '@app\\.get'],
+        },
+        checkFor: ['response_model=Item', '@app.get'],
+        success: 'Response model is set.',
+        failure: 'Include response_model=Item on the route.',
+      },
     ],
   },
   'docker-basics': {
@@ -653,11 +936,13 @@ export const backendCourseDetails: Record<string, BackendCourseDetail> = {
     title: 'Docker Basics',
     description: 'Containerizing your apps so they work on every machine.',
     overview:
-      'Practice writing Dockerfiles and using common Docker commands. Each check is text-only validation.',
+      'Practice writing Dockerfiles and using common Docker commands. Each check is text-only validation. Cover image builds, port mapping, and compose basics.',
     outcomes: [
       'Write a minimal Dockerfile for a Node app.',
       'Build and run images with port mapping.',
       'Ignore local files with .dockerignore.',
+      'Expose ports and set runtime defaults.',
+      'Start multi-container stacks with docker compose.',
     ],
     exercises: [
       {
@@ -720,6 +1005,36 @@ export const backendCourseDetails: Record<string, BackendCourseDetail> = {
         checkFor: ['node_modules', '.env'],
         success: 'Great. Those files will stay out of the image.',
         failure: 'Include both node_modules and .env.',
+      },
+      {
+        id: 'docker-expose',
+        title: 'Expose a Port',
+        instruction: 'Add an EXPOSE instruction for port 3000.',
+        details: [
+          'Use EXPOSE 3000.',
+        ],
+        placeholder: 'EXPOSE 3000',
+        expected: {
+          all: ['EXPOSE', '3000'],
+        },
+        checkFor: ['EXPOSE', '3000'],
+        success: 'Port exposure looks good.',
+        failure: 'Include EXPOSE 3000.',
+      },
+      {
+        id: 'docker-compose-up',
+        title: 'Run with Docker Compose',
+        instruction: 'Provide the command to start services with docker compose.',
+        details: [
+          'Use docker compose up.',
+        ],
+        placeholder: 'docker compose up --build',
+        expected: {
+          all: ['docker\\s+compose', '\\bup\\b'],
+        },
+        checkFor: ['docker compose', 'up'],
+        success: 'Compose command looks right.',
+        failure: 'Use docker compose up.',
       },
     ],
   },
