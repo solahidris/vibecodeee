@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { DM_Serif_Display, Sora } from "next/font/google";
 
 const display = DM_Serif_Display({
@@ -63,9 +63,23 @@ const lessons = [
 
 export default function BasicPromptPage() {
   const [done, setDone] = useState<boolean[]>(() => lessons.map(() => false));
+  const [showToast, setShowToast] = useState(false);
+  const [wasComplete, setWasComplete] = useState(false);
 
   const completed = useMemo(() => done.filter(Boolean).length, [done]);
   const percent = Math.round((completed / lessons.length) * 100);
+  const isComplete = completed === lessons.length;
+
+  useEffect(() => {
+    if (isComplete && !wasComplete) {
+      setShowToast(true);
+      setWasComplete(true);
+    }
+    if (!isComplete && wasComplete) {
+      setWasComplete(false);
+      setShowToast(false);
+    }
+  }, [isComplete, wasComplete]);
 
   return (
     <div className={`${display.variable} ${body.variable} font-[var(--font-body)]`}>
@@ -74,6 +88,27 @@ export default function BasicPromptPage() {
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,#c9e4ff,transparent_55%)]" />
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_80%,#ffe6bf,transparent_60%)]" />
           <div className="relative mx-auto max-w-5xl px-6 py-16 sm:px-10">
+            {showToast && (
+              <div
+                className="fade-in fixed right-6 top-6 z-50 max-w-sm rounded-2xl border border-neutral-200 bg-white px-5 py-4 text-sm text-neutral-800 shadow-lg"
+                role="status"
+                aria-live="polite"
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <p className="font-semibold text-neutral-900">Course complete</p>
+                    <p className="text-neutral-600">{completed} of {lessons.length} lessons done.</p>
+                  </div>
+                  <button
+                    type="button"
+                    className="text-xs font-semibold uppercase tracking-wide text-neutral-500 transition hover:text-neutral-800"
+                    onClick={() => setShowToast(false)}
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            )}
             <div className="fade-in">
               <p className="mb-3 text-sm uppercase tracking-[0.3em] text-neutral-600">
                 Basic Prompting Course
