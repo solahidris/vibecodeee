@@ -10,7 +10,7 @@ export default function Contact() {
 
       <main className="mx-auto max-w-4xl px-4 py-32 sm:px-6 lg:px-8">
         <div className="text-center">
-          <h1 className="mb-8 text-5xl font-black text-zinc-900">Get In Touch</h1>
+          <h1 className="mb-8 pb-4 text-5xl font-black text-zinc-900">Get In Touch</h1>
           <p className="mb-16 text-xl leading-relaxed text-zinc-600 mx-auto max-w-2xl">
             Have questions or need support? We're here to help. Reach out to us on WhatsApp and we'll get back to you as soon as possible.
           </p>
