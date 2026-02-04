@@ -12,10 +12,6 @@ import { formatDate } from '@/lib/utils/formatters'
 import { Geist } from 'next/font/google'
 import { getFoundationCourseDetail } from '@/lib/courses/foundationCourseDetails'
 import { evaluateExercise } from '@/lib/courses/evaluateExercise'
-import {
-  getExerciseAnswerChecklist,
-  getExerciseAnswerExample,
-} from '@/lib/courses/exerciseAnswers'
 import type {
   CourseExercise,
   FoundationCourseDetail,
@@ -80,7 +76,6 @@ function FoundationCoursePage() {
   const exercises = course?.exercises ?? []
   const [answers, setAnswers] = useState(() => buildInitialAnswers(exercises))
   const [results, setResults] = useState(() => buildInitialResults(exercises))
-  const [showAnswers, setShowAnswers] = useState<Record<string, boolean>>({})
 
   const foundationProgress = useMemo(
     () => progressData.foundation ?? {},
@@ -107,13 +102,6 @@ function FoundationCoursePage() {
 
   const courseCompleted = course ? foundationProgress[course.id] : false
   const allPassed = exercises.length > 0 && passedCount === exercises.length
-
-  const toggleAnswer = (exerciseId: string) => {
-    setShowAnswers((prev) => ({
-      ...prev,
-      [exerciseId]: !prev[exerciseId],
-    }))
-  }
 
   useEffect(() => {
     if (!router.isReady || !courseId) return
@@ -464,11 +452,6 @@ function FoundationCoursePage() {
             const result = results[exercise.id]
             const isPassed = result?.status === 'passed'
             const isFailed = result?.status === 'failed'
-            const answerExample = getExerciseAnswerExample(exercise)
-            const answerChecklist = getExerciseAnswerChecklist(exercise)
-            const hasAnswer =
-              Boolean(answerExample) || answerChecklist.length > 0
-            const showAnswer = Boolean(showAnswers[exercise.id])
 
             return (
               <Card
@@ -495,6 +478,9 @@ function FoundationCoursePage() {
                         <li key={detail}>{detail}</li>
                       ))}
                     </ul>
+                    <div className="mt-4 text-xs text-gray-500">
+                      We check for: {exercise.checkFor.join(', ')}
+                    </div>
                   </div>
 
                   <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
@@ -535,16 +521,6 @@ function FoundationCoursePage() {
                       >
                         Submit
                       </Button>
-                      {hasAnswer && (
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => toggleAnswer(exercise.id)}
-                        >
-                          {showAnswer ? 'Hide answer' : 'Show answer'}
-                        </Button>
-                      )}
                       {(isPassed || isFailed) && (
                         <span
                           className={cn(
@@ -557,32 +533,6 @@ function FoundationCoursePage() {
                         </span>
                       )}
                     </div>
-                    {hasAnswer && showAnswer && (
-                      <div className="mt-3 rounded-xl border border-amber-200 bg-amber-50/60 p-3 text-sm text-amber-900">
-                        {answerExample && (
-                          <div>
-                            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-amber-700">
-                              Example answer
-                            </p>
-                            <pre className="mt-2 whitespace-pre-wrap break-words rounded-lg bg-white/70 p-3 text-xs text-amber-900 shadow-sm">
-                              {answerExample}
-                            </pre>
-                          </div>
-                        )}
-                        {answerChecklist.length > 0 && (
-                          <div className={cn(answerExample && 'mt-3')}>
-                            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-amber-700">
-                              Answer key
-                            </p>
-                            <ul className="mt-2 list-disc space-y-1 pl-5 text-amber-800">
-                              {answerChecklist.map((item) => (
-                                <li key={item}>{item}</li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
-                      </div>
-                    )}
                     {(isPassed || isFailed) && (
                       <p
                         className={cn(
