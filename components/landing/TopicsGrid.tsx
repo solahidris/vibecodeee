@@ -60,7 +60,7 @@ export function TopicsGrid() {
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-12 text-center">
           <span className="mb-4 inline-block rounded-full bg-zinc-100 border border-zinc-200 px-4 py-1.5 text-sm font-semibold text-zinc-700 transition-all duration-300 hover:border-zinc-300 hover:scale-105">
-            Join the Telegram Community
+            Endless Learning Community
           </span>
           <h2 className="mb-6 text-5xl font-black tracking-tight text-zinc-900 sm:text-6xl">
             What You'll Get
