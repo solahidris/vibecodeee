@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/router'
 import { withAuth } from '@/lib/auth/withAuth'
 import { createClient } from '@/lib/supabase/client'
@@ -13,6 +13,11 @@ import { frontendCourses } from '@/lib/courses/frontendCourses'
 import { aiDataScienceCourses } from '@/lib/courses/aiDataScienceCourses'
 import { careerDevopsCourses } from '@/lib/courses/careerDevopsCourses'
 import {
+  buildAiDataScienceProgress,
+  buildBackendProgress,
+  buildCareerDevopsProgress,
+  buildFoundationProgress,
+  buildFrontendProgress,
   CourseProgressData,
   getLocalProgress,
   parseCourseProgress,
@@ -99,6 +104,38 @@ const mergeCourseProgress = (
   return merged
 }
 
+const ProgressSummary = ({
+  completed,
+  total,
+  syncing,
+}: {
+  completed: number
+  total: number
+  syncing: boolean
+}) => {
+  const percent = total > 0 ? Math.round((completed / total) * 100) : 0
+
+  return (
+    <div>
+      <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
+        Progress
+      </p>
+      <p className="mt-1 text-sm font-semibold text-gray-900">
+        {`${completed} of ${total} completed`}
+      </p>
+      <div className="mt-2 h-1.5 w-full max-w-[200px] rounded-full bg-gray-200">
+        <div
+          className="h-1.5 rounded-full bg-zinc-900 transition-all"
+          style={{ width: `${percent}%` }}
+        />
+      </div>
+      <p className="mt-2 text-xs text-gray-400">
+        {syncing ? 'Syncing progress...' : 'Up to date'}
+      </p>
+    </div>
+  )
+}
+
 const needsProgressSync = (
   server: CourseProgressData,
   merged: CourseProgressData
@@ -159,13 +196,59 @@ function CoursesPage() {
   const router = useRouter()
   const { user } = useAuth()
   const supabase = useMemo(() => createClient(), [])
+  const [progressData, setProgressData] = useState<CourseProgressData>({})
+  const [syncing, setSyncing] = useState(true)
+
+  const foundationProgress = useMemo(
+    () => buildFoundationProgress(progressData),
+    [progressData]
+  )
+  const frontendProgress = useMemo(
+    () => buildFrontendProgress(progressData),
+    [progressData]
+  )
+  const backendProgress = useMemo(
+    () => buildBackendProgress(progressData),
+    [progressData]
+  )
+  const aiDataScienceProgress = useMemo(
+    () => buildAiDataScienceProgress(progressData),
+    [progressData]
+  )
+  const careerDevopsProgress = useMemo(
+    () => buildCareerDevopsProgress(progressData),
+    [progressData]
+  )
+
+  const foundationCompleted = useMemo(
+    () => Object.values(foundationProgress).filter(Boolean).length,
+    [foundationProgress]
+  )
+  const frontendCompleted = useMemo(
+    () => Object.values(frontendProgress).filter(Boolean).length,
+    [frontendProgress]
+  )
+  const backendCompleted = useMemo(
+    () => Object.values(backendProgress).filter(Boolean).length,
+    [backendProgress]
+  )
+  const aiDataScienceCompleted = useMemo(
+    () => Object.values(aiDataScienceProgress).filter(Boolean).length,
+    [aiDataScienceProgress]
+  )
+  const careerDevopsCompleted = useMemo(
+    () => Object.values(careerDevopsProgress).filter(Boolean).length,
+    [careerDevopsProgress]
+  )
 
   useEffect(() => {
     if (!user?.id) return
 
     const syncProgress = async () => {
+      setSyncing(true)
       try {
         const localProgress = getLocalProgress(user.id) || {}
+        setProgressData(localProgress)
         const { data, error } = await supabase
           .from('profiles')
           .select('course_progress')
@@ -183,6 +266,7 @@ function CoursesPage() {
 
         const mergedProgress = mergeCourseProgress(serverProgress, localProgress)
         setLocalProgress(user.id, mergedProgress)
+        setProgressData(mergedProgress)
 
         if (needsProgressSync(serverProgress, mergedProgress)) {
           const { error: upsertError } = await supabase
@@ -201,6 +285,10 @@ function CoursesPage() {
         }
       } catch (error) {
         console.error('Error syncing course progress:', error)
+        const fallbackProgress = getLocalProgress(user.id) || {}
+        setProgressData(fallbackProgress)
+      } finally {
+        setSyncing(false)
       }
     }
 
@@ -254,6 +342,11 @@ function CoursesPage() {
               </div>
 
               <div className="flex flex-col gap-3">
+                <ProgressSummary
+                  completed={foundationCompleted}
+                  total={foundationCourses.length}
+                  syncing={syncing}
+                />
                 <Button
                   variant="primary"
                   size="md"
@@ -300,6 +393,11 @@ function CoursesPage() {
               </div>
 
               <div className="flex flex-col gap-3">
+                <ProgressSummary
+                  completed={frontendCompleted}
+                  total={frontendCourses.length}
+                  syncing={syncing}
+                />
                 <Button
                   variant="secondary"
                   size="md"
@@ -346,6 +444,11 @@ function CoursesPage() {
               </div>
 
               <div className="flex flex-col gap-3">
+                <ProgressSummary
+                  completed={backendCompleted}
+                  total={backendCourses.length}
+                  syncing={syncing}
+                />
                 <Button
                   variant="secondary"
                   size="md"
@@ -392,6 +495,11 @@ function CoursesPage() {
               </div>
 
               <div className="flex flex-col gap-3">
+                <ProgressSummary
+                  completed={aiDataScienceCompleted}
+                  total={aiDataScienceCourses.length}
+                  syncing={syncing}
+                />
                 <Button
                   variant="secondary"
                   size="md"
@@ -440,6 +548,11 @@ function CoursesPage() {
               </div>
 
               <div className="flex flex-col gap-3">
+                <ProgressSummary
+                  completed={careerDevopsCompleted}
+                  total={careerDevopsCourses.length}
+                  syncing={syncing}
+                />
                 <Button
                   variant="secondary"
                   size="md"
