@@ -1,11 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { withAuth } from '@/lib/auth/withAuth'
-import { useAuth } from '@/contexts/AuthContext'
 import { Card } from '@/components/ui/Card'
-import { Avatar } from '@/components/ui/Avatar'
-import { Button } from '@/components/ui/Button'
 import { ResourceCardSkeleton } from '@/components/ui/LoadingSkeleton'
+import { Header } from '@/components/layout/Header'
 import { formatDate } from '@/lib/utils/formatters'
 import type { Resource, Category } from '@/types'
 import { Geist } from 'next/font/google'
@@ -31,7 +29,6 @@ const categories: Category[] = [
 ]
 
 function ResourcesPage() {
-  const { user, signOut } = useAuth()
   const router = useRouter()
   const [resources, setResources] = useState<Resource[]>([])
   const [loading, setLoading] = useState(true)
@@ -66,61 +63,7 @@ function ResourcesPage() {
 
   return (
     <div className={`${geistSans.variable} min-h-screen bg-gray-50 font-sans`}>
-      {/* Navigation */}
-      <nav className="sticky top-0 z-50 border-b border-gray-200 bg-white/80 backdrop-blur-lg">
-        <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-8">
-              <h1
-                className="cursor-pointer text-xl font-bold text-gray-900"
-                onClick={() => router.push('/')}
-              >
-                Community
-              </h1>
-              <div className="hidden sm:flex items-center gap-4">
-                <button
-                  onClick={() => router.push('/resources')}
-                  className="text-sm font-semibold text-zinc-600"
-                >
-                  Resources
-                </button>
-                <button
-                  onClick={() => router.push('/profile')}
-                  className="text-sm text-gray-600 transition-colors hover:text-gray-900"
-                >
-                  Profile
-                </button>
-              </div>
-            </div>
-            <div className="flex items-center gap-4">
-              <div className="hidden sm:block text-right">
-                <p className="text-sm font-medium text-gray-900">
-                  {user?.user_metadata?.full_name || user?.email}
-                </p>
-                <p className="text-xs text-gray-500">Member</p>
-              </div>
-              <button
-                onClick={() => router.push('/profile')}
-                className="cursor-pointer"
-                aria-label="Go to profile"
-              >
-                <Avatar
-                  src={user?.user_metadata?.avatar_url}
-                  name={user?.user_metadata?.full_name || user?.email}
-                />
-              </button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={signOut}
-                className="text-gray-600"
-              >
-                Sign Out
-              </Button>
-            </div>
-          </div>
-        </div>
-      </nav>
+      <Header />
 
       {/* Main Content */}
       <main className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">

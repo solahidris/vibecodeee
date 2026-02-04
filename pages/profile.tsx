@@ -1,6 +1,7 @@
 import { withAuth } from '@/lib/auth/withAuth'
 import { useAuth } from '@/contexts/AuthContext'
 import { useRouter } from 'next/router'
+import { Header } from '@/components/layout/Header'
 import { Avatar } from '@/components/ui/Avatar'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
@@ -18,45 +19,7 @@ function ProfilePage() {
 
   return (
     <div className={`${geistSans.variable} min-h-screen bg-gray-50 font-sans`}>
-      {/* Navigation */}
-      <nav className="sticky top-0 z-50 border-b border-gray-200 bg-white/80 backdrop-blur-lg">
-        <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-8">
-              <h1
-                className="cursor-pointer text-xl font-bold text-gray-900"
-                onClick={() => router.push('/')}
-              >
-                Community
-              </h1>
-              <div className="hidden sm:flex items-center gap-4">
-                <button
-                  onClick={() => router.push('/resources')}
-                  className="text-sm text-gray-600 transition-colors hover:text-gray-900"
-                >
-                  Resources
-                </button>
-                <button
-                  onClick={() => router.push('/profile')}
-                  className="text-sm font-semibold text-zinc-900"
-                >
-                  Profile
-                </button>
-              </div>
-            </div>
-            <div className="flex items-center gap-4">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={signOut}
-                className="text-gray-600"
-              >
-                Sign Out
-              </Button>
-            </div>
-          </div>
-        </div>
-      </nav>
+      <Header />
 
       {/* Main Content */}
       <main className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">

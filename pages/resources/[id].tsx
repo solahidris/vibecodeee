@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { withAuth } from '@/lib/auth/withAuth'
-import { useAuth } from '@/contexts/AuthContext'
 import { createClient } from '@/lib/supabase/client'
-import { Avatar } from '@/components/ui/Avatar'
+import { Header } from '@/components/layout/Header'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { LoadingSkeleton } from '@/components/ui/LoadingSkeleton'
@@ -17,7 +16,6 @@ const geistSans = Geist({
 })
 
 function ResourceDetailPage() {
-  const { user, signOut } = useAuth()
   const router = useRouter()
   const { id } = router.query
   const [resource, setResource] = useState<Resource | null>(null)
@@ -72,41 +70,7 @@ function ResourceDetailPage() {
 
   return (
     <div className={`${geistSans.variable} min-h-screen bg-gray-50 font-sans`}>
-      {/* Navigation */}
-      <nav className="sticky top-0 z-50 border-b border-gray-200 bg-white/80 backdrop-blur-lg">
-        <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-8">
-              <h1
-                className="cursor-pointer text-xl font-bold text-gray-900"
-                onClick={() => router.push('/')}
-              >
-                Community
-              </h1>
-            </div>
-            <div className="flex items-center gap-4">
-              <button
-                onClick={() => router.push('/profile')}
-                className="cursor-pointer"
-                aria-label="Go to profile"
-              >
-                <Avatar
-                  src={user?.user_metadata?.avatar_url}
-                  name={user?.user_metadata?.full_name || user?.email}
-                />
-              </button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={signOut}
-                className="text-gray-600"
-              >
-                Sign Out
-              </Button>
-            </div>
-          </div>
-        </div>
-      </nav>
+      <Header />
 
       {/* Main Content */}
       <main className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">

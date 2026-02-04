@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/router'
 import { withAuth } from '@/lib/auth/withAuth'
 import { useAuth } from '@/contexts/AuthContext'
-import { Navigation } from '@/components/landing/Navigation'
+import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/landing/Footer'
 import { Geist } from 'next/font/google'
 
@@ -55,7 +55,7 @@ function SubscribePage() {
 
   return (
     <div className={`${geistSans.variable} min-h-screen bg-white font-sans`}>
-      <Navigation />
+      <Header />
 
       <main className="mx-auto max-w-4xl px-4 py-32 sm:px-6 lg:px-8">
         <div className="text-center">
