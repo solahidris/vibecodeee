@@ -59,10 +59,10 @@ export function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-zinc-900">
+            <h3 className="mb-6 text-sm font-bold uppercase tracking-wider text-zinc-900">
               Quick Links
             </h3>
-            <ul className="space-y-3">
+            <ul className="space-y-4">
               <li>
                 <button
                   onClick={() => router.push('/resources')}
@@ -102,10 +102,10 @@ export function Footer() {
 
           {/* Legal */}
           <div>
-            <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-zinc-900">
+            <h3 className="mb-6 text-sm font-bold uppercase tracking-wider text-zinc-900">
               Legal
             </h3>
-            <ul className="space-y-3">
+            <ul className="space-y-4">
               <li>
                 <button className="text-zinc-600 transition-colors duration-300 hover:text-zinc-900">
                   Privacy Policy
