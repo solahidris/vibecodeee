@@ -33,7 +33,7 @@ const resourceLinks = [
   },
   {
     id: 'crashcourse',
-    title: 'Automate Boring Stuff with Pythong',
+    title: 'Automate Boring Stuff with Python',
     description:
       'A quick-start series to automate boring tasks with Python + AI prompts.',
     icon: '⚡',

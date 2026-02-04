@@ -3,6 +3,7 @@ import Head from "next/head";
 import { DM_Serif_Display, Sora } from "next/font/google";
 import { useAuth } from "@/contexts/AuthContext";
 import { createClient } from "@/lib/supabase/client";
+import { Header } from "@/components/layout/Header";
 import {
   CourseProgressData,
   buildCourseChecklistProgress,
@@ -214,7 +215,8 @@ export default function BasicPromptPage() {
       </Head>
       <div className={`${display.variable} ${body.variable} font-[var(--font-body)]`}>
         <div className="min-h-screen bg-[#f6f3ef]">
-        <div className="relative">
+          <Header />
+          <div className="relative">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,#c9e4ff,transparent_55%)]" />
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_80%,#ffe6bf,transparent_60%)]" />
           <div className="relative mx-auto max-w-5xl px-6 py-16 sm:px-10">
