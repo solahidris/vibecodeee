@@ -286,7 +286,7 @@ function CareerDevopsCoursePage() {
     }
 
     setResults((prev) => {
-      const next = {
+      const next: Record<string, ExerciseResult> = {
         ...prev,
         [exerciseId]: {
           status: evaluation.passed ? 'passed' : 'failed',
