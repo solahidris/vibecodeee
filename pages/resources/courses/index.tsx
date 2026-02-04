@@ -1,5 +1,8 @@
+import { useEffect, useMemo } from 'react'
 import { useRouter } from 'next/router'
 import { withAuth } from '@/lib/auth/withAuth'
+import { createClient } from '@/lib/supabase/client'
+import { useAuth } from '@/contexts/AuthContext'
 import { Header } from '@/components/layout/Header'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
@@ -7,6 +10,12 @@ import { Geist } from 'next/font/google'
 import { foundationCourses } from '@/lib/courses/foundationCourses'
 import { backendCourses } from '@/lib/courses/backendCourses'
 import { frontendCourses } from '@/lib/courses/frontendCourses'
+import {
+  CourseProgressData,
+  getLocalProgress,
+  parseCourseProgress,
+  setLocalProgress,
+} from '@/lib/courses/progress'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -115,8 +124,142 @@ const careerDevopsCourses = [
   },
 ]
 
+const mergeChecklistProgress = (
+  server: boolean[] | undefined,
+  local: boolean[] | undefined
+): boolean[] | undefined => {
+  if (!server && !local) return undefined
+  const maxLen = Math.max(server?.length ?? 0, local?.length ?? 0)
+  if (!maxLen) return undefined
+  return Array.from({ length: maxLen }, (_, index) =>
+    Boolean(server?.[index] || local?.[index])
+  )
+}
+
+const mergeCourseProgress = (
+  server: CourseProgressData,
+  local: CourseProgressData
+): CourseProgressData => {
+  const merged: CourseProgressData = {
+    foundation: foundationCourses.reduce<Record<string, boolean>>((acc, course) => {
+      acc[course.id] = Boolean(
+        server.foundation?.[course.id] || local.foundation?.[course.id]
+      )
+      return acc
+    }, {}),
+    frontend: frontendCourses.reduce<Record<string, boolean>>((acc, course) => {
+      acc[course.id] = Boolean(
+        server.frontend?.[course.id] || local.frontend?.[course.id]
+      )
+      return acc
+    }, {}),
+  }
+
+  const crashcourse = mergeChecklistProgress(
+    server.crashcourse,
+    local.crashcourse
+  )
+  if (crashcourse) {
+    merged.crashcourse = crashcourse
+  }
+
+  const basicprompt = mergeChecklistProgress(
+    server.basicprompt,
+    local.basicprompt
+  )
+  if (basicprompt) {
+    merged.basicprompt = basicprompt
+  }
+
+  return merged
+}
+
+const needsProgressSync = (
+  server: CourseProgressData,
+  merged: CourseProgressData
+): boolean => {
+  for (const course of foundationCourses) {
+    if (merged.foundation?.[course.id] && !server.foundation?.[course.id]) {
+      return true
+    }
+  }
+
+  for (const course of frontendCourses) {
+    if (merged.frontend?.[course.id] && !server.frontend?.[course.id]) {
+      return true
+    }
+  }
+
+  const serverCrashcourse = server.crashcourse ?? []
+  const mergedCrashcourse = merged.crashcourse ?? []
+  for (let index = 0; index < mergedCrashcourse.length; index += 1) {
+    if (mergedCrashcourse[index] && !serverCrashcourse[index]) {
+      return true
+    }
+  }
+
+  const serverBasicprompt = server.basicprompt ?? []
+  const mergedBasicprompt = merged.basicprompt ?? []
+  for (let index = 0; index < mergedBasicprompt.length; index += 1) {
+    if (mergedBasicprompt[index] && !serverBasicprompt[index]) {
+      return true
+    }
+  }
+
+  return false
+}
+
 function CoursesPage() {
   const router = useRouter()
+  const { user } = useAuth()
+  const supabase = useMemo(() => createClient(), [])
+
+  useEffect(() => {
+    if (!user?.id) return
+
+    const syncProgress = async () => {
+      try {
+        const localProgress = getLocalProgress(user.id) || {}
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('course_progress')
+          .eq('id', user.id)
+          .maybeSingle()
+
+        if (error) {
+          throw error
+        }
+
+        const serverProgress =
+          data?.course_progress !== null && data?.course_progress !== undefined
+            ? parseCourseProgress(data.course_progress)
+            : {}
+
+        const mergedProgress = mergeCourseProgress(serverProgress, localProgress)
+        setLocalProgress(user.id, mergedProgress)
+
+        if (needsProgressSync(serverProgress, mergedProgress)) {
+          const { error: upsertError } = await supabase
+            .from('profiles')
+            .upsert(
+              {
+                id: user.id,
+                course_progress: mergedProgress,
+              },
+              { onConflict: 'id' }
+            )
+
+          if (upsertError) {
+            throw upsertError
+          }
+        }
+      } catch (error) {
+        console.error('Error syncing course progress:', error)
+      }
+    }
+
+    void syncProgress()
+  }, [supabase, user?.id])
 
   return (
     <div className={`${geistSans.variable} min-h-screen bg-gray-50 font-sans`}>
