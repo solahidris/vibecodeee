@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, FormEvent } from 'react'
 import { withAuth } from '@/lib/auth/withAuth'
 import { useAuth } from '@/contexts/AuthContext'
 import { useUser } from '@/contexts/UserContext'
@@ -20,9 +20,49 @@ const TELEGRAM_GROUP_URL = 'https://t.me/+wKbaL8tiEZs4Y2E9'
 
 function ProfilePage() {
   const { user, signOut } = useAuth()
-  const { hasActiveSubscription, loading } = useUser()
+  const { hasActiveSubscription, loading, refreshProfile } = useUser()
   const router = useRouter()
   const [showSignOutModal, setShowSignOutModal] = useState(false)
+  const [phoneNumber, setPhoneNumber] = useState('')
+  const [verifying, setVerifying] = useState(false)
+  const [verificationError, setVerificationError] = useState<string | null>(null)
+  const [verificationSuccess, setVerificationSuccess] = useState(false)
+
+  const handlePhoneVerification = async (e: FormEvent) => {
+    e.preventDefault()
+    if (!user?.id || !phoneNumber.trim()) return
+
+    setVerifying(true)
+    setVerificationError(null)
+    setVerificationSuccess(false)
+
+    try {
+      const response = await fetch('/api/profile/verify-phone', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          phoneNumber: phoneNumber.trim(),
+          userId: user.id,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to verify phone number')
+      }
+
+      setVerificationSuccess(true)
+      setPhoneNumber('')
+      // Refresh user profile to show updated subscription status
+      await refreshProfile()
+    } catch (err) {
+      console.error('Phone verification error:', err)
+      setVerificationError(err instanceof Error ? err.message : 'Failed to verify phone number')
+    } finally {
+      setVerifying(false)
+    }
+  }
 
   return (
     <div className={`${geistSans.variable} min-h-screen bg-gray-50 font-sans`}>
@@ -71,6 +111,67 @@ function ProfilePage() {
             </div>
           </div>
         </Card>
+
+        {/* Day 1 Supporter Verification - Show only if not subscribed */}
+        {!loading && !hasActiveSubscription && (
+          <Card hover={false} className="mb-8 border-2 border-blue-100 bg-blue-50">
+            <div className="mb-4 flex items-center gap-2">
+              <svg className="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+              <h3 className="text-xl font-bold text-blue-900">
+                Day 1 Supporter?
+              </h3>
+            </div>
+            <p className="mb-6 text-sm text-blue-800 leading-relaxed">
+              If you were super early and subscribed as one of our Day 1 supporters, please enter your phone number below to grant yourself full premium access.
+            </p>
+
+            <form onSubmit={handlePhoneVerification}>
+              <div className="mb-4">
+                <label htmlFor="phone" className="mb-2 block text-sm font-medium text-blue-900">
+                  Phone Number
+                </label>
+                <input
+                  type="text"
+                  id="phone"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  placeholder="60123456789"
+                  className="w-full rounded-lg border border-blue-200 bg-white px-4 py-2.5 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  disabled={verifying}
+                  required
+                />
+                <p className="mt-1.5 text-xs text-blue-700">
+                  Enter your Malaysian phone number starting with 60 (e.g., 60123456789)
+                </p>
+              </div>
+
+              {verificationError && (
+                <div className="mb-4 rounded-lg border border-red-200 bg-red-50 p-3">
+                  <p className="text-sm text-red-700">{verificationError}</p>
+                </div>
+              )}
+
+              {verificationSuccess && (
+                <div className="mb-4 rounded-lg border border-green-200 bg-green-50 p-3">
+                  <p className="text-sm text-green-700">
+                    Welcome back, Day 1 supporter! Your premium access has been activated.
+                  </p>
+                </div>
+              )}
+
+              <Button
+                type="submit"
+                variant="primary"
+                size="md"
+                disabled={verifying || !phoneNumber.trim()}
+              >
+                {verifying ? 'Verifying...' : 'Verify & Activate'}
+              </Button>
+            </form>
+          </Card>
+        )}
 
         {/* Telegram Community */}
         {!loading && (
