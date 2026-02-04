@@ -12,6 +12,10 @@ import { formatDate } from '@/lib/utils/formatters'
 import { Geist } from 'next/font/google'
 import { getCareerDevopsCourseDetail } from '@/lib/courses/careerDevopsCourseDetails'
 import { evaluateExercise } from '@/lib/courses/evaluateExercise'
+import {
+  getExerciseAnswerChecklist,
+  getExerciseAnswerExample,
+} from '@/lib/courses/exerciseAnswers'
 import type {
   CareerDevopsCourseDetail,
   CourseExercise,
@@ -76,6 +80,7 @@ function CareerDevopsCoursePage() {
   const exercises = course?.exercises ?? []
   const [answers, setAnswers] = useState(() => buildInitialAnswers(exercises))
   const [results, setResults] = useState(() => buildInitialResults(exercises))
+  const [showAnswers, setShowAnswers] = useState<Record<string, boolean>>({})
 
   const careerProgress = useMemo(
     () => progressData.careerDevops ?? {},
@@ -102,6 +107,13 @@ function CareerDevopsCoursePage() {
 
   const courseCompleted = course ? careerProgress[course.id] : false
   const allPassed = exercises.length > 0 && passedCount === exercises.length
+
+  const toggleAnswer = (exerciseId: string) => {
+    setShowAnswers((prev) => ({
+      ...prev,
+      [exerciseId]: !prev[exerciseId],
+    }))
+  }
 
   useEffect(() => {
     if (!router.isReady || !courseId) return
@@ -443,6 +455,11 @@ function CareerDevopsCoursePage() {
             const result = results[exercise.id]
             const isPassed = result?.status === 'passed'
             const isFailed = result?.status === 'failed'
+            const answerExample = getExerciseAnswerExample(exercise)
+            const answerChecklist = getExerciseAnswerChecklist(exercise)
+            const hasAnswer =
+              Boolean(answerExample) || answerChecklist.length > 0
+            const showAnswer = Boolean(showAnswers[exercise.id])
 
             return (
               <Card
@@ -469,9 +486,6 @@ function CareerDevopsCoursePage() {
                         <li key={detail}>{detail}</li>
                       ))}
                     </ul>
-                    <div className="mt-4 text-xs text-gray-500">
-                      We check for: {exercise.checkFor.join(', ')}
-                    </div>
                   </div>
 
                   <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
@@ -489,6 +503,16 @@ function CareerDevopsCoursePage() {
                           }
                           return next
                         })
+                      }}
+                      onKeyDown={(event) => {
+                        if (event.isComposing) return
+                        if (
+                          event.key === 'Enter' &&
+                          (event.metaKey || event.ctrlKey)
+                        ) {
+                          event.preventDefault()
+                          handleCheck(exercise.id, index)
+                        }
                       }}
                       placeholder={exercise.placeholder}
                       rows={4}
@@ -509,6 +533,16 @@ function CareerDevopsCoursePage() {
                       >
                         Check answer
                       </Button>
+                      {hasAnswer && (
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => toggleAnswer(exercise.id)}
+                        >
+                          {showAnswer ? 'Hide answer' : 'Show answer'}
+                        </Button>
+                      )}
                       <span
                         className={cn(
                           'rounded-full px-3 py-1 text-xs font-semibold',
@@ -526,6 +560,32 @@ function CareerDevopsCoursePage() {
                           : 'Not checked'}
                       </span>
                     </div>
+                    {hasAnswer && showAnswer && (
+                      <div className="mt-3 rounded-xl border border-amber-200 bg-amber-50/60 p-3 text-sm text-amber-900">
+                        {answerExample && (
+                          <div>
+                            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-amber-700">
+                              Example answer
+                            </p>
+                            <pre className="mt-2 whitespace-pre-wrap break-words rounded-lg bg-white/70 p-3 text-xs text-amber-900 shadow-sm">
+                              {answerExample}
+                            </pre>
+                          </div>
+                        )}
+                        {answerChecklist.length > 0 && (
+                          <div className={cn(answerExample && 'mt-3')}>
+                            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-amber-700">
+                              Answer key
+                            </p>
+                            <ul className="mt-2 list-disc space-y-1 pl-5 text-amber-800">
+                              {answerChecklist.map((item) => (
+                                <li key={item}>{item}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                      </div>
+                    )}
                     {result?.message && (
                       <p
                         className={cn(
