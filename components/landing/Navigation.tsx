@@ -31,18 +31,18 @@ export function Navigation() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => router.push('/resources')}
-                  className="hidden sm:inline-flex text-zinc-600 hover:text-zinc-900 transition-all duration-300 cursor-pointer font-normal"
-                >
-                  Resources
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
                   onClick={() => router.push('/payment/subscribe')}
                   className="hidden sm:inline-flex text-zinc-600 hover:text-zinc-900 transition-all duration-300 cursor-pointer font-normal"
                 >
                   Telegram
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => router.push('/resources')}
+                  className="hidden sm:inline-flex text-zinc-600 hover:text-zinc-900 transition-all duration-300 cursor-pointer font-normal"
+                >
+                  Resources
                 </Button>
                 <button
                   onClick={() => router.push('/profile')}
