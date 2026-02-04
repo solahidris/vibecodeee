@@ -20,20 +20,22 @@ export interface ResourceWithBookmark extends Resource {
 
 // Category type matching the topics from landing page
 export type Category =
-  | 'General'
-  | 'Job Posting'
+  | 'General Discussion'
+  | 'Job Opportunities'
   | 'Best Prompts'
-  | 'Fitness'
+  | 'Fitness & Wellness'
   | 'Announcements'
-  | 'Shill'
-  | 'Internal Career'
-  | 'AI/Coding Beginner'
+  | 'Showcase'
+  | 'Career Growth'
+  | 'AI Fundamentals'
   | 'AI News'
   | 'Tips & Tricks'
-  | 'Tools'
+  | 'Tools & Resources'
+  | 'Community Events'
 
 // Topic interface for landing page
 export interface Topic {
-  name: Category
+  name: string
   icon: string
+  description?: string
 }
