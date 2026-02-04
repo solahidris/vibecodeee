@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { withAuth } from '@/lib/auth/withAuth'
 import { useAuth } from '@/contexts/AuthContext'
+import { useUser } from '@/contexts/UserContext'
 import { useRouter } from 'next/router'
-import { createClient } from '@/lib/supabase/client'
 import { Header } from '@/components/layout/Header'
 import { Avatar } from '@/components/ui/Avatar'
 import { Button } from '@/components/ui/Button'
@@ -20,35 +20,9 @@ const TELEGRAM_GROUP_URL = 'https://t.me/+wKbaL8tiEZs4Y2E9'
 
 function ProfilePage() {
   const { user, signOut } = useAuth()
+  const { hasActiveSubscription, loading } = useUser()
   const router = useRouter()
   const [showSignOutModal, setShowSignOutModal] = useState(false)
-  const [hasActiveSubscription, setHasActiveSubscription] = useState(false)
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    if (user) {
-      fetchSubscriptionStatus()
-    }
-  }, [user])
-
-  const fetchSubscriptionStatus = async () => {
-    try {
-      const supabase = createClient()
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('has_active_subscription')
-        .eq('id', user?.id)
-        .single()
-
-      if (!error && data) {
-        setHasActiveSubscription(data.has_active_subscription || false)
-      }
-    } catch (error) {
-      console.error('Error fetching subscription status:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
 
   return (
     <div className={`${geistSans.variable} min-h-screen bg-gray-50 font-sans`}>
