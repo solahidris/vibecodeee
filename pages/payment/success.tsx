@@ -16,15 +16,13 @@ const TELEGRAM_GROUP_URL = 'https://t.me/+wKbaL8tiEZs4Y2E9'
 
 function PaymentSuccessPage() {
   const router = useRouter()
-  const { hasActiveSubscription, loading: userLoading, refreshProfile } = useUser()
+  const { user, hasActiveSubscription, loading: userLoading, refreshProfile } = useUser()
   const [activating, setActivating] = useState(false)
   const [activationError, setActivationError] = useState<string | null>(null)
 
   // Auto-activate subscription if webhook hasn't fired
   useEffect(() => {
-    const reference = router.query.reference as string
-
-    if (!reference || userLoading || activating) return
+    if (!user?.id || userLoading || activating) return
 
     // Wait 5 seconds for webhook to process
     const timeoutId = setTimeout(async () => {
@@ -40,7 +38,7 @@ function PaymentSuccessPage() {
           const response = await fetch('/api/payment/manual-activate', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ reference }),
+            body: JSON.stringify({ reference: user.id }), // Use logged-in user's ID
           })
 
           const data = await response.json()
@@ -62,7 +60,7 @@ function PaymentSuccessPage() {
     }, 5000) // Wait 5 seconds
 
     return () => clearTimeout(timeoutId)
-  }, [router.query.reference, hasActiveSubscription, userLoading, refreshProfile, activating])
+  }, [user?.id, hasActiveSubscription, userLoading, refreshProfile, activating])
 
   return (
     <div className={`${geistSans.variable} min-h-screen bg-white font-sans`}>
