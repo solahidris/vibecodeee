@@ -65,7 +65,7 @@ function SubscribePage() {
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75"></span>
               <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500"></span>
             </span>
-            Join 500+ Active Members
+            Join Quality Active Members
           </div>
           <h1 className="mb-6 pb-4 text-5xl font-black text-zinc-900 sm:text-6xl lg:text-7xl">
             Unlock Your Full Potential
@@ -316,7 +316,7 @@ function SubscribePage() {
               <div className="mt-8 pt-8 border-t border-zinc-200">
                 <div className="grid grid-cols-3 gap-4 text-center">
                   <div>
-                    <div className="text-2xl font-bold text-zinc-900">500+</div>
+                    <div className="text-2xl font-bold text-zinc-900">Quality</div>
                     <div className="text-xs text-zinc-600">Active Members</div>
                   </div>
                   <div>
