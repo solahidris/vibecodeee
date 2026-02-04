@@ -24,15 +24,21 @@ npm run lint
 
 ## Environment Setup
 
-Before running the app, configure your Supabase credentials in `.env.local`:
+Before running the app, configure your credentials in `.env.local`:
 
 ```bash
+# Supabase
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+
+# HitPay Payment Gateway
+HITPAY_API_KEY=your_hitpay_api_key
+HITPAY_API_SALT=your_hitpay_api_salt
 ```
 
-Get these from your Supabase dashboard: https://app.supabase.com -> Project Settings -> API
+Get Supabase keys from: https://app.supabase.com -> Project Settings -> API
+Get HitPay keys from: https://dashboard.hit-pay.com/settings/api-keys
 
 ## Architecture
 
@@ -151,6 +157,40 @@ export const config = { runtime: 'edge' }
 - Standalone page with unique styling (not using main premium design system)
 - Includes lesson templates, tips, and self-check guidance
 
+## Payment Integration
+
+**Provider**: HitPay (recurring billing for MYR 10/month)
+
+**Webhook URL**: https://vibecodeee.com/api/hitpay-webhook
+
+**API Routes**:
+- `POST /api/payment/create-plan` - Create subscription plan (one-time setup)
+- `POST /api/payment/create-subscription` - Create recurring billing for customer
+  - Required params: `customer_email`, `user_id`
+  - Optional params: `customer_name`, `plan_id`
+  - Returns checkout URL to redirect user
+- `POST /api/hitpay-webhook` - Handle payment notifications (HMAC validation)
+
+**Payment Flow**:
+1. User clicks subscription button
+2. Frontend calls `/api/payment/create-subscription` with user details
+3. Backend creates recurring billing and returns HitPay checkout URL
+4. User is redirected to HitPay to enter payment details
+5. After payment, user is redirected to `/payment/success`
+6. HitPay sends webhook POST to `/api/hitpay-webhook`
+7. Webhook validates HMAC signature and grants access
+
+**Webhook Validation**:
+- All webhook requests include HMAC signature for security
+- Signature validated using `HITPAY_API_SALT`
+- Returns HTTP 200 to acknowledge receipt
+- Payment reference contains `user_id` for tracking
+
+**Important**:
+- Use live API keys in production
+- Webhook URL must be HTTPS
+- Always validate HMAC before processing payments
+
 ## Pages Router Conventions
 
 - Files in `/pages` automatically become routes
@@ -161,7 +201,8 @@ export const config = { runtime: 'edge' }
 
 ## Important Notes
 
-- **Never commit `.env.local`** - Contains sensitive Supabase keys
+- **Never commit `.env.local`** - Contains sensitive keys (Supabase & HitPay)
 - **RLS policies are critical** - All database queries respect user permissions
 - **Google OAuth setup** - Configure redirect URIs in Google Console and Supabase dashboard
 - **Session management** - Handled automatically by @supabase/ssr with cookies
+- **HitPay webhook** - Must return HTTP 200 and validate HMAC signature
