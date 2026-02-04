@@ -54,13 +54,16 @@ Get HitPay keys from: https://dashboard.hit-pay.com/settings/api-keys
   - `/pages/auth` - Auth callback handler
   - `/pages/resources` - Protected member dashboard
   - `/pages/login.tsx` - Google OAuth sign-in page
-  - `/pages/profile.tsx` - User profile page
+  - `/pages/profile.tsx` - User profile page with subscription status
+  - `/pages/payment/subscribe.tsx` - Subscription/pricing page
+  - `/pages/payment/success.tsx` - Payment success page
   - `/pages/basicprompt.tsx` - Educational course page (basic prompting)
   - `/pages/index.tsx` - Public landing page
 - `/components` - Reusable UI and landing page components
   - `/components/ui` - Base UI components (Button, Card, Avatar, etc.)
-  - `/components/landing` - Landing page sections (Hero, Navigation, etc.)
-- `/contexts` - React context providers (AuthContext)
+  - `/components/landing` - Landing page sections (Hero, Navigation, Footer)
+  - `/components/layout` - Layout components (Header)
+- `/contexts` - React context providers (AuthContext, UserContext)
 - `/lib` - Core utilities
   - `/lib/supabase` - Supabase client initialization (browser & server)
   - `/lib/auth` - Authentication HOC (withAuth)
@@ -148,6 +151,27 @@ export const config = { runtime: 'edge' }
 - Only animate `transform` and `opacity` (GPU-accelerated)
 - Scroll-triggered animations via `useScrollAnimation` hook
 
+**Navigation & Layout**:
+- Header navigation visible to all users (Telegram, Resources links)
+- Avatar only shown for authenticated users
+- Footer uses anchor tags (`<a>`) for proper URL preview on hover
+- All internal links support right-click "Open in new tab"
+
+**Profile Page** (`/profile`):
+- Dynamic badges based on subscription status:
+  - "Community Member" (green) - Active subscription
+  - "Free Access" (gray) - No subscription
+- Telegram Community card shows different states:
+  - Subscribed: Direct link to Telegram group
+  - Not subscribed: Pricing and subscribe CTA
+- No redundant account information display (already in profile header)
+
+**Subscription Page** (`/payment/subscribe`):
+- Premium black pricing card with white text for contrast
+- White CTA button stands out against dark background
+- Benefit icons use black and white outline style (no colors)
+- Consistent border-2 border-zinc-900 for all feature icons
+
 ## Educational Content Pages
 
 **Basic Prompting Course** (`/basicprompt`):
@@ -185,11 +209,21 @@ export const config = { runtime: 'edge' }
 - Signature validated using `HITPAY_API_SALT`
 - Returns HTTP 200 to acknowledge receipt
 - Payment reference contains `user_id` for tracking
+- On successful payment, updates Supabase `profiles` table:
+  - Sets `has_active_subscription: true`
+  - Sets `subscription_started_at` timestamp
+
+**Subscription Status**:
+- User subscription status managed via `UserContext`
+- `hasActiveSubscription` boolean used throughout the app
+- Profile badges and Telegram access controlled by this status
+- Header shows Telegram link to all users (subscribed or not)
 
 **Important**:
 - Use live API keys in production
 - Webhook URL must be HTTPS
 - Always validate HMAC before processing payments
+- Webhook uses Supabase service role key to bypass RLS policies
 
 ## Pages Router Conventions
 
