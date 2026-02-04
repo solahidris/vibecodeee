@@ -86,61 +86,6 @@ export function TopicsGrid() {
               and many more...
             </p>
           </div>
-
-          {/* Key Benefits List */}
-          <div className="mt-16 max-w-4xl mx-auto">
-            <div className="rounded-3xl border border-zinc-200 bg-zinc-50 p-8 sm:p-12">
-              <h3 className="mb-8 text-center text-2xl font-bold text-zinc-900">
-                Plus, you get:
-              </h3>
-              <div className="grid gap-6 sm:grid-cols-2">
-                <div className="flex items-start gap-3">
-                  <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-zinc-900 text-white">
-                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                    </svg>
-                  </div>
-                  <div>
-                    <p className="font-semibold text-zinc-900">Expert Resources</p>
-                    <p className="text-sm text-zinc-600">Curated tools and guides</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-zinc-900 text-white">
-                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                    </svg>
-                  </div>
-                  <div>
-                    <p className="font-semibold text-zinc-900">Active Community</p>
-                    <p className="text-sm text-zinc-600">Daily discussions & support</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-zinc-900 text-white">
-                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                    </svg>
-                  </div>
-                  <div>
-                    <p className="font-semibold text-zinc-900">Weekly Updates</p>
-                    <p className="text-sm text-zinc-600">Latest AI news & trends</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-zinc-900 text-white">
-                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                    </svg>
-                  </div>
-                  <div>
-                    <p className="font-semibold text-zinc-900">Networking Events</p>
-                    <p className="text-sm text-zinc-600">Connect with members</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
 
         {/* CTA */}

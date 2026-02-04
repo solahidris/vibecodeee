@@ -56,13 +56,13 @@ export function Benefits() {
             {benefits.map((benefit, index) => (
               <div
                 key={benefit.title}
-                className="group relative overflow-hidden rounded-3xl border border-zinc-200 bg-white transition-all duration-500 hover:-translate-y-2 hover:border-zinc-300 hover:shadow-2xl"
+                className="group relative overflow-hidden rounded-3xl border border-zinc-200 bg-white transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl"
                 style={{
                   animationDelay: `${index * 100}ms`,
                 }}
               >
                 {/* Image Background */}
-                <div className="relative h-64 overflow-hidden bg-zinc-100">
+                <div className="relative h-64 overflow-hidden bg-white">
                   <Image
                     src={benefit.image}
                     alt={benefit.title}
@@ -70,7 +70,7 @@ export function Benefits() {
                     height={300}
                     className="h-full w-full object-cover grayscale transition-all duration-500 group-hover:scale-110 group-hover:grayscale-0"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-white to-transparent"></div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-white via-white/50 to-transparent"></div>
 
                   {/* Icon on Image */}
                   <div className="absolute bottom-4 left-4 flex h-16 w-16 items-center justify-center rounded-2xl border border-zinc-200 bg-white/90 backdrop-blur-sm text-4xl transition-transform duration-300 group-hover:scale-110">
