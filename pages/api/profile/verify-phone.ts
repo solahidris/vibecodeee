@@ -1,6 +1,6 @@
 export const config = { runtime: 'edge' }
 
-import { createClient } from '@/lib/supabase/client'
+import { createClient } from '@supabase/supabase-js'
 
 const WHITELIST_PHONE_NUMBERS = [
   "60107121471",
@@ -77,7 +77,21 @@ export default async function handler(req: Request) {
     }
 
     // Update user profile with subscription and phone number
-    const supabase = createClient()
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+
+    if (!supabaseUrl || !supabaseServiceKey) {
+      console.error('Supabase configuration missing')
+      return new Response(
+        JSON.stringify({ error: 'Server configuration error' }),
+        {
+          status: 500,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      )
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
     const { error: updateError, data } = await supabase
       .from('profiles')
@@ -92,7 +106,7 @@ export default async function handler(req: Request) {
     if (updateError) {
       console.error('Error updating profile:', updateError)
       return new Response(
-        JSON.stringify({ error: 'Failed to activate subscription' }),
+        JSON.stringify({ error: 'Failed to activate subscription', details: updateError.message }),
         {
           status: 500,
           headers: { 'Content-Type': 'application/json' },
