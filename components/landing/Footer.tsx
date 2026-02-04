@@ -44,7 +44,7 @@ export function Footer() {
                 </svg>
               </a>
               <a
-                href="https://github.com"
+                href="https://github.com/solahidris/vibecodeee"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex h-10 w-10 items-center justify-center rounded-lg border border-zinc-200 text-zinc-600 transition-all duration-300 hover:border-zinc-900 hover:bg-zinc-900 hover:text-white hover:scale-110"
