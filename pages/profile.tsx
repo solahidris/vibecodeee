@@ -82,12 +82,6 @@ function ProfilePage() {
                 {user?.user_metadata?.full_name || 'Not provided'}
               </p>
             </div>
-            <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">
-                Authentication Method
-              </label>
-              <p className="text-gray-900">Google OAuth</p>
-            </div>
           </div>
         </Card>
 
