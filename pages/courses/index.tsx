@@ -5,6 +5,7 @@ import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Geist } from 'next/font/google'
 import { foundationCourses } from '@/lib/courses/foundationCourses'
+import { backendCourses } from '@/lib/courses/backendCourses'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -113,6 +114,69 @@ const aiDataScienceCourses = [
   },
 ]
 
+const careerDevopsCourses = [
+  {
+    id: 'career-vercel-netlify-deploy',
+    number: 31,
+    title: 'Vercel & Netlify Deployment',
+    description: 'From local code to a live URL in seconds.',
+  },
+  {
+    id: 'career-cicd-github-actions',
+    number: 32,
+    title: 'CI/CD with GitHub Actions',
+    description: 'Automating your testing and deployment.',
+  },
+  {
+    id: 'career-linux-server-admin',
+    number: 33,
+    title: 'Linux Server Admin',
+    description: 'Managing your own VPS (Ubuntu/Debian).',
+  },
+  {
+    id: 'career-cybersecurity-web',
+    number: 34,
+    title: 'Cybersecurity for Web',
+    description: 'Preventing SQL injection, XSS, and CSRF attacks.',
+  },
+  {
+    id: 'career-uiux-non-designers',
+    number: 35,
+    title: 'UI/UX for Non-Designers',
+    description: 'Making apps that don&apos;t look "ugly."',
+  },
+  {
+    id: 'career-unit-testing-jest',
+    number: 36,
+    title: 'Unit Testing with Jest',
+    description: 'Writing code that tests your code.',
+  },
+  {
+    id: 'career-technical-interview-prep',
+    number: 37,
+    title: 'Technical Interview Prep',
+    description: 'Cracking the coding interview and DSA basics.',
+  },
+  {
+    id: 'career-freelancing-high-ticket',
+    number: 38,
+    title: 'Freelancing & High-Ticket Sales',
+    description: 'Finding and closing 5-figure dev clients.',
+  },
+  {
+    id: 'career-personal-brand',
+    number: 39,
+    title: 'Building a Personal Brand',
+    description: 'Using Twitter/LinkedIn to get job offers.',
+  },
+  {
+    id: 'career-vibe-coding-era',
+    number: 40,
+    title: 'The "Vibe Coding" Era',
+    description: 'How to use AI coding assistants (Cursor/Claude) to build 10x faster.',
+  },
+]
+
 function CoursesPage() {
   const router = useRouter()
 
@@ -172,6 +236,52 @@ function CoursesPage() {
                 </Button>
                 <p className="text-xs text-gray-500">
                   Progress syncs to your profile when you're signed in.
+                </p>
+              </div>
+            </div>
+          </Card>
+
+          <Card>
+            <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
+              <div className="flex-1">
+                <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-zinc-900 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-white">
+                  Lane 3
+                </div>
+                <h3 className="mb-2 text-2xl font-bold text-gray-900">
+                  Backend &amp; Systems
+                </h3>
+                <p className="text-base text-gray-600">
+                  A systems-first track covering runtimes, data stores, APIs,
+                  security, and deployment workflows.
+                </p>
+
+                <div className="mt-6 grid gap-3 text-sm text-gray-700 sm:grid-cols-2">
+                  {backendCourses.map((course) => (
+                    <div key={course.id} className="flex items-start gap-3">
+                      <span className="mt-0.5 text-xs font-semibold text-gray-400">
+                        {String(course.number).padStart(2, '0')}
+                      </span>
+                      <div>
+                        <p className="font-semibold text-gray-900">
+                          {course.title}
+                        </p>
+                        <p className="text-gray-500">{course.description}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-3">
+                <Button
+                  variant="secondary"
+                  size="md"
+                  onClick={() => router.push('/courses/backend')}
+                >
+                  Open Lane
+                </Button>
+                <p className="text-xs text-gray-500">
+                  Built for modern backend teams and solo builders alike.
                 </p>
               </div>
             </div>
@@ -256,6 +366,48 @@ function CoursesPage() {
                 </Button>
                 <p className="text-xs text-gray-500">
                   We&apos;re mapping out the Lane 4 curriculum.
+                </p>
+              </div>
+            </div>
+          </Card>
+
+          <Card>
+            <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
+              <div className="flex-1">
+                <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-zinc-900 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-white">
+                  Lane 5
+                </div>
+                <h3 className="mb-2 text-2xl font-bold text-gray-900">
+                  Career, DevOps & Pro Skills
+                </h3>
+                <p className="text-base text-gray-600">
+                  The career-ready track covering deployment, security, testing,
+                  and the business of being a developer.
+                </p>
+
+                <div className="mt-6 grid gap-3 text-sm text-gray-700 sm:grid-cols-2">
+                  {careerDevopsCourses.map((course) => (
+                    <div key={course.id} className="flex items-start gap-3">
+                      <span className="mt-0.5 text-xs font-semibold text-gray-400">
+                        {String(course.number).padStart(2, '0')}
+                      </span>
+                      <div>
+                        <p className="font-semibold text-gray-900">
+                          {course.title}
+                        </p>
+                        <p className="text-gray-500">{course.description}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-3">
+                <Button variant="secondary" size="md" disabled>
+                  Coming Soon
+                </Button>
+                <p className="text-xs text-gray-500">
+                  We&apos;re finalizing the Lane 5 curriculum.
                 </p>
               </div>
             </div>
