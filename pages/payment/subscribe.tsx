@@ -336,17 +336,6 @@ function SubscribePage() {
                 </div>
               </div>
             </div>
-
-            {/* Money Back Guarantee */}
-            <div className="mt-6 rounded-2xl border border-green-200 bg-green-50 p-6 text-center">
-              <div className="mb-2 flex justify-center">
-                <svg className="h-8 w-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                </svg>
-              </div>
-              <h3 className="mb-2 pb-4 font-bold text-green-900">Not satisfied?</h3>
-              <p className="text-sm text-green-700">Cancel anytime within your first month for a full refund. No questions asked.</p>
-            </div>
           </div>
         </div>
       </main>
