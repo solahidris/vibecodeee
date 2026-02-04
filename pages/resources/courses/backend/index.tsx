@@ -1,10 +1,22 @@
+import { useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/router'
 import { withAuth } from '@/lib/auth/withAuth'
+import { createClient } from '@/lib/supabase/client'
+import { useAuth } from '@/contexts/AuthContext'
 import { Header } from '@/components/layout/Header'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
+import { cn } from '@/lib/utils/cn'
+import { formatDate } from '@/lib/utils/formatters'
 import { Geist } from 'next/font/google'
 import { backendCourses } from '@/lib/courses/backendCourses'
+import {
+  buildBackendProgress,
+  CourseProgressData,
+  getLocalProgress,
+  parseCourseProgress,
+  setLocalProgress,
+} from '@/lib/courses/progress'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -13,6 +25,88 @@ const geistSans = Geist({
 
 function BackendCoursesPage() {
   const router = useRouter()
+  const { user } = useAuth()
+  const supabase = useMemo(() => createClient(), [])
+  const [progressData, setProgressData] = useState<CourseProgressData>({})
+  const [loading, setLoading] = useState(true)
+  const [syncError, setSyncError] = useState<string | null>(null)
+  const [lastSyncedAt, setLastSyncedAt] = useState<string | null>(null)
+
+  const backendProgress = useMemo(
+    () => buildBackendProgress(progressData),
+    [progressData]
+  )
+
+  const completedCount = backendCourses.filter(
+    (course) => backendProgress[course.id]
+  ).length
+  const completionPercent = Math.round(
+    (completedCount / backendCourses.length) * 100
+  )
+
+  useEffect(() => {
+    let isMounted = true
+
+    const loadProgress = async () => {
+      if (!user?.id) {
+        if (isMounted) setLoading(false)
+        return
+      }
+
+      setLoading(true)
+      try {
+        const localProgress = getLocalProgress(user.id)
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('course_progress, updated_at')
+          .eq('id', user.id)
+          .maybeSingle()
+
+        if (error) {
+          throw error
+        }
+
+        const parsedProgress =
+          data?.course_progress !== null && data?.course_progress !== undefined
+            ? parseCourseProgress(data?.course_progress)
+            : localProgress || {}
+
+        if (data?.course_progress !== null && data?.course_progress !== undefined) {
+          setLocalProgress(user.id, parsedProgress)
+        }
+
+        if (isMounted) {
+          setProgressData(parsedProgress)
+          setLastSyncedAt(data?.updated_at ?? null)
+          setSyncError(null)
+        }
+      } catch (error) {
+        console.error('Error loading course progress:', error)
+        if (isMounted) {
+          const fallbackProgress = user?.id
+            ? getLocalProgress(user.id) || {}
+            : {}
+          setProgressData(fallbackProgress)
+          setSyncError(
+            'We could not sync your progress yet. Updates are stored locally for now.'
+          )
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false)
+        }
+      }
+    }
+
+    loadProgress()
+
+    return () => {
+      isMounted = false
+    }
+  }, [supabase, user?.id])
+
+  const displayName =
+    user?.user_metadata?.full_name || user?.email || 'Community Member'
 
   return (
     <div className={`${geistSans.variable} min-h-screen bg-gray-50 font-sans`}>
@@ -38,55 +132,99 @@ function BackendCoursesPage() {
             Backend &amp; Systems
           </h1>
           <p className="text-lg text-gray-600">
-            A systems-first curriculum for production-grade APIs, data, and
-            infrastructure fundamentals.
+            Production-grade APIs, databases, and infrastructure fundamentals for{' '}
+            {displayName}.
           </p>
         </div>
 
+        {syncError && (
+          <div className="mb-8 rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm text-amber-700">
+            {syncError}
+          </div>
+        )}
+
         <Card hover={false} className="mb-10">
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
             <div>
-              <p className="text-sm font-semibold text-gray-500">Lane focus</p>
+              <p className="text-sm font-semibold text-gray-500">Your progress</p>
               <p className="mt-2 text-2xl font-bold text-gray-900">
-                APIs, databases, authentication, and deployment
+                {loading
+                  ? 'Loading your progress...'
+                  : `${completedCount} of ${backendCourses.length} completed`}
               </p>
               <p className="mt-2 text-sm text-gray-500">
-                Start with the Node.js event loop and wrap with Docker basics.
+                {lastSyncedAt
+                  ? `Last synced ${formatDate(lastSyncedAt)}`
+                  : 'Syncing will start after your first update.'}
               </p>
             </div>
-            <div className="text-sm text-gray-500">
-              9 courses • 16-24
+            <div className="w-full max-w-sm">
+              <div className="flex items-center justify-between text-sm text-gray-600">
+                <span>{completionPercent}% complete</span>
+                <span className="text-xs text-gray-400">
+                  {loading ? 'Checking...' : 'Up to date'}
+                </span>
+              </div>
+              <div className="mt-2 h-2 w-full rounded-full bg-gray-200">
+                <div
+                  className="h-2 rounded-full bg-zinc-900 transition-all"
+                  style={{ width: `${completionPercent}%` }}
+                />
+              </div>
             </div>
           </div>
         </Card>
 
         <div className="grid gap-6">
-          {backendCourses.map((course) => (
-            <Card key={course.id} hover={false}>
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
-                    Course {String(course.number).padStart(2, '0')}
-                  </p>
-                  <h3 className="mt-1 text-xl font-semibold text-gray-900">
-                    {course.title}
-                  </h3>
-                  <p className="mt-2 text-sm text-gray-600">
-                    {course.description}
-                  </p>
-                </div>
+          {backendCourses.map((course) => {
+            const isCompleted = backendProgress[course.id]
 
-                <div className="flex flex-wrap items-center gap-3">
-                  <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-600">
-                    Coming soon
-                  </span>
-                  <Button variant="secondary" size="sm" disabled>
-                    View outline
-                  </Button>
+            return (
+              <Card
+                key={course.id}
+                className={cn(
+                  'transition-all',
+                  isCompleted && 'border border-green-200 bg-green-50/50'
+                )}
+              >
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
+                      Course {String(course.number).padStart(2, '0')}
+                    </p>
+                    <h3 className="mt-1 text-xl font-semibold text-gray-900">
+                      {course.title}
+                    </h3>
+                    <p className="mt-2 text-sm text-gray-600">
+                      {course.description}
+                    </p>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-3">
+                    <span
+                      className={cn(
+                        'rounded-full px-3 py-1 text-xs font-semibold',
+                        isCompleted
+                          ? 'bg-green-100 text-green-700'
+                          : 'bg-gray-100 text-gray-600'
+                      )}
+                    >
+                      {isCompleted ? 'Completed' : 'Not started'}
+                    </span>
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      onClick={() =>
+                        router.push(`/resources/courses/backend/${course.id}`)
+                      }
+                    >
+                      {isCompleted ? 'Review course' : 'Open course'}
+                    </Button>
+                  </div>
                 </div>
-              </div>
-            </Card>
-          ))}
+              </Card>
+            )
+          })}
         </div>
 
         <div className="mt-10">

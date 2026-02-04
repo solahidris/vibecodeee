@@ -10,6 +10,8 @@ import { Geist } from 'next/font/google'
 import { foundationCourses } from '@/lib/courses/foundationCourses'
 import { backendCourses } from '@/lib/courses/backendCourses'
 import { frontendCourses } from '@/lib/courses/frontendCourses'
+import { aiDataScienceCourses } from '@/lib/courses/aiDataScienceCourses'
+import { careerDevopsCourses } from '@/lib/courses/careerDevopsCourses'
 import {
   CourseProgressData,
   getLocalProgress,
@@ -21,108 +23,6 @@ const geistSans = Geist({
   variable: '--font-geist-sans',
   subsets: ['latin'],
 })
-
-const aiDataScienceCourses = [
-  {
-    id: 'ai-prompt-engineering',
-    number: 25,
-    title: 'AI Prompt Engineering',
-    description: 'Frameworks for getting 10x better results from LLMs.',
-  },
-  {
-    id: 'ai-chatbots',
-    number: 26,
-    title: 'Building AI Chatbots',
-    description: 'Integrating OpenAI/Gemini APIs into your web apps.',
-  },
-  {
-    id: 'vector-databases',
-    number: 27,
-    title: 'Vector Databases Basics',
-    description: 'Understanding Pinecone/Chroma for AI memory.',
-  },
-  {
-    id: 'langchain-intro',
-    number: 28,
-    title: 'LangChain Intro',
-    description: 'Chaining AI tasks together for complex automation.',
-  },
-  {
-    id: 'ai-agents',
-    number: 29,
-    title: 'AI Agents 101',
-    description: 'Building autonomous bots that can use tools.',
-  },
-  {
-    id: 'ml-intro',
-    number: 30,
-    title: 'Machine Learning Intro',
-    description: 'Understanding the math and logic behind the hype.',
-  },
-]
-
-const careerDevopsCourses = [
-  {
-    id: 'career-vercel-netlify-deploy',
-    number: 31,
-    title: 'Vercel & Netlify Deployment',
-    description: 'From local code to a live URL in seconds.',
-  },
-  {
-    id: 'career-cicd-github-actions',
-    number: 32,
-    title: 'CI/CD with GitHub Actions',
-    description: 'Automating your testing and deployment.',
-  },
-  {
-    id: 'career-linux-server-admin',
-    number: 33,
-    title: 'Linux Server Admin',
-    description: 'Managing your own VPS (Ubuntu/Debian).',
-  },
-  {
-    id: 'career-cybersecurity-web',
-    number: 34,
-    title: 'Cybersecurity for Web',
-    description: 'Preventing SQL injection, XSS, and CSRF attacks.',
-  },
-  {
-    id: 'career-uiux-non-designers',
-    number: 35,
-    title: 'UI/UX for Non-Designers',
-    description: 'Making apps that don&apos;t look "ugly."',
-  },
-  {
-    id: 'career-unit-testing-jest',
-    number: 36,
-    title: 'Unit Testing with Jest',
-    description: 'Writing code that tests your code.',
-  },
-  {
-    id: 'career-technical-interview-prep',
-    number: 37,
-    title: 'Technical Interview Prep',
-    description: 'Cracking the coding interview and DSA basics.',
-  },
-  {
-    id: 'career-freelancing-high-ticket',
-    number: 38,
-    title: 'Freelancing & High-Ticket Sales',
-    description: 'Finding and closing 5-figure dev clients.',
-  },
-  {
-    id: 'career-personal-brand',
-    number: 39,
-    title: 'Building a Personal Brand',
-    description: 'Using Twitter/LinkedIn to get job offers.',
-  },
-  {
-    id: 'career-vibe-coding-era',
-    number: 40,
-    title: 'The "Vibe Coding" Era',
-    description: 'How to use AI coding assistants (Cursor/Claude) to build 10x faster.',
-  },
-]
 
 const mergeChecklistProgress = (
   server: boolean[] | undefined,
@@ -153,6 +53,22 @@ const mergeCourseProgress = (
       )
       return acc
     }, {}),
+    backend: backendCourses.reduce<Record<string, boolean>>((acc, course) => {
+      acc[course.id] = Boolean(
+        server.backend?.[course.id] || local.backend?.[course.id]
+      )
+      return acc
+    }, {}),
+    aiDataScience: aiDataScienceCourses.reduce<Record<string, boolean>>(
+      (acc, course) => {
+        acc[course.id] = Boolean(
+          server.aiDataScience?.[course.id] ||
+            local.aiDataScience?.[course.id]
+        )
+        return acc
+      },
+      {}
+    ),
   }
 
   const crashcourse = mergeChecklistProgress(
@@ -186,6 +102,21 @@ const needsProgressSync = (
 
   for (const course of frontendCourses) {
     if (merged.frontend?.[course.id] && !server.frontend?.[course.id]) {
+      return true
+    }
+  }
+
+  for (const course of backendCourses) {
+    if (merged.backend?.[course.id] && !server.backend?.[course.id]) {
+      return true
+    }
+  }
+
+  for (const course of aiDataScienceCourses) {
+    if (
+      merged.aiDataScience?.[course.id] &&
+      !server.aiDataScience?.[course.id]
+    ) {
       return true
     }
   }
@@ -446,11 +377,17 @@ function CoursesPage() {
               </div>
 
               <div className="flex flex-col gap-3">
-                <Button variant="secondary" size="md" disabled>
-                  Coming Soon
+                <Button
+                  variant="secondary"
+                  size="md"
+                  onClick={() =>
+                    router.push('/resources/courses/ai-data-science')
+                  }
+                >
+                  Open Lane
                 </Button>
                 <p className="text-xs text-gray-500">
-                  We&apos;re mapping out the Lane 4 curriculum.
+                  Track your progress as you complete each AI course.
                 </p>
               </div>
             </div>
@@ -488,11 +425,15 @@ function CoursesPage() {
               </div>
 
               <div className="flex flex-col gap-3">
-                <Button variant="secondary" size="md" disabled>
-                  Coming Soon
+                <Button
+                  variant="secondary"
+                  size="md"
+                  onClick={() => router.push('/resources/courses/career')}
+                >
+                  Open Lane
                 </Button>
                 <p className="text-xs text-gray-500">
-                  We&apos;re finalizing the Lane 5 curriculum.
+                  Deployment, security, and career growth essentials in one track.
                 </p>
               </div>
             </div>

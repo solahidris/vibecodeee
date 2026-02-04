@@ -1,9 +1,13 @@
+import { aiDataScienceCourses } from '@/lib/courses/aiDataScienceCourses'
+import { backendCourses } from '@/lib/courses/backendCourses'
 import { foundationCourses } from '@/lib/courses/foundationCourses'
 import { frontendCourses } from '@/lib/courses/frontendCourses'
 
 export type CourseProgressData = {
+  backend?: Record<string, boolean>
   foundation?: Record<string, boolean>
   frontend?: Record<string, boolean>
+  aiDataScience?: Record<string, boolean>
   crashcourse?: boolean[]
   basicprompt?: boolean[]
 }
@@ -23,6 +27,21 @@ const emptyFrontendProgress = frontendCourses.reduce<Record<string, boolean>>(
   },
   {}
 )
+
+const emptyBackendProgress = backendCourses.reduce<Record<string, boolean>>(
+  (acc, course) => {
+    acc[course.id] = false
+    return acc
+  },
+  {}
+)
+
+const emptyAiDataScienceProgress = aiDataScienceCourses.reduce<
+  Record<string, boolean>
+>((acc, course) => {
+  acc[course.id] = false
+  return acc
+}, {})
 
 export const parseCourseProgress = (value: unknown): CourseProgressData => {
   if (!value) return {}
@@ -62,6 +81,32 @@ export const buildFrontendProgress = (
   return Object.keys(emptyFrontendProgress).reduce<Record<string, boolean>>(
     (acc, courseId) => {
       acc[courseId] = Boolean(frontendProgress[courseId])
+      return acc
+    },
+    {}
+  )
+}
+
+export const buildBackendProgress = (
+  progressData: CourseProgressData
+): Record<string, boolean> => {
+  const backendProgress = progressData.backend ?? {}
+  return Object.keys(emptyBackendProgress).reduce<Record<string, boolean>>(
+    (acc, courseId) => {
+      acc[courseId] = Boolean(backendProgress[courseId])
+      return acc
+    },
+    {}
+  )
+}
+
+export const buildAiDataScienceProgress = (
+  progressData: CourseProgressData
+): Record<string, boolean> => {
+  const aiProgress = progressData.aiDataScience ?? {}
+  return Object.keys(emptyAiDataScienceProgress).reduce<Record<string, boolean>>(
+    (acc, courseId) => {
+      acc[courseId] = Boolean(aiProgress[courseId])
       return acc
     },
     {}
