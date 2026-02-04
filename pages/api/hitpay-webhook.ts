@@ -39,9 +39,10 @@ export default async function handler(req: Request) {
   }
 
   try {
-    const salt = process.env.HITPAY_API_SALT
+    // Use webhook salt (different from API salt)
+    const salt = process.env.HITPAY_WEBHOOK_SALT || process.env.HITPAY_API_SALT
     if (!salt) {
-      console.error('HITPAY_API_SALT not configured')
+      console.error('HITPAY_WEBHOOK_SALT or HITPAY_API_SALT not configured')
       return new Response(JSON.stringify({ error: 'Server configuration error' }), {
         status: 500,
         headers: { 'Content-Type': 'application/json' },

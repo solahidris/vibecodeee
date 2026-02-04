@@ -35,10 +35,12 @@ SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
 # HitPay Payment Gateway
 HITPAY_API_KEY=your_hitpay_api_key
 HITPAY_API_SALT=your_hitpay_api_salt
+HITPAY_WEBHOOK_SALT=your_hitpay_webhook_salt
 ```
 
 Get Supabase keys from: https://app.supabase.com -> Project Settings -> API
-Get HitPay keys from: https://dashboard.hit-pay.com/settings/api-keys
+Get HitPay API keys from: https://dashboard.hit-pay.com/settings/api-keys
+Get HitPay Webhook Salt from: https://dashboard.hit-pay.com/settings/webhooks (under Event Webhooks)
 
 ## Architecture
 
@@ -206,7 +208,10 @@ export const config = { runtime: 'edge' }
 
 **Webhook Validation**:
 - All webhook requests include HMAC signature for security
-- Signature validated using `HITPAY_API_SALT`
+- Signature validated using `HITPAY_WEBHOOK_SALT` (separate from API salt)
+- **IMPORTANT**: HitPay uses different salts for API calls vs webhooks
+  - API calls: Use `HITPAY_API_SALT` (from API Keys tab)
+  - Webhooks: Use `HITPAY_WEBHOOK_SALT` (from Event Webhooks tab)
 - Returns HTTP 200 to acknowledge receipt
 - Payment reference contains `user_id` for tracking
 - On successful payment, updates Supabase `profiles` table:
