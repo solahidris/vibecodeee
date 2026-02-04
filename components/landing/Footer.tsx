@@ -15,7 +15,7 @@ export function Footer() {
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-zinc-900 shadow-lg transition-all duration-300 hover:scale-110">
                 <span className="text-lg font-bold text-white">V</span>
               </div>
-              <span className="text-2xl font-bold text-zinc-900">VibeCodE</span>
+              <span className="text-2xl font-bold text-zinc-900">VibeCodeee</span>
             </div>
             <p className="mb-6 max-w-md text-zinc-600 leading-relaxed">
               A minimalist community for creators, learners, and innovators. Premium resources. Expert insights. Zero noise.
@@ -134,7 +134,7 @@ export function Footer() {
         <div className="mt-12 border-t border-zinc-200 pt-8">
           <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
             <p className="text-sm text-zinc-600">
-              © {currentYear} VibeCodE. All rights reserved.
+              © {currentYear} VibeCodeee. All rights reserved.
             </p>
             <p className="text-sm text-zinc-500">
               Crafted with precision

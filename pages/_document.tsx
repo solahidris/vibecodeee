@@ -14,13 +14,13 @@ export default function Document() {
 
         {/* Open Graph / Facebook */}
         <meta property="og:type" content="website" />
-        <meta property="og:title" content="VibeCodE - Premium Community Platform" />
+        <meta property="og:title" content="VibeCodeee - Premium Community Platform" />
         <meta property="og:description" content="Join our exclusive premium community. Access expert resources, connect with like-minded individuals, and grow together." />
-        <meta property="og:site_name" content="VibeCodE" />
+        <meta property="og:site_name" content="VibeCodeee" />
 
         {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="VibeCodE - Premium Community Platform" />
+        <meta name="twitter:title" content="VibeCodeee - Premium Community Platform" />
         <meta name="twitter:description" content="Join our exclusive premium community. Access expert resources, connect with like-minded individuals, and grow together." />
 
         {/* Favicon */}

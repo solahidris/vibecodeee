@@ -26,7 +26,7 @@ export function Hero() {
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-zinc-400 opacity-75"></span>
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-zinc-500"></span>
               </span>
-              Welcome to VibeCodE
+              Welcome to VibeCodeee
             </div>
 
             {/* Main Heading - Monochrome */}

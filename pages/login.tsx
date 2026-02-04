@@ -35,10 +35,10 @@ export default function Login() {
   return (
     <>
       <Head>
-        <title>Sign In - VibeCodE | Access Your Premium Membership</title>
-        <meta name="description" content="Sign in to your VibeCodE account to access exclusive member resources, courses, and community features." />
+        <title>Sign In - VibeCodeee | Access Your Premium Membership</title>
+        <meta name="description" content="Sign in to your VibeCodeee account to access exclusive member resources, courses, and community features." />
         <meta name="robots" content="noindex, nofollow" />
-        <meta property="og:title" content="Sign In - VibeCodE" />
+        <meta property="og:title" content="Sign In - VibeCodeee" />
       </Head>
       <div className={`${geistSans.variable} font-sans`}>
         <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-gray-50 via-white to-gray-50 px-4">

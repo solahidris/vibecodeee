@@ -85,9 +85,9 @@ export default function BasicPromptPage() {
   return (
     <>
       <Head>
-        <title>Basic Prompting Course - VibeCodE | Master AI Prompting in 5 Lessons</title>
+        <title>Basic Prompting Course - VibeCodeee | Master AI Prompting in 5 Lessons</title>
         <meta name="description" content="Learn effective AI prompting techniques with our free interactive course. 5 practical lessons covering outcomes, context, structure, examples, and self-checks." />
-        <meta property="og:title" content="Basic Prompting Course - VibeCodE | Master AI Prompting" />
+        <meta property="og:title" content="Basic Prompting Course - VibeCodeee | Master AI Prompting" />
         <meta property="og:description" content="Free interactive course teaching clear, reliable prompt engineering in 5 short lessons. Perfect for beginners." />
         <meta name="twitter:title" content="Basic Prompting Course - Master AI Prompting" />
       </Head>

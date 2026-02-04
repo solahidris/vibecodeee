@@ -15,11 +15,11 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>VibeCodE - Premium Community Platform | Connect & Grow Together</title>
+        <title>VibeCodeee - Premium Community Platform | Connect & Grow Together</title>
         <meta name="description" content="Join our exclusive premium community platform. Access expert resources, AI tools, prompting guides, and connect with like-minded professionals. Start your journey today." />
-        <meta property="og:title" content="VibeCodE - Premium Community Platform | Connect & Grow Together" />
+        <meta property="og:title" content="VibeCodeee - Premium Community Platform | Connect & Grow Together" />
         <meta property="og:url" content="https://vibecode.com" />
-        <meta name="twitter:title" content="VibeCodE - Premium Community Platform" />
+        <meta name="twitter:title" content="VibeCodeee - Premium Community Platform" />
       </Head>
       <div className={`${geistSans.variable} font-sans`}>
         <Navigation />

@@ -20,7 +20,7 @@ export function Navigation() {
               <span className="text-lg font-bold text-white">V</span>
             </div>
             <span className="text-xl font-bold tracking-tight text-zinc-900 transition-all duration-300 group-hover:tracking-tight">
-              VibeCodE
+              VibeCodeee
             </span>
           </button>
 
