@@ -64,7 +64,7 @@ function ProfilePage() {
 
         {/* Account Information */}
         <Card hover={false} className="mb-8">
-          <h3 className="mb-6 text-xl font-bold text-gray-900">
+          <h3 className="mb-8 pb-4 text-xl font-bold text-gray-900">
             Account Information
           </h3>
           <div className="space-y-4">
@@ -93,7 +93,7 @@ function ProfilePage() {
 
         {/* Actions */}
         <Card hover={false}>
-          <h3 className="mb-6 text-xl font-bold text-gray-900">Quick Actions</h3>
+          <h3 className="mb-8 pb-4 text-xl font-bold text-gray-900">Quick Actions</h3>
           <div className="flex flex-wrap gap-4">
             <Button
               variant="secondary"
