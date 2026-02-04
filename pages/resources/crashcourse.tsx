@@ -1,5 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
 import { DM_Serif_Display, Sora } from "next/font/google";
+import { useAuth } from "@/contexts/AuthContext";
+import { createClient } from "@/lib/supabase/client";
+import {
+  CourseProgressData,
+  buildCourseChecklistProgress,
+  getLocalProgress,
+  parseCourseProgress,
+  setLocalProgress,
+} from "@/lib/courses/progress";
+import { formatDate } from "@/lib/utils/formatters";
 
 const display = DM_Serif_Display({
   subsets: ["latin"],
@@ -67,9 +77,15 @@ Run daily via cron/Windows Task Scheduler. Use BeautifulSoup/selenium. Full setu
 ];
 
 export default function CrashCoursePage() {
+  const { user } = useAuth();
+  const supabase = useMemo(() => createClient(), []);
   const [done, setDone] = useState<boolean[]>(() => days.map(() => false));
   const [showToast, setShowToast] = useState(false);
   const [wasComplete, setWasComplete] = useState(false);
+  const [progressData, setProgressData] = useState<CourseProgressData>({});
+  const [loading, setLoading] = useState(true);
+  const [syncError, setSyncError] = useState<string | null>(null);
+  const [lastSyncedAt, setLastSyncedAt] = useState<string | null>(null);
 
   const completed = useMemo(() => done.filter(Boolean).length, [done]);
   const percent = Math.round((completed / days.length) * 100);
@@ -85,6 +101,111 @@ export default function CrashCoursePage() {
       setShowToast(false);
     }
   }, [isComplete, wasComplete]);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadProgress = async () => {
+      if (!user?.id) {
+        if (isMounted) setLoading(false);
+        return;
+      }
+
+      setLoading(true);
+      try {
+        const localProgress = getLocalProgress(user.id);
+        const { data, error } = await supabase
+          .from("profiles")
+          .select("course_progress, updated_at")
+          .eq("id", user.id)
+          .maybeSingle();
+
+        if (error) {
+          throw error;
+        }
+
+        const parsedProgress =
+          data?.course_progress !== null && data?.course_progress !== undefined
+            ? parseCourseProgress(data?.course_progress)
+            : localProgress || {};
+
+        if (data?.course_progress !== null && data?.course_progress !== undefined) {
+          setLocalProgress(user.id, parsedProgress);
+        }
+
+        if (isMounted) {
+          setProgressData(parsedProgress);
+          setDone(buildCourseChecklistProgress(parsedProgress, "crashcourse", days.length));
+          setLastSyncedAt(data?.updated_at ?? null);
+          setSyncError(null);
+        }
+      } catch (error) {
+        console.error("Error loading course progress:", error);
+        if (isMounted) {
+          const fallbackProgress = user?.id ? getLocalProgress(user.id) || {} : {};
+          setProgressData(fallbackProgress);
+          setDone(buildCourseChecklistProgress(fallbackProgress, "crashcourse", days.length));
+          setSyncError(
+            "We could not sync your progress yet. Updates are stored locally for now."
+          );
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    loadProgress();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [supabase, user?.id]);
+
+  const saveProgress = async (nextProgress: CourseProgressData) => {
+    if (!user?.id) return;
+
+    try {
+      setLocalProgress(user.id, nextProgress);
+      const { error } = await supabase.from("profiles").upsert(
+        {
+          id: user.id,
+          course_progress: nextProgress,
+        },
+        { onConflict: "id" }
+      );
+
+      if (error) {
+        throw error;
+      }
+
+      const now = new Date().toISOString();
+      setLastSyncedAt(now);
+      setSyncError(null);
+    } catch (error) {
+      console.error("Error saving course progress:", error);
+      setLocalProgress(user.id, nextProgress);
+      setSyncError(
+        "We could not sync your progress yet. Updates are stored locally for now."
+      );
+    }
+  };
+
+  const handleToggle = (index: number) => {
+    setDone((current) => {
+      const nextDone = current.map((value, i) => (i === index ? !value : value));
+      const nextProgress = {
+        ...progressData,
+        crashcourse: nextDone,
+      };
+      setProgressData(nextProgress);
+      if (user?.id) {
+        void saveProgress(nextProgress);
+      }
+      return nextDone;
+    });
+  };
 
   return (
     <div className={`${display.variable} ${body.variable} font-[var(--font-body)]`}>
@@ -153,6 +274,17 @@ export default function CrashCoursePage() {
                   style={{ width: `${percent}%` }}
                 />
               </div>
+              {user?.id && (
+                <p className="mt-3 text-xs text-neutral-500">
+                  {syncError
+                    ? syncError
+                    : lastSyncedAt
+                      ? `Synced ${formatDate(lastSyncedAt)}`
+                      : loading
+                        ? "Checking your sync status..."
+                        : "Progress will sync to your profile after your first update."}
+                </p>
+              )}
             </div>
 
             <div className="mt-12 grid gap-6">
@@ -179,11 +311,7 @@ export default function CrashCoursePage() {
                         type="checkbox"
                         className="h-5 w-5 accent-neutral-900"
                         checked={done[index]}
-                        onChange={() =>
-                          setDone((current) =>
-                            current.map((value, i) => (i === index ? !value : value))
-                          )
-                        }
+                        onChange={() => handleToggle(index)}
                       />
                       Mark done
                     </label>

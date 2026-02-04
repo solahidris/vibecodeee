@@ -4,6 +4,8 @@ import { frontendCourses } from '@/lib/courses/frontendCourses'
 export type CourseProgressData = {
   foundation?: Record<string, boolean>
   frontend?: Record<string, boolean>
+  crashcourse?: boolean[]
+  basicprompt?: boolean[]
 }
 
 const emptyFoundationProgress = foundationCourses.reduce<Record<string, boolean>>(
@@ -65,6 +67,32 @@ export const buildFrontendProgress = (
     {}
   )
 }
+
+const buildChecklistProgress = (
+  value: unknown,
+  length: number
+): boolean[] => {
+  const fallback = Array.from({ length }, () => false)
+
+  if (!value) return fallback
+
+  if (Array.isArray(value)) {
+    return fallback.map((_, index) => Boolean(value[index]))
+  }
+
+  if (typeof value === 'object') {
+    const record = value as Record<string, unknown>
+    return fallback.map((_, index) => Boolean(record[index]))
+  }
+
+  return fallback
+}
+
+export const buildCourseChecklistProgress = (
+  progressData: CourseProgressData,
+  key: 'crashcourse' | 'basicprompt',
+  length: number
+): boolean[] => buildChecklistProgress(progressData[key], length)
 
 export const getLocalProgress = (userId: string): CourseProgressData | null => {
   if (typeof window === 'undefined') return null
