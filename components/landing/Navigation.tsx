@@ -36,14 +36,6 @@ export function Navigation() {
                 >
                   Dashboard
                 </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => router.push('/basicprompt')}
-                  className="hidden sm:inline-flex text-zinc-600 hover:text-zinc-900 transition-all duration-300"
-                >
-                  Courses
-                </Button>
                 <button
                   onClick={() => router.push('/profile')}
                   className="cursor-pointer transition-transform duration-300 hover:scale-110"
@@ -57,32 +49,14 @@ export function Navigation() {
                 </button>
               </>
             ) : (
-              <>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => router.push('/basicprompt')}
-                  className="hidden sm:inline-flex text-zinc-600 hover:text-zinc-900 transition-all duration-300"
-                >
-                  Courses
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => router.push('/login')}
-                  className="text-zinc-600 hover:text-zinc-900 transition-all duration-300"
-                >
-                  Sign In
-                </Button>
-                <Button
-                  variant="primary"
-                  size="sm"
-                  onClick={() => router.push('/login')}
-                  className="hidden sm:inline-flex bg-zinc-900 text-white border-zinc-900 hover:bg-zinc-800 transition-all duration-300 hover:scale-105"
-                >
-                  Get Started
-                </Button>
-              </>
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={() => router.push('/login')}
+                className="bg-zinc-900 text-white border-zinc-900 hover:bg-zinc-800 transition-all duration-300 hover:scale-105"
+              >
+                Login
+              </Button>
             )}
           </div>
         </div>
