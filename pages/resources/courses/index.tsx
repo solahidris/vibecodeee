@@ -230,7 +230,7 @@ function CoursesPage() {
                 <Button
                   variant="primary"
                   size="md"
-                  onClick={() => router.push('/courses/foundation')}
+                  onClick={() => router.push('/resources/courses/foundation')}
                 >
                   Open Lane
                 </Button>
@@ -318,7 +318,7 @@ function CoursesPage() {
                 <Button
                   variant="secondary"
                   size="md"
-                  onClick={() => router.push('/courses/backend')}
+                  onClick={() => router.push('/resources/courses/backend')}
                 >
                   Open Lane
                 </Button>

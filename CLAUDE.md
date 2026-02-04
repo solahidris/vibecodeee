@@ -57,7 +57,7 @@ Get HitPay keys from: https://dashboard.hit-pay.com/settings/api-keys
   - `/pages/profile.tsx` - User profile page with subscription status
   - `/pages/payment/subscribe.tsx` - Subscription/pricing page
   - `/pages/payment/success.tsx` - Payment success page
-  - `/pages/basicprompt.tsx` - Educational course page (basic prompting)
+  - `/pages/resources/basicprompt.tsx` - Educational course page (basic prompting)
   - `/pages/index.tsx` - Public landing page
 - `/components` - Reusable UI and landing page components
   - `/components/ui` - Base UI components (Button, Card, Avatar, etc.)
@@ -77,7 +77,7 @@ Get HitPay keys from: https://dashboard.hit-pay.com/settings/api-keys
 
 **TypeScript**: Path alias `@/*` maps to project root. Strict mode enabled.
 
-**Fonts**: Primary font is Geist Sans. Some pages use custom fonts (e.g., basicprompt.tsx uses DM Serif Display + Sora).
+**Fonts**: Primary font is Geist Sans. Some pages use custom fonts (e.g., resources/basicprompt.tsx uses DM Serif Display + Sora).
 
 ## Authentication Flow
 
@@ -174,7 +174,7 @@ export const config = { runtime: 'edge' }
 
 ## Educational Content Pages
 
-**Basic Prompting Course** (`/basicprompt`):
+**Basic Prompting Course** (`/resources/basicprompt`):
 - Interactive course with 5 lessons on effective prompting
 - Features progress tracking with checkboxes and completion toast
 - Custom design with DM Serif Display (headings) and Sora (body)

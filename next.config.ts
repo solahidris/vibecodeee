@@ -22,6 +22,25 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: '/basicprompt',
+        destination: '/resources/basicprompt',
+        permanent: true,
+      },
+      {
+        source: '/crashcourse',
+        destination: '/resources/crashcourse',
+        permanent: true,
+      },
+      {
+        source: '/courses/:path*',
+        destination: '/resources/courses/:path*',
+        permanent: true,
+      },
+    ]
+  },
 };
 
 export default nextConfig;

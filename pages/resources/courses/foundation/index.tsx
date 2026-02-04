@@ -115,7 +115,7 @@ function FoundationPage() {
       <main className="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="mb-8 flex items-center gap-2 text-sm text-gray-600">
           <button
-            onClick={() => router.push('/courses')}
+            onClick={() => router.push('/resources/courses')}
             className="transition-colors hover:text-gray-900"
           >
             Courses
@@ -214,7 +214,7 @@ function FoundationPage() {
                       variant="secondary"
                       size="sm"
                       onClick={() =>
-                        router.push(`/courses/foundation/${course.id}`)
+                        router.push(`/resources/courses/foundation/${course.id}`)
                       }
                     >
                       {isCompleted ? 'Review course' : 'Open course'}
@@ -230,7 +230,7 @@ function FoundationPage() {
           <Button
             variant="secondary"
             size="md"
-            onClick={() => router.push('/courses')}
+            onClick={() => router.push('/resources/courses')}
           >
             Back to Courses
           </Button>

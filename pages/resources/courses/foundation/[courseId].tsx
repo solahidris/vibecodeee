@@ -275,7 +275,7 @@ function FoundationCoursePage() {
               and choose another one.
             </p>
             <div className="mt-6">
-              <Button variant="secondary" onClick={() => router.push('/courses/foundation')}>
+              <Button variant="secondary" onClick={() => router.push('/resources/courses/foundation')}>
                 Back to The Foundations
               </Button>
             </div>
@@ -292,14 +292,14 @@ function FoundationCoursePage() {
       <main className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="mb-8 flex items-center gap-2 text-sm text-gray-600">
           <button
-            onClick={() => router.push('/courses')}
+            onClick={() => router.push('/resources/courses')}
             className="transition-colors hover:text-gray-900"
           >
             Courses
           </button>
           <span>/</span>
           <button
-            onClick={() => router.push('/courses/foundation')}
+            onClick={() => router.push('/resources/courses/foundation')}
             className="transition-colors hover:text-gray-900"
           >
             The Foundations
@@ -473,11 +473,11 @@ function FoundationCoursePage() {
           <Button
             variant="secondary"
             size="md"
-            onClick={() => router.push('/courses/foundation')}
+            onClick={() => router.push('/resources/courses/foundation')}
           >
             Back to The Foundations
           </Button>
-          <Button variant="ghost" size="md" onClick={() => router.push('/courses')}>
+          <Button variant="ghost" size="md" onClick={() => router.push('/resources/courses')}>
             Back to Courses
           </Button>
         </div>
