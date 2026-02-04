@@ -59,7 +59,7 @@ export function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h3 className="mb-8 text-sm font-bold uppercase tracking-wider text-zinc-900">
+            <h3 className="text-sm font-bold uppercase tracking-wider text-zinc-900" style={{ marginBottom: '2rem' }}>
               Quick Links
             </h3>
             <ul className="space-y-3">
@@ -102,7 +102,7 @@ export function Footer() {
 
           {/* Legal */}
           <div>
-            <h3 className="mb-8 text-sm font-bold uppercase tracking-wider text-zinc-900">
+            <h3 className="text-sm font-bold uppercase tracking-wider text-zinc-900" style={{ marginBottom: '2rem' }}>
               Legal
             </h3>
             <ul className="space-y-3">
