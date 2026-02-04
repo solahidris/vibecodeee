@@ -38,7 +38,7 @@ function ProfilePage() {
                 </button>
                 <button
                   onClick={() => router.push('/profile')}
-                  className="text-sm font-semibold text-violet-600"
+                  className="text-sm font-semibold text-zinc-900"
                 >
                   Profile
                 </button>

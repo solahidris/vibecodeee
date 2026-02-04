@@ -80,7 +80,7 @@ function ResourcesPage() {
               <div className="hidden sm:flex items-center gap-4">
                 <button
                   onClick={() => router.push('/resources')}
-                  className="text-sm font-semibold text-violet-600"
+                  className="text-sm font-semibold text-zinc-600"
                 >
                   Resources
                 </button>
@@ -141,7 +141,7 @@ function ResourcesPage() {
               onClick={() => setSelectedCategory('All')}
               className={`whitespace-nowrap rounded-full px-6 py-2 text-sm font-medium transition-all ${
                 selectedCategory === 'All'
-                  ? 'bg-violet-600 text-white shadow-md'
+                  ? 'bg-zinc-900 text-white shadow-md'
                   : 'bg-white text-gray-700 ring-1 ring-gray-200 hover:bg-gray-50'
               }`}
             >
@@ -153,7 +153,7 @@ function ResourcesPage() {
                 onClick={() => setSelectedCategory(category)}
                 className={`whitespace-nowrap rounded-full px-6 py-2 text-sm font-medium transition-all ${
                   selectedCategory === category
-                    ? 'bg-violet-600 text-white shadow-md'
+                    ? 'bg-zinc-900 text-white shadow-md'
                     : 'bg-white text-gray-700 ring-1 ring-gray-200 hover:bg-gray-50'
                 }`}
               >
@@ -203,7 +203,7 @@ function ResourcesPage() {
                     href={resource.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-violet-600 transition-colors hover:text-violet-700"
+                    className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-zinc-600 transition-colors hover:text-zinc-900"
                   >
                     View Resource
                     <svg

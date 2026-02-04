@@ -7,7 +7,7 @@ const benefits = [
     title: 'Premium Content',
     description: 'Access exclusive resources, guides, and tools available only to members',
     features: ['Expert tutorials', 'Curated resources', 'Private workshops'],
-    image: 'https://images.unsplash.com/photo-1432888622747-4eb9a8f2c293?w=400&q=80'
+    image: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=400&q=80'
   },
   {
     icon: '🤝',
@@ -21,7 +21,7 @@ const benefits = [
     title: 'Continuous Learning',
     description: 'Stay ahead with the latest AI news, tools, and industry insights',
     features: ['Weekly updates', 'Industry trends', 'Skill development'],
-    image: 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=400&q=80'
+    image: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&q=80'
   },
 ]
 

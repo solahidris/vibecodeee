@@ -25,7 +25,7 @@ export default function Login() {
     return (
       <div className="flex min-h-screen items-center justify-center bg-white">
         <div className="text-center">
-          <div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-gray-200 border-t-violet-600"></div>
+          <div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-zinc-200 border-t-zinc-900"></div>
           <p className="mt-4 text-sm text-gray-600">Loading...</p>
         </div>
       </div>
