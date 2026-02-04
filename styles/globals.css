@@ -97,29 +97,28 @@ html {
   @keyframes confetti-left {
     0% {
       opacity: 0;
-      transform: translate(0, 0) rotate(var(--rotation));
+      transform: translate(calc(-1 * var(--x)), var(--y)) rotate(var(--rotation));
     }
     15% {
       opacity: 1;
     }
     100% {
       opacity: 0;
-      transform: translate(var(--x), var(--y)) rotate(calc(var(--rotation) + 360deg));
+      transform: translate(0, 0) rotate(calc(var(--rotation) + 360deg));
     }
   }
 
   @keyframes confetti-right {
     0% {
       opacity: 0;
-      transform: translate(0, 0) rotate(var(--rotation));
+      transform: translate(var(--x), var(--y)) rotate(var(--rotation));
     }
     15% {
       opacity: 1;
     }
     100% {
       opacity: 0;
-      transform: translate(calc(-1 * var(--x)), var(--y))
-        rotate(calc(var(--rotation) + 360deg));
+      transform: translate(0, 0) rotate(calc(var(--rotation) + 360deg));
     }
   }
 

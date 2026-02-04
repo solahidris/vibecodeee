@@ -33,7 +33,7 @@ export function ConfettiCannons({ burstKey }: { burstKey: number }) {
       className="pointer-events-none fixed inset-0 z-40 overflow-hidden"
       aria-hidden="true"
     >
-      <div className="absolute left-0 top-[30%]">
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
         {confettiPieces.map((piece, index) => (
           <span
             key={`left-${index}`}
@@ -41,11 +41,41 @@ export function ConfettiCannons({ burstKey }: { burstKey: number }) {
             style={pieceStyle(piece)}
           />
         ))}
-      </div>
-      <div className="absolute right-0 top-[30%]">
         {confettiPieces.map((piece, index) => (
           <span
             key={`right-${index}`}
+            className="confetti-piece confetti-right"
+            style={pieceStyle(piece)}
+          />
+        ))}
+      </div>
+    </div>
+  )
+}
+
+type ConfettiBurstProps = {
+  burstKey: number
+  className?: string
+}
+
+export function ConfettiBurst({ burstKey, className }: ConfettiBurstProps) {
+  return (
+    <div
+      key={burstKey}
+      className={cn('pointer-events-none absolute inset-0 overflow-hidden', className)}
+      aria-hidden="true"
+    >
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+        {confettiPieces.map((piece, index) => (
+          <span
+            key={`burst-left-${index}`}
+            className="confetti-piece confetti-left"
+            style={pieceStyle(piece)}
+          />
+        ))}
+        {confettiPieces.map((piece, index) => (
+          <span
+            key={`burst-right-${index}`}
             className="confetti-piece confetti-right"
             style={pieceStyle(piece)}
           />

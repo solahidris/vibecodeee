@@ -1,9 +1,10 @@
-import { useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useRouter } from 'next/router'
 import { withAuth } from '@/lib/auth/withAuth'
 import { Card } from '@/components/ui/Card'
 import { Header } from '@/components/layout/Header'
 import { Button } from '@/components/ui/Button'
+import { ConfettiBurst } from '@/components/ui/Celebration'
 import { Geist } from 'next/font/google'
 
 const geistSans = Geist({
@@ -42,6 +43,7 @@ const resourceLinks = [
     highlights: ['5 days', 'Automation drills', 'Python + AI'],
     accent: 'from-amber-200/60 via-white to-white',
     cta: 'Start Sprint',
+    confetti: true,
     filters: ['crash'],
   },
   {
@@ -55,6 +57,7 @@ const resourceLinks = [
     highlights: ['5 lessons', 'Prompt templates', 'Self-checks'],
     accent: 'from-sky-200/60 via-white to-white',
     cta: 'Open Lessons',
+    confetti: true,
     filters: ['crash'],
   },
 ]
@@ -62,6 +65,29 @@ const resourceLinks = [
 function ResourcesPage() {
   const router = useRouter()
   const [activeFilter, setActiveFilter] = useState('all')
+  const [confettiTarget, setConfettiTarget] = useState<string | null>(null)
+  const [confettiKey, setConfettiKey] = useState(0)
+  const confettiTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const triggerConfetti = useCallback((id: string) => {
+    if (confettiTimer.current) {
+      clearTimeout(confettiTimer.current)
+    }
+
+    setConfettiTarget(id)
+    setConfettiKey((prev) => prev + 1)
+    confettiTimer.current = setTimeout(() => {
+      setConfettiTarget((current) => (current === id ? null : current))
+    }, 1200)
+  }, [])
+
+  useEffect(() => {
+    return () => {
+      if (confettiTimer.current) {
+        clearTimeout(confettiTimer.current)
+      }
+    }
+  }, [])
 
   const visibleResources = useMemo(() => {
     if (activeFilter === 'all') return resourceLinks
@@ -223,10 +249,18 @@ function ResourcesPage() {
                 key={resource.id}
                 className="group relative overflow-hidden rounded-3xl border border-zinc-200/80 bg-white/90 p-6 shadow-sm transition-all hover:shadow-xl hover:ring-1 hover:ring-zinc-900/10 animate-fade-in-up"
                 style={{ animationDelay: `${0.1 + index * 0.08}s` }}
+                onMouseEnter={() => {
+                  if (resource.confetti) {
+                    triggerConfetti(resource.id)
+                  }
+                }}
               >
                 <div
                   className={`absolute inset-0 bg-gradient-to-br ${resource.accent} opacity-60 transition-opacity duration-500 group-hover:opacity-100`}
                 />
+                {resource.confetti && confettiTarget === resource.id && (
+                  <ConfettiBurst burstKey={confettiKey} className="z-0" />
+                )}
                 <div className="relative z-10 flex items-center justify-between">
                   <span className="text-4xl transition-transform duration-300 group-hover:scale-110">
                     {resource.icon}
@@ -257,6 +291,11 @@ function ResourcesPage() {
                     size="sm"
                     onClick={() => router.push(resource.path)}
                     className="group/button"
+                    onFocus={() => {
+                      if (resource.confetti) {
+                        triggerConfetti(resource.id)
+                      }
+                    }}
                   >
                     {resource.cta}
                     <svg
