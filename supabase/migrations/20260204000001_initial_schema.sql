@@ -113,13 +113,15 @@ CREATE TRIGGER set_resources_updated_at
 
 -- Insert sample resources data
 INSERT INTO public.resources (title, description, category, content_type, icon, is_featured) VALUES
-  ('Welcome to the Community', 'Getting started guide for new members', 'General', 'article', '👋', true),
+  ('Welcome to the Community', 'Getting started guide for new members', 'General Discussion', 'article', '👋', true),
   ('Best AI Prompts Collection', 'Curated collection of high-quality prompts', 'Best Prompts', 'article', '✨', true),
-  ('Remote Job Opportunities', 'Latest remote job postings in tech', 'Job Posting', 'article', '💼', false),
-  ('Fitness Challenge 2026', 'Join our community fitness challenge', 'Fitness', 'article', '💪', false),
+  ('Remote Job Opportunities', 'Latest remote job postings in tech', 'Job Opportunities', 'article', '💼', false),
+  ('Fitness Challenge 2026', 'Join our community fitness challenge', 'Fitness & Wellness', 'article', '💪', false),
   ('Community Guidelines', 'Important rules and guidelines', 'Announcements', 'article', '📢', true),
-  ('AI Tools Directory', 'Comprehensive list of AI tools', 'Tools', 'tool', '🛠️', true),
+  ('AI Tools Directory', 'Comprehensive list of AI tools', 'Tools & Resources', 'tool', '🛠️', true),
   ('ChatGPT Tips & Tricks', 'Advanced tips for better results', 'Tips & Tricks', 'article', '💡', false),
   ('Latest AI News - January 2026', 'Monthly roundup of AI developments', 'AI News', 'article', '📰', false),
-  ('Coding for Beginners', 'Start your coding journey', 'AI/Coding Beginner', 'article', '🤖', false),
-  ('Career Development Resources', 'Resources for internal career growth', 'Internal Career', 'article', '📈', false);
+  ('Coding for Beginners', 'Start your coding journey', 'AI Fundamentals', 'article', '🤖', false),
+  ('Career Development Resources', 'Resources for internal career growth', 'Career Growth', 'article', '📈', false),
+  ('Community Meetup 2026', 'Join our annual community gathering', 'Community Events', 'article', '🎉', true),
+  ('Member Showcase', 'Spotlight on amazing community projects', 'Showcase', 'article', '🚀', false);

@@ -16,16 +16,18 @@ const geistSans = Geist({
 })
 
 const categories: Category[] = [
-  'General',
-  'Job Posting',
+  'General Discussion',
+  'Job Opportunities',
   'Best Prompts',
-  'Fitness',
+  'Fitness & Wellness',
   'Announcements',
-  'Internal Career',
-  'AI/Coding Beginner',
+  'Showcase',
+  'Career Growth',
+  'AI Fundamentals',
   'AI News',
   'Tips & Tricks',
-  'Tools',
+  'Tools & Resources',
+  'Community Events',
 ]
 
 function ResourcesPage() {
