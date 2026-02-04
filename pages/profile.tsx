@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { withAuth } from '@/lib/auth/withAuth'
 import { useAuth } from '@/contexts/AuthContext'
 import { useRouter } from 'next/router'
@@ -5,6 +6,7 @@ import { Header } from '@/components/layout/Header'
 import { Avatar } from '@/components/ui/Avatar'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
+import { ConfirmModal } from '@/components/ui/ConfirmModal'
 import { formatDate } from '@/lib/utils/formatters'
 import { Geist } from 'next/font/google'
 
@@ -16,6 +18,7 @@ const geistSans = Geist({
 function ProfilePage() {
   const { user, signOut } = useAuth()
   const router = useRouter()
+  const [showSignOutModal, setShowSignOutModal] = useState(false)
 
   return (
     <div className={`${geistSans.variable} min-h-screen bg-gray-50 font-sans`}>
@@ -99,12 +102,28 @@ function ProfilePage() {
             >
               View Resources
             </Button>
-            <Button variant="ghost" size="sm" onClick={signOut}>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowSignOutModal(true)}
+            >
               Sign Out
             </Button>
           </div>
         </Card>
       </main>
+
+      {/* Sign Out Confirmation Modal */}
+      <ConfirmModal
+        isOpen={showSignOutModal}
+        onClose={() => setShowSignOutModal(false)}
+        onConfirm={signOut}
+        title="Sign Out"
+        message="Are you sure you want to sign out? You'll need to log in again to access your account."
+        confirmText="Sign Out"
+        cancelText="Cancel"
+        confirmVariant="danger"
+      />
     </div>
   )
 }

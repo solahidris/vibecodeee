@@ -33,10 +33,10 @@ export function Header({ showNavigation = true }: HeaderProps) {
 
           {/* Right Side - Navigation Links + Avatar */}
           {user && (
-            <div className="flex items-center gap-6">
+            <div className="flex items-center gap-8">
               {/* Navigation Links */}
               {showNavigation && (
-                <nav className="hidden sm:flex items-center gap-6">
+                <nav className="hidden sm:flex items-center gap-8">
                   {navigationLinks.map((link) => (
                     <button
                       key={link.path}
