@@ -1,3 +1,4 @@
+import { useMemo, useState } from 'react'
 import { useRouter } from 'next/router'
 import { withAuth } from '@/lib/auth/withAuth'
 import { Card } from '@/components/ui/Card'
@@ -9,6 +10,12 @@ const geistSans = Geist({
   variable: '--font-geist-sans',
   subsets: ['latin'],
 })
+
+const resourceFilters = [
+  { id: 'all', label: 'All', helper: 'Everything' },
+  { id: 'coding', label: 'Coding', helper: 'Courses only' },
+  { id: 'crash', label: 'Crash Course', helper: 'Quick sprints' },
+]
 
 const resourceLinks = [
   {
@@ -22,10 +29,11 @@ const resourceLinks = [
     highlights: ['3 lanes', 'Structured', 'Self-paced'],
     accent: 'from-zinc-900/10 via-white to-white',
     cta: 'Open Courses',
+    filters: ['coding'],
   },
   {
     id: 'crashcourse',
-    title: '5-Day Crash Course',
+    title: 'Automate Boring Stuff with Pythong',
     description:
       'A quick-start series to automate boring tasks with Python + AI prompts.',
     icon: '⚡',
@@ -34,6 +42,7 @@ const resourceLinks = [
     highlights: ['5 days', 'Automation drills', 'Python + AI'],
     accent: 'from-amber-200/60 via-white to-white',
     cta: 'Start Sprint',
+    filters: ['crash'],
   },
   {
     id: 'basicprompt',
@@ -46,11 +55,20 @@ const resourceLinks = [
     highlights: ['5 lessons', 'Prompt templates', 'Self-checks'],
     accent: 'from-sky-200/60 via-white to-white',
     cta: 'Open Lessons',
+    filters: ['crash'],
   },
 ]
 
 function ResourcesPage() {
   const router = useRouter()
+  const [activeFilter, setActiveFilter] = useState('all')
+
+  const visibleResources = useMemo(() => {
+    if (activeFilter === 'all') return resourceLinks
+    return resourceLinks.filter((resource) =>
+      resource.filters.includes(activeFilter)
+    )
+  }, [activeFilter])
 
   return (
     <div
@@ -170,11 +188,37 @@ function ResourcesPage() {
             </div>
           </div>
 
+          <div className="mb-8 flex flex-wrap items-center gap-3">
+            <span className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">
+              Filter
+            </span>
+            <div className="flex flex-wrap gap-2">
+              {resourceFilters.map((filter) => {
+                const isActive = activeFilter === filter.id
+                return (
+                  <button
+                    key={filter.id}
+                    type="button"
+                    onClick={() => setActiveFilter(filter.id)}
+                    aria-pressed={isActive}
+                    className={`rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] transition ${
+                      isActive
+                        ? 'border-zinc-900 bg-zinc-900 text-white shadow-sm'
+                        : 'border-zinc-200 bg-white text-zinc-500 hover:border-zinc-300 hover:text-zinc-700'
+                    }`}
+                  >
+                    {filter.label}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+
           <div
             id="resource-grid"
             className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
           >
-            {resourceLinks.map((resource, index) => (
+            {visibleResources.map((resource, index) => (
               <Card
                 key={resource.id}
                 className="group relative overflow-hidden rounded-3xl border border-zinc-200/80 bg-white/90 p-6 shadow-sm transition-all hover:shadow-xl hover:ring-1 hover:ring-zinc-900/10 animate-fade-in-up"
