@@ -34,7 +34,7 @@ export function Navigation() {
                   onClick={() => router.push('/resources')}
                   className="hidden sm:inline-flex text-zinc-600 hover:text-zinc-900 transition-all duration-300"
                 >
-                  Dashboard
+                  Resources
                 </Button>
                 <button
                   onClick={() => router.push('/profile')}
