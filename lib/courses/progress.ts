@@ -1,10 +1,20 @@
 import { foundationCourses } from '@/lib/courses/foundationCourses'
+import { frontendCourses } from '@/lib/courses/frontendCourses'
 
 export type CourseProgressData = {
   foundation?: Record<string, boolean>
+  frontend?: Record<string, boolean>
 }
 
 const emptyFoundationProgress = foundationCourses.reduce<Record<string, boolean>>(
+  (acc, course) => {
+    acc[course.id] = false
+    return acc
+  },
+  {}
+)
+
+const emptyFrontendProgress = frontendCourses.reduce<Record<string, boolean>>(
   (acc, course) => {
     acc[course.id] = false
     return acc
@@ -37,6 +47,19 @@ export const buildFoundationProgress = (
   return Object.keys(emptyFoundationProgress).reduce<Record<string, boolean>>(
     (acc, courseId) => {
       acc[courseId] = Boolean(foundationProgress[courseId])
+      return acc
+    },
+    {}
+  )
+}
+
+export const buildFrontendProgress = (
+  progressData: CourseProgressData
+): Record<string, boolean> => {
+  const frontendProgress = progressData.frontend ?? {}
+  return Object.keys(emptyFrontendProgress).reduce<Record<string, boolean>>(
+    (acc, courseId) => {
+      acc[courseId] = Boolean(frontendProgress[courseId])
       return acc
     },
     {}
