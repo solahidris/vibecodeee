@@ -12,6 +12,8 @@ import { backendCourses } from '@/lib/courses/backendCourses'
 import { frontendCourses } from '@/lib/courses/frontendCourses'
 import { aiDataScienceCourses } from '@/lib/courses/aiDataScienceCourses'
 import { careerDevopsCourses } from '@/lib/courses/careerDevopsCourses'
+import { fetchCourseSummaries } from '@/lib/courses/supabaseCourses'
+import type { CourseSummary } from '@/lib/courses/types'
 import {
   buildAiDataScienceProgress,
   buildBackendProgress,
@@ -41,48 +43,30 @@ const mergeChecklistProgress = (
   )
 }
 
+const mergeProgressLane = (
+  server: Record<string, boolean> | undefined,
+  local: Record<string, boolean> | undefined
+): Record<string, boolean> => {
+  const merged: Record<string, boolean> = {}
+  for (const [key, value] of Object.entries(server ?? {})) {
+    merged[key] = Boolean(value)
+  }
+  for (const [key, value] of Object.entries(local ?? {})) {
+    merged[key] = Boolean(merged[key] || value)
+  }
+  return merged
+}
+
 const mergeCourseProgress = (
   server: CourseProgressData,
   local: CourseProgressData
 ): CourseProgressData => {
   const merged: CourseProgressData = {
-    foundation: foundationCourses.reduce<Record<string, boolean>>((acc, course) => {
-      acc[course.id] = Boolean(
-        server.foundation?.[course.id] || local.foundation?.[course.id]
-      )
-      return acc
-    }, {}),
-    frontend: frontendCourses.reduce<Record<string, boolean>>((acc, course) => {
-      acc[course.id] = Boolean(
-        server.frontend?.[course.id] || local.frontend?.[course.id]
-      )
-      return acc
-    }, {}),
-    backend: backendCourses.reduce<Record<string, boolean>>((acc, course) => {
-      acc[course.id] = Boolean(
-        server.backend?.[course.id] || local.backend?.[course.id]
-      )
-      return acc
-    }, {}),
-    aiDataScience: aiDataScienceCourses.reduce<Record<string, boolean>>(
-      (acc, course) => {
-        acc[course.id] = Boolean(
-          server.aiDataScience?.[course.id] ||
-            local.aiDataScience?.[course.id]
-        )
-        return acc
-      },
-      {}
-    ),
-    careerDevops: careerDevopsCourses.reduce<Record<string, boolean>>(
-      (acc, course) => {
-        acc[course.id] = Boolean(
-          server.careerDevops?.[course.id] || local.careerDevops?.[course.id]
-        )
-        return acc
-      },
-      {}
-    ),
+    foundation: mergeProgressLane(server.foundation, local.foundation),
+    frontend: mergeProgressLane(server.frontend, local.frontend),
+    backend: mergeProgressLane(server.backend, local.backend),
+    aiDataScience: mergeProgressLane(server.aiDataScience, local.aiDataScience),
+    careerDevops: mergeProgressLane(server.careerDevops, local.careerDevops),
   }
 
   const crashcourse = mergeChecklistProgress(
@@ -140,38 +124,19 @@ const needsProgressSync = (
   server: CourseProgressData,
   merged: CourseProgressData
 ): boolean => {
-  for (const course of foundationCourses) {
-    if (merged.foundation?.[course.id] && !server.foundation?.[course.id]) {
-      return true
-    }
-  }
+  const hasNewProgress = (
+    serverLane: Record<string, boolean> | undefined,
+    mergedLane: Record<string, boolean> | undefined
+  ) =>
+    Object.entries(mergedLane ?? {}).some(
+      ([key, value]) => value && !serverLane?.[key]
+    )
 
-  for (const course of frontendCourses) {
-    if (merged.frontend?.[course.id] && !server.frontend?.[course.id]) {
-      return true
-    }
-  }
-
-  for (const course of backendCourses) {
-    if (merged.backend?.[course.id] && !server.backend?.[course.id]) {
-      return true
-    }
-  }
-
-  for (const course of aiDataScienceCourses) {
-    if (
-      merged.aiDataScience?.[course.id] &&
-      !server.aiDataScience?.[course.id]
-    ) {
-      return true
-    }
-  }
-
-  for (const course of careerDevopsCourses) {
-    if (merged.careerDevops?.[course.id] && !server.careerDevops?.[course.id]) {
-      return true
-    }
-  }
+  if (hasNewProgress(server.foundation, merged.foundation)) return true
+  if (hasNewProgress(server.frontend, merged.frontend)) return true
+  if (hasNewProgress(server.backend, merged.backend)) return true
+  if (hasNewProgress(server.aiDataScience, merged.aiDataScience)) return true
+  if (hasNewProgress(server.careerDevops, merged.careerDevops)) return true
 
   const serverCrashcourse = server.crashcourse ?? []
   const mergedCrashcourse = merged.crashcourse ?? []
@@ -198,26 +163,39 @@ function CoursesPage() {
   const supabase = useMemo(() => createClient(), [])
   const [progressData, setProgressData] = useState<CourseProgressData>({})
   const [syncing, setSyncing] = useState(true)
+  const [laneCourses, setLaneCourses] = useState<{
+    foundation: CourseSummary[]
+    frontend: CourseSummary[]
+    backend: CourseSummary[]
+    aiDataScience: CourseSummary[]
+    careerDevops: CourseSummary[]
+  }>({
+    foundation: foundationCourses,
+    frontend: frontendCourses,
+    backend: backendCourses,
+    aiDataScience: aiDataScienceCourses,
+    careerDevops: careerDevopsCourses,
+  })
 
   const foundationProgress = useMemo(
-    () => buildFoundationProgress(progressData),
-    [progressData]
+    () => buildFoundationProgress(progressData, laneCourses.foundation),
+    [progressData, laneCourses.foundation]
   )
   const frontendProgress = useMemo(
-    () => buildFrontendProgress(progressData),
-    [progressData]
+    () => buildFrontendProgress(progressData, laneCourses.frontend),
+    [progressData, laneCourses.frontend]
   )
   const backendProgress = useMemo(
-    () => buildBackendProgress(progressData),
-    [progressData]
+    () => buildBackendProgress(progressData, laneCourses.backend),
+    [progressData, laneCourses.backend]
   )
   const aiDataScienceProgress = useMemo(
-    () => buildAiDataScienceProgress(progressData),
-    [progressData]
+    () => buildAiDataScienceProgress(progressData, laneCourses.aiDataScience),
+    [progressData, laneCourses.aiDataScience]
   )
   const careerDevopsProgress = useMemo(
-    () => buildCareerDevopsProgress(progressData),
-    [progressData]
+    () => buildCareerDevopsProgress(progressData, laneCourses.careerDevops),
+    [progressData, laneCourses.careerDevops]
   )
 
   const foundationCompleted = useMemo(
@@ -240,6 +218,52 @@ function CoursesPage() {
     () => Object.values(careerDevopsProgress).filter(Boolean).length,
     [careerDevopsProgress]
   )
+
+  useEffect(() => {
+    let isMounted = true
+
+    const loadCourses = async () => {
+      if (!user?.id) return
+      try {
+        const [
+          foundation,
+          frontend,
+          backend,
+          aiDataScience,
+          careerDevopsPrimary,
+        ] = await Promise.all([
+          fetchCourseSummaries(supabase, 'foundation'),
+          fetchCourseSummaries(supabase, 'frontend'),
+          fetchCourseSummaries(supabase, 'backend'),
+          fetchCourseSummaries(supabase, 'ai-data-science'),
+          fetchCourseSummaries(supabase, 'career'),
+        ])
+
+        const careerDevops =
+          careerDevopsPrimary.length > 0
+            ? careerDevopsPrimary
+            : await fetchCourseSummaries(supabase, 'career-devops')
+
+        if (!isMounted) return
+
+        setLaneCourses({
+          foundation: foundation.length ? foundation : foundationCourses,
+          frontend: frontend.length ? frontend : frontendCourses,
+          backend: backend.length ? backend : backendCourses,
+          aiDataScience: aiDataScience.length ? aiDataScience : aiDataScienceCourses,
+          careerDevops: careerDevops.length ? careerDevops : careerDevopsCourses,
+        })
+      } catch (error) {
+        console.error('Error loading courses:', error)
+      }
+    }
+
+    void loadCourses()
+
+    return () => {
+      isMounted = false
+    }
+  }, [supabase, user?.id])
 
   useEffect(() => {
     if (!user?.id) return
@@ -325,10 +349,10 @@ function CoursesPage() {
                 </p>
 
                 <div className="mt-6 grid gap-3 text-sm text-gray-700 sm:grid-cols-2">
-                  {foundationCourses.map((course, index) => (
+                  {laneCourses.foundation.map((course, index) => (
                     <div key={course.id} className="flex items-start gap-3">
                       <span className="mt-0.5 text-xs font-semibold text-gray-400">
-                        {String(index + 1).padStart(2, '0')}
+                        {String(course.number ?? index + 1).padStart(2, '0')}
                       </span>
                       <div>
                         <p className="font-semibold text-gray-900">
@@ -344,7 +368,7 @@ function CoursesPage() {
               <div className="flex flex-col gap-3">
                 <ProgressSummary
                   completed={foundationCompleted}
-                  total={foundationCourses.length}
+                  total={laneCourses.foundation.length}
                   syncing={syncing}
                 />
                 <Button
@@ -376,10 +400,10 @@ function CoursesPage() {
                 </p>
 
                 <div className="mt-6 grid gap-3 text-sm text-gray-700 sm:grid-cols-2">
-                  {frontendCourses.map((course) => (
+                  {laneCourses.frontend.map((course, index) => (
                     <div key={course.id} className="flex items-start gap-3">
                       <span className="mt-0.5 text-xs font-semibold text-gray-400">
-                        {String(course.number).padStart(2, '0')}
+                        {String(course.number ?? index + 1).padStart(2, '0')}
                       </span>
                       <div>
                         <p className="font-semibold text-gray-900">
@@ -395,7 +419,7 @@ function CoursesPage() {
               <div className="flex flex-col gap-3">
                 <ProgressSummary
                   completed={frontendCompleted}
-                  total={frontendCourses.length}
+                  total={laneCourses.frontend.length}
                   syncing={syncing}
                 />
                 <Button
@@ -427,10 +451,10 @@ function CoursesPage() {
                 </p>
 
                 <div className="mt-6 grid gap-3 text-sm text-gray-700 sm:grid-cols-2">
-                  {backendCourses.map((course) => (
+                  {laneCourses.backend.map((course, index) => (
                     <div key={course.id} className="flex items-start gap-3">
                       <span className="mt-0.5 text-xs font-semibold text-gray-400">
-                        {String(course.number).padStart(2, '0')}
+                        {String(course.number ?? index + 1).padStart(2, '0')}
                       </span>
                       <div>
                         <p className="font-semibold text-gray-900">
@@ -446,7 +470,7 @@ function CoursesPage() {
               <div className="flex flex-col gap-3">
                 <ProgressSummary
                   completed={backendCompleted}
-                  total={backendCourses.length}
+                  total={laneCourses.backend.length}
                   syncing={syncing}
                 />
                 <Button
@@ -478,10 +502,10 @@ function CoursesPage() {
                 </p>
 
                 <div className="mt-6 grid gap-3 text-sm text-gray-700 sm:grid-cols-2">
-                  {aiDataScienceCourses.map((course) => (
+                  {laneCourses.aiDataScience.map((course, index) => (
                     <div key={course.id} className="flex items-start gap-3">
                       <span className="mt-0.5 text-xs font-semibold text-gray-400">
-                        {String(course.number).padStart(2, '0')}
+                        {String(course.number ?? index + 1).padStart(2, '0')}
                       </span>
                       <div>
                         <p className="font-semibold text-gray-900">
@@ -497,7 +521,7 @@ function CoursesPage() {
               <div className="flex flex-col gap-3">
                 <ProgressSummary
                   completed={aiDataScienceCompleted}
-                  total={aiDataScienceCourses.length}
+                  total={laneCourses.aiDataScience.length}
                   syncing={syncing}
                 />
                 <Button
@@ -531,10 +555,10 @@ function CoursesPage() {
                 </p>
 
                 <div className="mt-6 grid gap-3 text-sm text-gray-700 sm:grid-cols-2">
-                  {careerDevopsCourses.map((course) => (
+                  {laneCourses.careerDevops.map((course, index) => (
                     <div key={course.id} className="flex items-start gap-3">
                       <span className="mt-0.5 text-xs font-semibold text-gray-400">
-                        {String(course.number).padStart(2, '0')}
+                        {String(course.number ?? index + 1).padStart(2, '0')}
                       </span>
                       <div>
                         <p className="font-semibold text-gray-900">
@@ -550,7 +574,7 @@ function CoursesPage() {
               <div className="flex flex-col gap-3">
                 <ProgressSummary
                   completed={careerDevopsCompleted}
-                  total={careerDevopsCourses.length}
+                  total={laneCourses.careerDevops.length}
                   syncing={syncing}
                 />
                 <Button

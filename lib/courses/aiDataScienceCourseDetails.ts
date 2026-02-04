@@ -1,26 +1,8 @@
-export type CourseExercise = {
-  id: string
-  title: string
-  instruction: string
-  details: string[]
-  placeholder: string
-  expected: {
-    all?: string[]
-    any?: string[]
-  }
-  checkFor: string[]
-  success: string
-  failure: string
-}
+import type { CourseDetail, CourseExercise } from '@/lib/courses/types'
 
-export type AiDataScienceCourseDetail = {
-  id: string
-  title: string
-  description: string
-  overview: string
-  outcomes: string[]
-  exercises: CourseExercise[]
-}
+export type { CourseExercise }
+
+export type AiDataScienceCourseDetail = CourseDetail
 
 export const aiDataScienceCourseDetails: Record<
   string,

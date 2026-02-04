@@ -76,6 +76,44 @@ export interface Database {
           updated_at?: string
         }
       }
+      courses: {
+        Row: {
+          id: string
+          lane: string
+          number: number | null
+          title: string
+          description: string | null
+          overview: string | null
+          outcomes: string[] | null
+          exercises: Json | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id: string
+          lane: string
+          number?: number | null
+          title: string
+          description?: string | null
+          overview?: string | null
+          outcomes?: string[] | null
+          exercises?: Json | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          lane?: string
+          number?: number | null
+          title?: string
+          description?: string | null
+          overview?: string | null
+          outcomes?: string[] | null
+          exercises?: Json | null
+          created_at?: string
+          updated_at?: string
+        }
+      }
       bookmarks: {
         Row: {
           id: string

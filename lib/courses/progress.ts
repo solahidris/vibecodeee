@@ -4,6 +4,8 @@ import { careerDevopsCourses } from '@/lib/courses/careerDevopsCourses'
 import { foundationCourses } from '@/lib/courses/foundationCourses'
 import { frontendCourses } from '@/lib/courses/frontendCourses'
 
+type CourseIdSource = { id: string }[]
+
 export type CourseProgressData = {
   backend?: Record<string, boolean>
   careerDevops?: Record<string, boolean>
@@ -14,43 +16,16 @@ export type CourseProgressData = {
   basicprompt?: boolean[]
 }
 
-const emptyFoundationProgress = foundationCourses.reduce<Record<string, boolean>>(
-  (acc, course) => {
-    acc[course.id] = false
+const buildProgressMap = (
+  courseIds: string[],
+  laneProgress: Record<string, boolean> | undefined
+): Record<string, boolean> =>
+  courseIds.reduce<Record<string, boolean>>((acc, courseId) => {
+    acc[courseId] = Boolean(laneProgress?.[courseId])
     return acc
-  },
-  {}
-)
+  }, {})
 
-const emptyFrontendProgress = frontendCourses.reduce<Record<string, boolean>>(
-  (acc, course) => {
-    acc[course.id] = false
-    return acc
-  },
-  {}
-)
-
-const emptyBackendProgress = backendCourses.reduce<Record<string, boolean>>(
-  (acc, course) => {
-    acc[course.id] = false
-    return acc
-  },
-  {}
-)
-
-const emptyAiDataScienceProgress = aiDataScienceCourses.reduce<
-  Record<string, boolean>
->((acc, course) => {
-  acc[course.id] = false
-  return acc
-}, {})
-
-const emptyCareerDevopsProgress = careerDevopsCourses.reduce<
-  Record<string, boolean>
->((acc, course) => {
-  acc[course.id] = false
-  return acc
-}, {})
+const getCourseIds = (courses: CourseIdSource) => courses.map((course) => course.id)
 
 export const parseCourseProgress = (value: unknown): CourseProgressData => {
   if (!value) return {}
@@ -71,69 +46,34 @@ export const parseCourseProgress = (value: unknown): CourseProgressData => {
 }
 
 export const buildFoundationProgress = (
-  progressData: CourseProgressData
-): Record<string, boolean> => {
-  const foundationProgress = progressData.foundation ?? {}
-  return Object.keys(emptyFoundationProgress).reduce<Record<string, boolean>>(
-    (acc, courseId) => {
-      acc[courseId] = Boolean(foundationProgress[courseId])
-      return acc
-    },
-    {}
-  )
-}
+  progressData: CourseProgressData,
+  courses: CourseIdSource = foundationCourses
+): Record<string, boolean> =>
+  buildProgressMap(getCourseIds(courses), progressData.foundation)
 
 export const buildFrontendProgress = (
-  progressData: CourseProgressData
-): Record<string, boolean> => {
-  const frontendProgress = progressData.frontend ?? {}
-  return Object.keys(emptyFrontendProgress).reduce<Record<string, boolean>>(
-    (acc, courseId) => {
-      acc[courseId] = Boolean(frontendProgress[courseId])
-      return acc
-    },
-    {}
-  )
-}
+  progressData: CourseProgressData,
+  courses: CourseIdSource = frontendCourses
+): Record<string, boolean> =>
+  buildProgressMap(getCourseIds(courses), progressData.frontend)
 
 export const buildBackendProgress = (
-  progressData: CourseProgressData
-): Record<string, boolean> => {
-  const backendProgress = progressData.backend ?? {}
-  return Object.keys(emptyBackendProgress).reduce<Record<string, boolean>>(
-    (acc, courseId) => {
-      acc[courseId] = Boolean(backendProgress[courseId])
-      return acc
-    },
-    {}
-  )
-}
+  progressData: CourseProgressData,
+  courses: CourseIdSource = backendCourses
+): Record<string, boolean> =>
+  buildProgressMap(getCourseIds(courses), progressData.backend)
 
 export const buildAiDataScienceProgress = (
-  progressData: CourseProgressData
-): Record<string, boolean> => {
-  const aiProgress = progressData.aiDataScience ?? {}
-  return Object.keys(emptyAiDataScienceProgress).reduce<Record<string, boolean>>(
-    (acc, courseId) => {
-      acc[courseId] = Boolean(aiProgress[courseId])
-      return acc
-    },
-    {}
-  )
-}
+  progressData: CourseProgressData,
+  courses: CourseIdSource = aiDataScienceCourses
+): Record<string, boolean> =>
+  buildProgressMap(getCourseIds(courses), progressData.aiDataScience)
 
 export const buildCareerDevopsProgress = (
-  progressData: CourseProgressData
-): Record<string, boolean> => {
-  const careerProgress = progressData.careerDevops ?? {}
-  return Object.keys(emptyCareerDevopsProgress).reduce<Record<string, boolean>>(
-    (acc, courseId) => {
-      acc[courseId] = Boolean(careerProgress[courseId])
-      return acc
-    },
-    {}
-  )
-}
+  progressData: CourseProgressData,
+  courses: CourseIdSource = careerDevopsCourses
+): Record<string, boolean> =>
+  buildProgressMap(getCourseIds(courses), progressData.careerDevops)
 
 const buildChecklistProgress = (
   value: unknown,

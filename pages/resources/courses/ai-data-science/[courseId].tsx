@@ -10,13 +10,14 @@ import { CelebrationToast, ConfettiCannons } from '@/components/ui/Celebration'
 import { cn } from '@/lib/utils/cn'
 import { formatDate } from '@/lib/utils/formatters'
 import { Geist } from 'next/font/google'
-import {
+import { getAiDataScienceCourseDetail } from '@/lib/courses/aiDataScienceCourseDetails'
+import type {
+  AiDataScienceCourseDetail,
   CourseExercise,
-  getAiDataScienceCourseDetail,
 } from '@/lib/courses/aiDataScienceCourseDetails'
 import { aiDataScienceCourses } from '@/lib/courses/aiDataScienceCourses'
+import { fetchCourseDetail } from '@/lib/courses/supabaseCourses'
 import {
-  buildAiDataScienceProgress,
   CourseProgressData,
   getLocalProgress,
   parseCourseProgress,
@@ -81,6 +82,8 @@ function AiDataScienceCoursePage() {
   const [saving, setSaving] = useState(false)
   const [syncError, setSyncError] = useState<string | null>(null)
   const [lastSyncedAt, setLastSyncedAt] = useState<string | null>(null)
+  const [course, setCourse] = useState<AiDataScienceCourseDetail | null>(null)
+  const [courseLoading, setCourseLoading] = useState(true)
   const { toast, confettiVisible, confettiKey, trigger, dismissToast } =
     useCelebration()
 
@@ -90,19 +93,20 @@ function AiDataScienceCoursePage() {
       : router.query.courseId
     : null
 
-  const course = courseId ? getAiDataScienceCourseDetail(courseId) : null
-
   const exercises = course?.exercises ?? []
   const [answers, setAnswers] = useState(() => buildInitialAnswers(exercises))
   const [results, setResults] = useState(() => buildInitialResults(exercises))
 
   const aiProgress = useMemo(
-    () => buildAiDataScienceProgress(progressData),
+    () => progressData.aiDataScience ?? {},
     [progressData]
   )
 
   const courseIndex = useMemo(() => {
     if (!course) return null
+    if (course.number !== null && course.number !== undefined) {
+      return String(course.number).padStart(2, '0')
+    }
     const match = aiDataScienceCourses.find((item) => item.id === course.id)
     return match ? String(match.number).padStart(2, '0') : null
   }, [course])
@@ -118,6 +122,40 @@ function AiDataScienceCoursePage() {
 
   const courseCompleted = course ? aiProgress[course.id] : false
   const allPassed = exercises.length > 0 && passedCount === exercises.length
+
+  useEffect(() => {
+    if (!router.isReady || !courseId) return
+    let isMounted = true
+
+    const loadCourse = async () => {
+      setCourseLoading(true)
+      try {
+        const data = await fetchCourseDetail(supabase, courseId)
+        if (isMounted) {
+          if (data) {
+            setCourse(data as AiDataScienceCourseDetail)
+          } else {
+            setCourse(getAiDataScienceCourseDetail(courseId) ?? null)
+          }
+        }
+      } catch (error) {
+        console.error('Error loading course detail:', error)
+        if (isMounted) {
+          setCourse(getAiDataScienceCourseDetail(courseId) ?? null)
+        }
+      } finally {
+        if (isMounted) {
+          setCourseLoading(false)
+        }
+      }
+    }
+
+    void loadCourse()
+
+    return () => {
+      isMounted = false
+    }
+  }, [courseId, router.isReady, supabase])
 
   useEffect(() => {
     if (!course) return
@@ -223,7 +261,7 @@ function AiDataScienceCoursePage() {
     if (!allPassed || courseCompleted) return
 
     const nextAiProgress = {
-      ...buildAiDataScienceProgress(progressData),
+      ...(progressData.aiDataScience ?? {}),
       [course.id]: true,
     }
 
@@ -257,7 +295,7 @@ function AiDataScienceCoursePage() {
     }))
   }
 
-  if (!router.isReady) {
+  if (!router.isReady || courseLoading) {
     return (
       <div className={`${geistSans.variable} min-h-screen bg-gray-50 font-sans`}>
         <Header />

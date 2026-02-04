@@ -11,6 +11,8 @@ import { formatDate } from '@/lib/utils/formatters'
 import { Geist } from 'next/font/google'
 import { frontendCourses } from '@/lib/courses/frontendCourses'
 import { getFrontendCourseDetail } from '@/lib/courses/frontendCourseDetails'
+import { fetchCourseSummaries } from '@/lib/courses/supabaseCourses'
+import type { CourseSummary } from '@/lib/courses/types'
 import {
   buildFrontendProgress,
   CourseProgressData,
@@ -29,21 +31,44 @@ function FrontendCoursesPage() {
   const { user } = useAuth()
   const supabase = useMemo(() => createClient(), [])
   const [progressData, setProgressData] = useState<CourseProgressData>({})
+  const [courses, setCourses] = useState<CourseSummary[]>(frontendCourses)
   const [loading, setLoading] = useState(true)
   const [syncError, setSyncError] = useState<string | null>(null)
   const [lastSyncedAt, setLastSyncedAt] = useState<string | null>(null)
 
   const frontendProgress = useMemo(
-    () => buildFrontendProgress(progressData),
-    [progressData]
+    () => buildFrontendProgress(progressData, courses),
+    [progressData, courses]
   )
 
-  const completedCount = frontendCourses.filter(
+  const completedCount = courses.filter(
     (course) => frontendProgress[course.id]
   ).length
   const completionPercent = Math.round(
-    (completedCount / frontendCourses.length) * 100
+    (completedCount / courses.length) * 100
   )
+
+  useEffect(() => {
+    let isMounted = true
+
+    const loadCourses = async () => {
+      if (!user?.id) return
+      try {
+        const data = await fetchCourseSummaries(supabase, 'frontend')
+        if (isMounted && data.length) {
+          setCourses(data)
+        }
+      } catch (error) {
+        console.error('Error loading courses:', error)
+      }
+    }
+
+    void loadCourses()
+
+    return () => {
+      isMounted = false
+    }
+  }, [supabase, user?.id])
 
   useEffect(() => {
     let isMounted = true
@@ -150,7 +175,7 @@ function FrontendCoursesPage() {
               <p className="mt-2 text-2xl font-bold text-gray-900">
                 {loading
                   ? 'Loading your progress...'
-                  : `${completedCount} of ${frontendCourses.length} completed`}
+                  : `${completedCount} of ${courses.length} completed`}
               </p>
               <p className="mt-2 text-sm text-gray-500">
                 {lastSyncedAt
@@ -176,10 +201,11 @@ function FrontendCoursesPage() {
         </Card>
 
         <div className="grid gap-6">
-          {frontendCourses.map((course) => {
+          {courses.map((course, index) => {
             const isCompleted = frontendProgress[course.id]
             const detail = getFrontendCourseDetail(course.id)
-            const focusAreas = detail?.outcomes?.slice(0, 3) ?? []
+            const focusAreas =
+              course.outcomes?.slice(0, 3) ?? detail?.outcomes?.slice(0, 3) ?? []
 
             return (
               <Card
@@ -192,7 +218,7 @@ function FrontendCoursesPage() {
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
-                      Course {String(course.number).padStart(2, '0')}
+                      Course {String(course.number ?? index + 1).padStart(2, '0')}
                     </p>
                     <h3 className="mt-1 text-xl font-semibold text-gray-900">
                       {course.title}

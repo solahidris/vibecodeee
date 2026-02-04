@@ -4,6 +4,7 @@ import { type Database } from './database.types'
 export type Profile = Database['public']['Tables']['profiles']['Row']
 export type Resource = Database['public']['Tables']['resources']['Row']
 export type Bookmark = Database['public']['Tables']['bookmarks']['Row']
+export type Course = Database['public']['Tables']['courses']['Row']
 
 // User type (from auth)
 export interface User {

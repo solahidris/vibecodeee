@@ -10,6 +10,8 @@ import { cn } from '@/lib/utils/cn'
 import { formatDate } from '@/lib/utils/formatters'
 import { Geist } from 'next/font/google'
 import { foundationCourses } from '@/lib/courses/foundationCourses'
+import { fetchCourseSummaries } from '@/lib/courses/supabaseCourses'
+import type { CourseSummary } from '@/lib/courses/types'
 import {
   buildFoundationProgress,
   CourseProgressData,
@@ -28,22 +30,45 @@ function FoundationPage() {
   const { user } = useAuth()
   const supabase = useMemo(() => createClient(), [])
   const [progressData, setProgressData] = useState<CourseProgressData>({})
+  const [courses, setCourses] = useState<CourseSummary[]>(foundationCourses)
   const [loading, setLoading] = useState(true)
   const [syncError, setSyncError] = useState<string | null>(null)
   const [lastSyncedAt, setLastSyncedAt] = useState<string | null>(null)
 
   const foundationProgress = useMemo(
-    () => buildFoundationProgress(progressData),
-    [progressData]
+    () => buildFoundationProgress(progressData, courses),
+    [progressData, courses]
   )
 
-  const courseCount = foundationCourses.length
-  const completedCount = foundationCourses.filter(
+  const courseCount = courses.length
+  const completedCount = courses.filter(
     (course) => foundationProgress[course.id]
   ).length
   const completionPercent = Math.round(
     (completedCount / courseCount) * 100
   )
+
+  useEffect(() => {
+    let isMounted = true
+
+    const loadCourses = async () => {
+      if (!user?.id) return
+      try {
+        const data = await fetchCourseSummaries(supabase, 'foundation')
+        if (isMounted && data.length) {
+          setCourses(data)
+        }
+      } catch (error) {
+        console.error('Error loading courses:', error)
+      }
+    }
+
+    void loadCourses()
+
+    return () => {
+      isMounted = false
+    }
+  }, [supabase, user?.id])
 
   useEffect(() => {
     let isMounted = true
@@ -328,7 +353,7 @@ function FoundationPage() {
         </div>
 
         <div className="grid gap-6">
-          {foundationCourses.map((course, index) => {
+          {courses.map((course, index) => {
             const isCompleted = foundationProgress[course.id]
 
             return (
@@ -342,7 +367,7 @@ function FoundationPage() {
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
-                      Course {String(index + 1).padStart(2, '0')}
+                      Course {String(course.number ?? index + 1).padStart(2, '0')}
                     </p>
                     <h3 className="mt-1 text-xl font-semibold text-gray-900">
                       {course.title}

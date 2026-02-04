@@ -10,6 +10,8 @@ import { cn } from '@/lib/utils/cn'
 import { formatDate } from '@/lib/utils/formatters'
 import { Geist } from 'next/font/google'
 import { aiDataScienceCourses } from '@/lib/courses/aiDataScienceCourses'
+import { fetchCourseSummaries } from '@/lib/courses/supabaseCourses'
+import type { CourseSummary } from '@/lib/courses/types'
 import {
   buildAiDataScienceProgress,
   CourseProgressData,
@@ -28,21 +30,44 @@ function AiDataScienceCoursesPage() {
   const { user } = useAuth()
   const supabase = useMemo(() => createClient(), [])
   const [progressData, setProgressData] = useState<CourseProgressData>({})
+  const [courses, setCourses] = useState<CourseSummary[]>(aiDataScienceCourses)
   const [loading, setLoading] = useState(true)
   const [syncError, setSyncError] = useState<string | null>(null)
   const [lastSyncedAt, setLastSyncedAt] = useState<string | null>(null)
 
   const aiProgress = useMemo(
-    () => buildAiDataScienceProgress(progressData),
-    [progressData]
+    () => buildAiDataScienceProgress(progressData, courses),
+    [progressData, courses]
   )
 
-  const completedCount = aiDataScienceCourses.filter(
+  const completedCount = courses.filter(
     (course) => aiProgress[course.id]
   ).length
   const completionPercent = Math.round(
-    (completedCount / aiDataScienceCourses.length) * 100
+    (completedCount / courses.length) * 100
   )
+
+  useEffect(() => {
+    let isMounted = true
+
+    const loadCourses = async () => {
+      if (!user?.id) return
+      try {
+        const data = await fetchCourseSummaries(supabase, 'ai-data-science')
+        if (isMounted && data.length) {
+          setCourses(data)
+        }
+      } catch (error) {
+        console.error('Error loading courses:', error)
+      }
+    }
+
+    void loadCourses()
+
+    return () => {
+      isMounted = false
+    }
+  }, [supabase, user?.id])
 
   useEffect(() => {
     let isMounted = true
@@ -149,7 +174,7 @@ function AiDataScienceCoursesPage() {
               <p className="mt-2 text-2xl font-bold text-gray-900">
                 {loading
                   ? 'Loading your progress...'
-                  : `${completedCount} of ${aiDataScienceCourses.length} completed`}
+                  : `${completedCount} of ${courses.length} completed`}
               </p>
               <p className="mt-2 text-sm text-gray-500">
                 {lastSyncedAt
@@ -175,7 +200,7 @@ function AiDataScienceCoursesPage() {
         </Card>
 
         <div className="grid gap-6">
-          {aiDataScienceCourses.map((course) => {
+          {courses.map((course, index) => {
             const isCompleted = aiProgress[course.id]
 
             return (
@@ -189,7 +214,7 @@ function AiDataScienceCoursesPage() {
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
-                      Course {String(course.number).padStart(2, '0')}
+                      Course {String(course.number ?? index + 1).padStart(2, '0')}
                     </p>
                     <h3 className="mt-1 text-xl font-semibold text-gray-900">
                       {course.title}
