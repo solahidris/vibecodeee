@@ -19,8 +19,15 @@ import { careerDevopsCourses } from '@/lib/courses/careerDevopsCourses'
 import { fetchCourseDetail } from '@/lib/courses/supabaseCourses'
 import {
   CourseProgressData,
+  ExerciseResult,
   getLocalProgress,
+  getLocalExerciseAnswers,
+  getLocalExerciseResults,
+  mergeExerciseAnswers,
+  mergeExerciseResults,
   parseCourseProgress,
+  setLocalExerciseAnswers,
+  setLocalExerciseResults,
   setLocalProgress,
 } from '@/lib/courses/progress'
 import { useCelebration } from '@/hooks/useCelebration'
@@ -29,11 +36,6 @@ const geistSans = Geist({
   variable: '--font-geist-sans',
   subsets: ['latin'],
 })
-
-type ExerciseResult = {
-  status: 'idle' | 'passed' | 'failed'
-  message: string
-}
 
 const buildInitialAnswers = (exercises: CourseExercise[]) =>
   exercises.reduce<Record<string, string>>((acc, exercise) => {
@@ -159,9 +161,21 @@ function CareerDevopsCoursePage() {
 
   useEffect(() => {
     if (!course) return
-    setAnswers(buildInitialAnswers(exercises))
-    setResults(buildInitialResults(exercises))
-  }, [course, exercises])
+    const initialAnswers = buildInitialAnswers(exercises)
+    const initialResults = buildInitialResults(exercises)
+
+    if (!user?.id) {
+      setAnswers(initialAnswers)
+      setResults(initialResults)
+      return
+    }
+
+    const storedAnswers = getLocalExerciseAnswers(user.id, course.id)
+    const storedResults = getLocalExerciseResults(user.id, course.id)
+
+    setAnswers(mergeExerciseAnswers(initialAnswers, storedAnswers))
+    setResults(mergeExerciseResults(initialResults, storedResults))
+  }, [course, exercises, user?.id])
 
   useEffect(() => {
     let isMounted = true
@@ -284,13 +298,19 @@ function CareerDevopsCoursePage() {
       trigger(`${stepLabel}: ${exercise.title}`)
     }
 
-    setResults((prev) => ({
-      ...prev,
-      [exerciseId]: {
-        status: evaluation.passed ? 'passed' : 'failed',
-        message: evaluation.message,
-      },
-    }))
+    setResults((prev) => {
+      const next = {
+        ...prev,
+        [exerciseId]: {
+          status: evaluation.passed ? 'passed' : 'failed',
+          message: evaluation.message,
+        },
+      }
+      if (user?.id && course?.id) {
+        setLocalExerciseResults(user.id, course.id, next)
+      }
+      return next
+    })
   }
 
   if (!router.isReady || courseLoading) {
@@ -465,12 +485,16 @@ function CareerDevopsCoursePage() {
                     </label>
                     <textarea
                       value={answers[exercise.id] ?? ''}
-                      onChange={(event) =>
-                        setAnswers((prev) => ({
-                          ...prev,
-                          [exercise.id]: event.target.value,
-                        }))
-                      }
+                      onChange={(event) => {
+                        const value = event.target.value
+                        setAnswers((prev) => {
+                          const next = { ...prev, [exercise.id]: value }
+                          if (user?.id && course?.id) {
+                            setLocalExerciseAnswers(user.id, course.id, next)
+                          }
+                          return next
+                        })
+                      }}
                       placeholder={exercise.placeholder}
                       rows={4}
                       className={cn(
