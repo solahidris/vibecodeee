@@ -11,6 +11,69 @@ const geistSans = Geist({
   subsets: ['latin'],
 })
 
+const frontendMasteryCourses = [
+  {
+    id: 'frontend-html5',
+    number: 6,
+    title: 'HTML5 & Semantic Web',
+    description: 'Beyond <div> tags; accessibility and SEO structure.',
+  },
+  {
+    id: 'frontend-css-layouts',
+    number: 7,
+    title: 'CSS Flexbox & Grid',
+    description: 'Mastering modern layouts without the headaches.',
+  },
+  {
+    id: 'frontend-tailwind-advanced',
+    number: 8,
+    title: 'Advanced Tailwind CSS',
+    description: 'Custom configurations, plugins, and dark mode.',
+  },
+  {
+    id: 'frontend-js-fundamentals',
+    number: 9,
+    title: 'JavaScript Fundamentals',
+    description: 'Variables, loops, and data types.',
+  },
+  {
+    id: 'frontend-es6',
+    number: 10,
+    title: 'ES6+ Modern JS',
+    description: 'Arrow functions, destructuring, and asynchronous code (async/await).',
+  },
+  {
+    id: 'frontend-react-components',
+    number: 11,
+    title: 'React: Components & Props',
+    description: 'The building blocks of the UI.',
+  },
+  {
+    id: 'frontend-react-state',
+    number: 12,
+    title: 'React: State & Effects',
+    description: 'Managing dynamic data with useState and useEffect.',
+  },
+  {
+    id: 'frontend-nextjs-foundations',
+    number: 13,
+    title: 'Next.js Foundations',
+    description: 'Server-side rendering and routing for modern SEO.',
+  },
+  {
+    id: 'frontend-typescript',
+    number: 14,
+    title: 'TypeScript for Frontend',
+    description: 'Adding "type safety" to catch bugs before they happen.',
+  },
+  {
+    id: 'frontend-performance',
+    number: 15,
+    title: 'Web Performance',
+    description: 'Core Web Vitals, lazy loading, and image optimization.',
+  },
+]
+
 function CoursesPage() {
   const router = useRouter()
 
@@ -28,49 +91,95 @@ function CoursesPage() {
           </p>
         </div>
 
-        <Card>
-          <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
-            <div className="flex-1">
-              <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-zinc-900 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-white">
-                Lane 1
-              </div>
-              <h3 className="mb-2 text-2xl font-bold text-gray-900">
-                The Foundations
-              </h3>
-              <p className="text-base text-gray-600">
-                The must-haves every modern developer should feel confident with.
-                Start here before diving into advanced workflows.
-              </p>
+        <div className="space-y-8">
+          <Card>
+            <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
+              <div className="flex-1">
+                <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-zinc-900 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-white">
+                  Lane 1
+                </div>
+                <h3 className="mb-2 text-2xl font-bold text-gray-900">
+                  The Foundations
+                </h3>
+                <p className="text-base text-gray-600">
+                  The must-haves every modern developer should feel confident with.
+                  Start here before diving into advanced workflows.
+                </p>
 
-              <div className="mt-6 grid gap-3 text-sm text-gray-700 sm:grid-cols-2">
-                {foundationCourses.map((course, index) => (
-                  <div key={course.id} className="flex items-start gap-3">
-                    <span className="mt-0.5 text-xs font-semibold text-gray-400">
-                      {String(index + 1).padStart(2, '0')}
-                    </span>
-                    <div>
-                      <p className="font-semibold text-gray-900">{course.title}</p>
-                      <p className="text-gray-500">{course.description}</p>
+                <div className="mt-6 grid gap-3 text-sm text-gray-700 sm:grid-cols-2">
+                  {foundationCourses.map((course, index) => (
+                    <div key={course.id} className="flex items-start gap-3">
+                      <span className="mt-0.5 text-xs font-semibold text-gray-400">
+                        {String(index + 1).padStart(2, '0')}
+                      </span>
+                      <div>
+                        <p className="font-semibold text-gray-900">
+                          {course.title}
+                        </p>
+                        <p className="text-gray-500">{course.description}</p>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-3">
+                <Button
+                  variant="primary"
+                  size="md"
+                  onClick={() => router.push('/courses/foundation')}
+                >
+                  Open Lane
+                </Button>
+                <p className="text-xs text-gray-500">
+                  Progress syncs to your profile when you're signed in.
+                </p>
               </div>
             </div>
+          </Card>
 
-            <div className="flex flex-col gap-3">
-              <Button
-                variant="primary"
-                size="md"
-                onClick={() => router.push('/courses/foundation')}
-              >
-                Open Lane
-              </Button>
-              <p className="text-xs text-gray-500">
-                Progress syncs to your profile when you're signed in.
-              </p>
+          <Card>
+            <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
+              <div className="flex-1">
+                <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-zinc-900 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-white">
+                  Lane 2
+                </div>
+                <h3 className="mb-2 text-2xl font-bold text-gray-900">
+                  Frontend Mastery
+                </h3>
+                <p className="text-base text-gray-600">
+                  A focused path for modern UI engineering, from semantic HTML to
+                  performance-obsessed experiences.
+                </p>
+
+                <div className="mt-6 grid gap-3 text-sm text-gray-700 sm:grid-cols-2">
+                  {frontendMasteryCourses.map((course) => (
+                    <div key={course.id} className="flex items-start gap-3">
+                      <span className="mt-0.5 text-xs font-semibold text-gray-400">
+                        {String(course.number).padStart(2, '0')}
+                      </span>
+                      <div>
+                        <p className="font-semibold text-gray-900">
+                          {course.title}
+                        </p>
+                        <p className="text-gray-500">{course.description}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-3">
+                <Button variant="secondary" size="md" disabled>
+                  Coming Soon
+                </Button>
+                <p className="text-xs text-gray-500">
+                  We&apos;re putting the finishing touches on Lane 2.
+                </p>
+              </div>
             </div>
-          </div>
-        </Card>
+          </Card>
+        </div>
       </main>
     </div>
   )
