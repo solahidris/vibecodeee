@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { DM_Serif_Display, Sora } from "next/font/google";
+import { Header } from "@/components/layout/Header";
 import { useAuth } from "@/contexts/AuthContext";
 import { createClient } from "@/lib/supabase/client";
 import {
@@ -209,6 +210,7 @@ export default function CrashCoursePage() {
 
   return (
     <div className={`${display.variable} ${body.variable} font-[var(--font-body)]`}>
+      <Header />
       <div className="min-h-screen bg-[#f6f3ef]">
         <div className="relative">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,#c9e4ff,transparent_55%)]" />
