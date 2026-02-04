@@ -31,11 +31,9 @@ export function Hero() {
             </div>
 
             {/* Main Heading - Encrypted Animation */}
-            <h1 className="mb-8 text-6xl font-black leading-[1.1] tracking-tight sm:text-7xl lg:text-8xl">
+            <h1 className="mb-8 text-6xl font-black leading-[1.2] tracking-tight sm:text-7xl lg:text-8xl min-h-[80px] sm:min-h-[95px] lg:min-h-[110px]">
               <EncryptedText
-                text="Connect.
-Learn.
-Grow."
+                text="Connect. Learn. Grow."
                 encryptedClassName="text-zinc-400"
                 revealedClassName="text-zinc-900"
                 revealDelayMs={30}
@@ -96,8 +94,8 @@ Grow."
             {/* Minimal Stats */}
             <div className="mt-16 flex items-center gap-8 text-sm">
               <div>
-                <div className="text-2xl font-bold text-zinc-900">500+</div>
-                <div className="text-zinc-500">Members</div>
+                <div className="text-2xl font-bold text-zinc-900">Quality</div>
+                <div className="text-zinc-500">Active Members</div>
               </div>
               <div className="h-8 w-px bg-zinc-200"></div>
               <div>

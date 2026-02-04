@@ -56,13 +56,13 @@ export function Benefits() {
             {benefits.map((benefit, index) => (
               <div
                 key={benefit.title}
-                className="group relative overflow-hidden rounded-3xl border border-zinc-200 bg-white transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl"
+                className="group relative overflow-hidden rounded-3xl bg-white ring-1 ring-zinc-200 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:ring-zinc-300"
                 style={{
                   animationDelay: `${index * 100}ms`,
                 }}
               >
                 {/* Image Background */}
-                <div className="relative h-64 overflow-hidden bg-white">
+                <div className="relative h-72 overflow-hidden bg-white">
                   <Image
                     src={benefit.image}
                     alt={benefit.title}
@@ -70,16 +70,16 @@ export function Benefits() {
                     height={300}
                     className="h-full w-full object-cover grayscale transition-all duration-500 group-hover:scale-110 group-hover:grayscale-0"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-white via-white/50 to-transparent"></div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-white via-white/60 to-transparent"></div>
 
                   {/* Icon on Image */}
-                  <div className="absolute bottom-4 left-4 flex h-16 w-16 items-center justify-center rounded-2xl border border-zinc-200 bg-white/90 backdrop-blur-sm text-4xl transition-transform duration-300 group-hover:scale-110">
+                  <div className="absolute bottom-8 left-6 flex h-16 w-16 items-center justify-center rounded-2xl border border-zinc-200 bg-white/90 backdrop-blur-sm text-4xl transition-transform duration-300 group-hover:scale-110">
                     {benefit.icon}
                   </div>
                 </div>
 
                 {/* Content */}
-                <div className="p-8 text-left">
+                <div className="relative -mt-4 bg-white p-8 text-left">
                   <h3 className="mb-3 text-2xl font-bold text-zinc-900">
                     {benefit.title}
                   </h3>
@@ -106,7 +106,7 @@ export function Benefits() {
           {/* Stats Section */}
           <div className="mt-20 grid gap-8 rounded-3xl border border-zinc-200 bg-zinc-50 p-12 sm:grid-cols-3">
             <div className="text-center">
-              <div className="mb-2 text-5xl font-black text-zinc-900">500+</div>
+              <div className="mb-2 text-5xl font-black text-zinc-900">Quality</div>
               <div className="text-lg text-zinc-600">Active Members</div>
             </div>
             <div className="text-center">

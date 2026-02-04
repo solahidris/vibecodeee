@@ -22,7 +22,7 @@ export function EncryptedText({
 }: EncryptedTextProps) {
   const [displayText, setDisplayText] = useState(text)
   const [revealedIndices, setRevealedIndices] = useState<Set<number>>(new Set())
-  const [isRevealing, setIsRevealing] = useState(false)
+  const revealedIndicesRef = useRef<Set<number>>(new Set())
   const hasAnimated = useRef(false)
 
   useEffect(() => {
@@ -30,18 +30,17 @@ export function EncryptedText({
     if (hasAnimated.current) return
     hasAnimated.current = true
 
-    // Start revealing on mount
-    setIsRevealing(true)
+    let isActive = true
 
     // Scramble effect interval
     const scrambleInterval = setInterval(() => {
-      if (!isRevealing) return
+      if (!isActive) return
 
       setDisplayText((current) =>
         current
           .split('')
           .map((char, index) => {
-            if (revealedIndices.has(index) || char === ' ' || char === '\n') {
+            if (revealedIndicesRef.current.has(index) || char === ' ' || char === '\n') {
               return char
             }
             return ENCRYPTION_CHARS[Math.floor(Math.random() * ENCRYPTION_CHARS.length)]
@@ -54,6 +53,7 @@ export function EncryptedText({
     const revealTimeouts: NodeJS.Timeout[] = []
     text.split('').forEach((_, index) => {
       const timeout = setTimeout(() => {
+        revealedIndicesRef.current.add(index)
         setRevealedIndices((prev) => new Set([...prev, index]))
         setDisplayText((current) => {
           const chars = current.split('')
@@ -64,7 +64,7 @@ export function EncryptedText({
         // Stop revealing after all characters are revealed
         if (index === text.length - 1) {
           setTimeout(() => {
-            setIsRevealing(false)
+            isActive = false
             clearInterval(scrambleInterval)
           }, 100)
         }
