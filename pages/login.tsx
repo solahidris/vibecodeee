@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useAuth } from '@/contexts/AuthContext'
 import { Geist } from 'next/font/google'
@@ -32,8 +33,15 @@ export default function Login() {
   }
 
   return (
-    <div className={`${geistSans.variable} font-sans`}>
-      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-gray-50 via-white to-gray-50 px-4">
+    <>
+      <Head>
+        <title>Sign In - VibeCodE | Access Your Premium Membership</title>
+        <meta name="description" content="Sign in to your VibeCodE account to access exclusive member resources, courses, and community features." />
+        <meta name="robots" content="noindex, nofollow" />
+        <meta property="og:title" content="Sign In - VibeCodE" />
+      </Head>
+      <div className={`${geistSans.variable} font-sans`}>
+        <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-gray-50 via-white to-gray-50 px-4">
         <div className="w-full max-w-md">
           {/* Logo/Brand */}
           <div className="mb-8 text-center">
@@ -102,5 +110,6 @@ export default function Login() {
         </div>
       </div>
     </div>
+    </>
   )
 }

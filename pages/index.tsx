@@ -1,3 +1,4 @@
+import Head from 'next/head'
 import { Geist } from 'next/font/google'
 import { Navigation } from '@/components/landing/Navigation'
 import { Hero } from '@/components/landing/Hero'
@@ -12,12 +13,21 @@ const geistSans = Geist({
 
 export default function Home() {
   return (
-    <div className={`${geistSans.variable} font-sans`}>
-      <Navigation />
-      <Hero />
-      <TopicsGrid />
-      <Benefits />
-      <Footer />
-    </div>
+    <>
+      <Head>
+        <title>VibeCodE - Premium Community Platform | Connect & Grow Together</title>
+        <meta name="description" content="Join our exclusive premium community platform. Access expert resources, AI tools, prompting guides, and connect with like-minded professionals. Start your journey today." />
+        <meta property="og:title" content="VibeCodE - Premium Community Platform | Connect & Grow Together" />
+        <meta property="og:url" content="https://vibecode.com" />
+        <meta name="twitter:title" content="VibeCodE - Premium Community Platform" />
+      </Head>
+      <div className={`${geistSans.variable} font-sans`}>
+        <Navigation />
+        <Hero />
+        <TopicsGrid />
+        <Benefits />
+        <Footer />
+      </div>
+    </>
   )
 }

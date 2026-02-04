@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import Head from "next/head";
 import { DM_Serif_Display, Sora } from "next/font/google";
 
 const display = DM_Serif_Display({
@@ -82,8 +83,16 @@ export default function BasicPromptPage() {
   }, [isComplete, wasComplete]);
 
   return (
-    <div className={`${display.variable} ${body.variable} font-[var(--font-body)]`}>
-      <div className="min-h-screen bg-[#f6f3ef]">
+    <>
+      <Head>
+        <title>Basic Prompting Course - VibeCodE | Master AI Prompting in 5 Lessons</title>
+        <meta name="description" content="Learn effective AI prompting techniques with our free interactive course. 5 practical lessons covering outcomes, context, structure, examples, and self-checks." />
+        <meta property="og:title" content="Basic Prompting Course - VibeCodE | Master AI Prompting" />
+        <meta property="og:description" content="Free interactive course teaching clear, reliable prompt engineering in 5 short lessons. Perfect for beginners." />
+        <meta name="twitter:title" content="Basic Prompting Course - Master AI Prompting" />
+      </Head>
+      <div className={`${display.variable} ${body.variable} font-[var(--font-body)]`}>
+        <div className="min-h-screen bg-[#f6f3ef]">
         <div className="relative">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,#c9e4ff,transparent_55%)]" />
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_80%,#ffe6bf,transparent_60%)]" />
@@ -200,5 +209,6 @@ export default function BasicPromptPage() {
         }
       `}</style>
     </div>
+    </>
   );
 }
