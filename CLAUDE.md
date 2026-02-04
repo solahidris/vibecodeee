@@ -49,6 +49,7 @@ Get these from your Supabase dashboard: https://app.supabase.com -> Project Sett
   - `/pages/resources` - Protected member dashboard
   - `/pages/login.tsx` - Google OAuth sign-in page
   - `/pages/profile.tsx` - User profile page
+  - `/pages/basicprompt.tsx` - Educational course page (basic prompting)
   - `/pages/index.tsx` - Public landing page
 - `/components` - Reusable UI and landing page components
   - `/components/ui` - Base UI components (Button, Card, Avatar, etc.)
@@ -67,7 +68,7 @@ Get these from your Supabase dashboard: https://app.supabase.com -> Project Sett
 
 **TypeScript**: Path alias `@/*` maps to project root. Strict mode enabled.
 
-**Fonts**: Uses Geist font family from `next/font/google`.
+**Fonts**: Primary font is Geist Sans. Some pages use custom fonts (e.g., basicprompt.tsx uses DM Serif Display + Sora).
 
 ## Authentication Flow
 
@@ -119,6 +120,7 @@ export const config = { runtime: 'edge' }
 - `POST /api/auth/logout` - Sign out user
 - `GET /api/resources` - Fetch resources (authenticated)
   - Optional query param: `?category=CategoryName`
+- `GET /api/hello` - Demo route (can be removed in production)
 
 **Edge Runtime Notes**:
 - Uses native Web API (Request/Response) instead of Next.js types
@@ -139,6 +141,15 @@ export const config = { runtime: 'edge' }
 - Smooth animations (200-300ms)
 - Only animate `transform` and `opacity` (GPU-accelerated)
 - Scroll-triggered animations via `useScrollAnimation` hook
+
+## Educational Content Pages
+
+**Basic Prompting Course** (`/basicprompt`):
+- Interactive course with 5 lessons on effective prompting
+- Features progress tracking with checkboxes and completion toast
+- Custom design with DM Serif Display (headings) and Sora (body)
+- Standalone page with unique styling (not using main premium design system)
+- Includes lesson templates, tips, and self-check guidance
 
 ## Pages Router Conventions
 
