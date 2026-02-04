@@ -1,7 +1,4 @@
-import { useRouter } from 'next/router'
-
 export function Footer() {
-  const router = useRouter()
   const currentYear = new Date().getFullYear()
 
   return (
@@ -64,36 +61,28 @@ export function Footer() {
             </h3>
             <ul className="space-y-3">
               <li>
-                <button
-                  onClick={() => router.push('/resources')}
+                <a
+                  href="/resources"
                   className="cursor-pointer text-zinc-600 transition-colors duration-300 hover:text-zinc-900"
                 >
                   Resources
-                </button>
+                </a>
               </li>
               <li>
-                <button
-                  onClick={() => router.push('/basicprompt')}
-                  className="cursor-pointer text-zinc-600 transition-colors duration-300 hover:text-zinc-900"
-                >
-                  Courses
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => router.push('/profile')}
+                <a
+                  href="/profile"
                   className="cursor-pointer text-zinc-600 transition-colors duration-300 hover:text-zinc-900"
                 >
                   Profile
-                </button>
+                </a>
               </li>
               <li>
-                <button
-                  onClick={() => router.push('/payment/subscribe')}
+                <a
+                  href="/payment/subscribe"
                   className="text-zinc-600 transition-colors duration-300 hover:text-zinc-900"
                 >
                   Telegram Community
-                </button>
+                </a>
               </li>
             </ul>
           </div>
@@ -105,36 +94,36 @@ export function Footer() {
             </h3>
             <ul className="space-y-3">
               <li>
-                <button
-                  onClick={() => router.push('/privacy')}
+                <a
+                  href="/privacy"
                   className="cursor-pointer text-zinc-600 transition-colors duration-300 hover:text-zinc-900"
                 >
                   Privacy Policy
-                </button>
+                </a>
               </li>
               <li>
-                <button
-                  onClick={() => router.push('/terms')}
+                <a
+                  href="/terms"
                   className="cursor-pointer text-zinc-600 transition-colors duration-300 hover:text-zinc-900"
                 >
                   Terms of Service
-                </button>
+                </a>
               </li>
               <li>
-                <button
-                  onClick={() => router.push('/cookies')}
+                <a
+                  href="/cookies"
                   className="cursor-pointer text-zinc-600 transition-colors duration-300 hover:text-zinc-900"
                 >
                   Cookie Policy
-                </button>
+                </a>
               </li>
               <li>
-                <button
-                  onClick={() => router.push('/contact')}
+                <a
+                  href="/contact"
                   className="cursor-pointer text-zinc-600 transition-colors duration-300 hover:text-zinc-900"
                 >
                   Contact Us
-                </button>
+                </a>
               </li>
             </ul>
           </div>
