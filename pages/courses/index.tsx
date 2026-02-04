@@ -74,6 +74,45 @@ const frontendMasteryCourses = [
   },
 ]
 
+const aiDataScienceCourses = [
+  {
+    id: 'ai-prompt-engineering',
+    number: 25,
+    title: 'AI Prompt Engineering',
+    description: 'Frameworks for getting 10x better results from LLMs.',
+  },
+  {
+    id: 'ai-chatbots',
+    number: 26,
+    title: 'Building AI Chatbots',
+    description: 'Integrating OpenAI/Gemini APIs into your web apps.',
+  },
+  {
+    id: 'vector-databases',
+    number: 27,
+    title: 'Vector Databases Basics',
+    description: 'Understanding Pinecone/Chroma for AI memory.',
+  },
+  {
+    id: 'langchain-intro',
+    number: 28,
+    title: 'LangChain Intro',
+    description: 'Chaining AI tasks together for complex automation.',
+  },
+  {
+    id: 'ai-agents',
+    number: 29,
+    title: 'AI Agents 101',
+    description: 'Building autonomous bots that can use tools.',
+  },
+  {
+    id: 'ml-intro',
+    number: 30,
+    title: 'Machine Learning Intro',
+    description: 'Understanding the math and logic behind the hype.',
+  },
+]
+
 function CoursesPage() {
   const router = useRouter()
 
@@ -175,6 +214,48 @@ function CoursesPage() {
                 </Button>
                 <p className="text-xs text-gray-500">
                   We&apos;re putting the finishing touches on Lane 2.
+                </p>
+              </div>
+            </div>
+          </Card>
+
+          <Card>
+            <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
+              <div className="flex-1">
+                <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-zinc-900 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-white">
+                  Lane 4
+                </div>
+                <h3 className="mb-2 text-2xl font-bold text-gray-900">
+                  AI & Data Science
+                </h3>
+                <p className="text-base text-gray-600">
+                  Practical AI workflows, production-ready tooling, and the
+                  fundamentals behind modern machine learning.
+                </p>
+
+                <div className="mt-6 grid gap-3 text-sm text-gray-700 sm:grid-cols-2">
+                  {aiDataScienceCourses.map((course) => (
+                    <div key={course.id} className="flex items-start gap-3">
+                      <span className="mt-0.5 text-xs font-semibold text-gray-400">
+                        {String(course.number).padStart(2, '0')}
+                      </span>
+                      <div>
+                        <p className="font-semibold text-gray-900">
+                          {course.title}
+                        </p>
+                        <p className="text-gray-500">{course.description}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-3">
+                <Button variant="secondary" size="md" disabled>
+                  Coming Soon
+                </Button>
+                <p className="text-xs text-gray-500">
+                  We&apos;re mapping out the Lane 4 curriculum.
                 </p>
               </div>
             </div>
