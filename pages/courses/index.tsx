@@ -245,6 +245,48 @@ function CoursesPage() {
             <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
               <div className="flex-1">
                 <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-zinc-900 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-white">
+                  Lane 2
+                </div>
+                <h3 className="mb-2 text-2xl font-bold text-gray-900">
+                  Frontend Mastery
+                </h3>
+                <p className="text-base text-gray-600">
+                  A focused path for modern UI engineering, from semantic HTML to
+                  performance-obsessed experiences.
+                </p>
+
+                <div className="mt-6 grid gap-3 text-sm text-gray-700 sm:grid-cols-2">
+                  {frontendMasteryCourses.map((course) => (
+                    <div key={course.id} className="flex items-start gap-3">
+                      <span className="mt-0.5 text-xs font-semibold text-gray-400">
+                        {String(course.number).padStart(2, '0')}
+                      </span>
+                      <div>
+                        <p className="font-semibold text-gray-900">
+                          {course.title}
+                        </p>
+                        <p className="text-gray-500">{course.description}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-3">
+                <Button variant="secondary" size="md" disabled>
+                  Coming Soon
+                </Button>
+                <p className="text-xs text-gray-500">
+                  We&apos;re putting the finishing touches on Lane 2.
+                </p>
+              </div>
+            </div>
+          </Card>
+
+          <Card>
+            <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
+              <div className="flex-1">
+                <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-zinc-900 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-white">
                   Lane 3
                 </div>
                 <h3 className="mb-2 text-2xl font-bold text-gray-900">
@@ -282,48 +324,6 @@ function CoursesPage() {
                 </Button>
                 <p className="text-xs text-gray-500">
                   Built for modern backend teams and solo builders alike.
-                </p>
-              </div>
-            </div>
-          </Card>
-
-          <Card>
-            <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
-              <div className="flex-1">
-                <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-zinc-900 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-white">
-                  Lane 2
-                </div>
-                <h3 className="mb-2 text-2xl font-bold text-gray-900">
-                  Frontend Mastery
-                </h3>
-                <p className="text-base text-gray-600">
-                  A focused path for modern UI engineering, from semantic HTML to
-                  performance-obsessed experiences.
-                </p>
-
-                <div className="mt-6 grid gap-3 text-sm text-gray-700 sm:grid-cols-2">
-                  {frontendMasteryCourses.map((course) => (
-                    <div key={course.id} className="flex items-start gap-3">
-                      <span className="mt-0.5 text-xs font-semibold text-gray-400">
-                        {String(course.number).padStart(2, '0')}
-                      </span>
-                      <div>
-                        <p className="font-semibold text-gray-900">
-                          {course.title}
-                        </p>
-                        <p className="text-gray-500">{course.description}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="flex flex-col gap-3">
-                <Button variant="secondary" size="md" disabled>
-                  Coming Soon
-                </Button>
-                <p className="text-xs text-gray-500">
-                  We&apos;re putting the finishing touches on Lane 2.
                 </p>
               </div>
             </div>
