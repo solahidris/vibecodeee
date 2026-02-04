@@ -16,7 +16,7 @@ const TELEGRAM_GROUP_URL = 'https://t.me/+wKbaL8tiEZs4Y2E9'
 
 function PaymentSuccessPage() {
   const router = useRouter()
-  const { hasActiveSubscription, loading: userLoading, refetch } = useUser()
+  const { hasActiveSubscription, loading: userLoading, refreshProfile } = useUser()
   const [activating, setActivating] = useState(false)
   const [activationError, setActivationError] = useState<string | null>(null)
 
@@ -29,7 +29,7 @@ function PaymentSuccessPage() {
     // Wait 5 seconds for webhook to process
     const timeoutId = setTimeout(async () => {
       // Check if subscription is still not active
-      await refetch()
+      await refreshProfile()
 
       if (!hasActiveSubscription) {
         console.log('Subscription not activated by webhook, attempting manual activation...')
@@ -50,8 +50,8 @@ function PaymentSuccessPage() {
           }
 
           console.log('Subscription activated successfully:', data)
-          // Refetch user data to update UI
-          await refetch()
+          // Refresh user data to update UI
+          await refreshProfile()
         } catch (err) {
           console.error('Manual activation error:', err)
           setActivationError(err instanceof Error ? err.message : 'Failed to activate subscription')
@@ -62,7 +62,7 @@ function PaymentSuccessPage() {
     }, 5000) // Wait 5 seconds
 
     return () => clearTimeout(timeoutId)
-  }, [router.query.reference, hasActiveSubscription, userLoading, refetch, activating])
+  }, [router.query.reference, hasActiveSubscription, userLoading, refreshProfile, activating])
 
   return (
     <div className={`${geistSans.variable} min-h-screen bg-white font-sans`}>
