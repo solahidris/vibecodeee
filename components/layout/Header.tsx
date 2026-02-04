@@ -13,7 +13,6 @@ export function Header({ showNavigation = true }: HeaderProps) {
 
   const navigationLinks = [
     { label: 'Resources', path: '/resources' },
-    { label: 'Profile', path: '/profile' },
   ]
 
   return (
