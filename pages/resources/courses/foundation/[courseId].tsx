@@ -6,6 +6,7 @@ import { useAuth } from '@/contexts/AuthContext'
 import { Header } from '@/components/layout/Header'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
+import { CelebrationToast, ConfettiCannons } from '@/components/ui/Celebration'
 import { cn } from '@/lib/utils/cn'
 import { formatDate } from '@/lib/utils/formatters'
 import { Geist } from 'next/font/google'
@@ -21,6 +22,7 @@ import {
   parseCourseProgress,
   setLocalProgress,
 } from '@/lib/courses/progress'
+import { useCelebration } from '@/hooks/useCelebration'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -79,6 +81,8 @@ function FoundationCoursePage() {
   const [saving, setSaving] = useState(false)
   const [syncError, setSyncError] = useState<string | null>(null)
   const [lastSyncedAt, setLastSyncedAt] = useState<string | null>(null)
+  const { toast, confettiVisible, confettiKey, trigger, dismissToast } =
+    useCelebration()
 
   const courseId = router.isReady
     ? Array.isArray(router.query.courseId)
@@ -232,11 +236,17 @@ function FoundationCoursePage() {
     void saveProgress(nextProgressData)
   }, [allPassed, course, courseCompleted, progressData, user?.id])
 
-  const handleCheck = (exerciseId: string) => {
+  const handleCheck = (exerciseId: string, index: number) => {
     const exercise = exercises.find((item) => item.id === exerciseId)
     if (!exercise) return
 
+    const wasPassed = results[exerciseId]?.status === 'passed'
     const evaluation = evaluateExercise(answers[exerciseId] ?? '', exercise)
+
+    if (evaluation.passed && !wasPassed) {
+      const stepLabel = `Step ${String(index + 1).padStart(2, '0')}`
+      trigger(`${stepLabel}: ${exercise.title}`)
+    }
 
     setResults((prev) => ({
       ...prev,
@@ -288,6 +298,12 @@ function FoundationCoursePage() {
   return (
     <div className={`${geistSans.variable} min-h-screen bg-gray-50 font-sans`}>
       <Header />
+      <CelebrationToast
+        visible={toast.visible}
+        message={toast.message}
+        onClose={dismissToast}
+      />
+      {confettiVisible && <ConfettiCannons burstKey={confettiKey} />}
 
       <main className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="mb-8 flex items-center gap-2 text-sm text-gray-600">
@@ -434,7 +450,7 @@ function FoundationCoursePage() {
                       <Button
                         type="button"
                         size="sm"
-                        onClick={() => handleCheck(exercise.id)}
+                        onClick={() => handleCheck(exercise.id, index)}
                       >
                         Submit
                       </Button>
