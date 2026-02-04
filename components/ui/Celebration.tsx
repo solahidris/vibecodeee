@@ -2,18 +2,18 @@ import type { CSSProperties } from 'react'
 import { cn } from '@/lib/utils/cn'
 
 const confettiPieces = [
-  { x: 220, y: -200, rotate: 140, delay: 0, size: 10, color: '#f97316' },
-  { x: 260, y: -160, rotate: 200, delay: 40, size: 12, color: '#22c55e' },
-  { x: 180, y: -220, rotate: 90, delay: 80, size: 8, color: '#38bdf8' },
-  { x: 300, y: -190, rotate: 160, delay: 120, size: 9, color: '#f43f5e' },
-  { x: 240, y: -140, rotate: 210, delay: 160, size: 11, color: '#a855f7' },
-  { x: 280, y: -240, rotate: 110, delay: 200, size: 7, color: '#facc15' },
-  { x: 200, y: -150, rotate: 130, delay: 240, size: 8, color: '#14b8a6' },
-  { x: 320, y: -210, rotate: 190, delay: 280, size: 10, color: '#fb7185' },
-  { x: 260, y: -260, rotate: 150, delay: 320, size: 9, color: '#60a5fa' },
-  { x: 210, y: -180, rotate: 230, delay: 360, size: 11, color: '#f472b6' },
-  { x: 290, y: -170, rotate: 170, delay: 400, size: 8, color: '#34d399' },
-  { x: 230, y: -230, rotate: 120, delay: 440, size: 10, color: '#f59e0b' },
+  { x: -140, y: -90, rotate: 140, delay: 0, size: 10, color: '#f97316' },
+  { x: 120, y: -60, rotate: 200, delay: 40, size: 12, color: '#22c55e' },
+  { x: -90, y: -120, rotate: 90, delay: 80, size: 8, color: '#38bdf8' },
+  { x: 150, y: -80, rotate: 160, delay: 120, size: 9, color: '#f43f5e' },
+  { x: -110, y: -40, rotate: 210, delay: 160, size: 11, color: '#a855f7' },
+  { x: 130, y: -140, rotate: 110, delay: 200, size: 7, color: '#facc15' },
+  { x: -70, y: -70, rotate: 130, delay: 240, size: 8, color: '#14b8a6' },
+  { x: 160, y: -110, rotate: 190, delay: 280, size: 10, color: '#fb7185' },
+  { x: -150, y: 20, rotate: 150, delay: 320, size: 9, color: '#60a5fa' },
+  { x: 100, y: 40, rotate: 230, delay: 360, size: 11, color: '#f472b6' },
+  { x: -120, y: -10, rotate: 170, delay: 400, size: 8, color: '#34d399' },
+  { x: 140, y: 10, rotate: 120, delay: 440, size: 10, color: '#f59e0b' },
 ]
 
 const pieceStyle = (piece: (typeof confettiPieces)[number]) =>
@@ -36,15 +36,8 @@ export function ConfettiCannons({ burstKey }: { burstKey: number }) {
       <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
         {confettiPieces.map((piece, index) => (
           <span
-            key={`left-${index}`}
-            className="confetti-piece confetti-left"
-            style={pieceStyle(piece)}
-          />
-        ))}
-        {confettiPieces.map((piece, index) => (
-          <span
-            key={`right-${index}`}
-            className="confetti-piece confetti-right"
+            key={`burst-${index}`}
+            className="confetti-piece confetti-burst"
             style={pieceStyle(piece)}
           />
         ))}
@@ -75,15 +68,8 @@ export function ConfettiBurst({
         <div className="confetti-scale">
           {confettiPieces.map((piece, index) => (
             <span
-              key={`burst-left-${index}`}
-              className="confetti-piece confetti-left"
-              style={pieceStyle(piece)}
-            />
-          ))}
-          {confettiPieces.map((piece, index) => (
-            <span
-              key={`burst-right-${index}`}
-              className="confetti-piece confetti-right"
+              key={`burst-${index}`}
+              className="confetti-piece confetti-burst"
               style={pieceStyle(piece)}
             />
           ))}

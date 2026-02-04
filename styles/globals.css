@@ -94,39 +94,31 @@ html {
     }
   }
 
-  @keyframes confetti-left {
+  @keyframes confetti-burst {
     0% {
       opacity: 0;
-      transform: translate(0, 0) rotate(var(--rotation));
+      transform: translate(0, 0) rotate(var(--rotation)) scale(0.7);
     }
-    15% {
+    12% {
       opacity: 1;
+    }
+    65% {
+      opacity: 1;
+      transform: translate(
+        calc(var(--x) * 0.55),
+        calc(var(--y) * 0.55)
+      )
+      rotate(calc(var(--rotation) + 180deg))
+      scale(1);
     }
     100% {
       opacity: 0;
       transform: translate(
-        calc(-1 * var(--x) * 0.6),
-        calc(var(--y) * 0.6)
+        calc(var(--x) * 0.65),
+        calc(var(--y) * 0.65)
       )
-      rotate(calc(var(--rotation) + 360deg));
-    }
-  }
-
-  @keyframes confetti-right {
-    0% {
-      opacity: 0;
-      transform: translate(0, 0) rotate(var(--rotation));
-    }
-    15% {
-      opacity: 1;
-    }
-    100% {
-      opacity: 0;
-      transform: translate(
-        calc(var(--x) * 0.6),
-        calc(var(--y) * 0.6)
-      )
-      rotate(calc(var(--rotation) + 360deg));
+      rotate(calc(var(--rotation) + 360deg))
+      scale(0.95);
     }
   }
 
@@ -158,18 +150,14 @@ html {
   background: var(--color);
   opacity: 0;
   border-radius: 9999px;
-  animation-duration: 1.1s;
-  animation-timing-function: ease-out;
+  animation-duration: 0.95s;
+  animation-timing-function: cubic-bezier(0.2, 0.7, 0.2, 1);
   animation-fill-mode: forwards;
   animation-delay: var(--delay);
 }
 
-.confetti-left {
-  animation-name: confetti-left;
-}
-
-.confetti-right {
-  animation-name: confetti-right;
+.confetti-burst {
+  animation-name: confetti-burst;
 }
 
 .confetti-scale {
