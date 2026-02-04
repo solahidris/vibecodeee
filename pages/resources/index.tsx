@@ -32,6 +32,90 @@ const resourceLinks = [
     filters: ['coding'],
   },
   {
+    id: 'nextjs-mastery',
+    title: 'Next.js Mastery',
+    description:
+      'Build production-ready apps with routing, data fetching, and deployment.',
+    icon: '🧭',
+    path: '/resources/nextjs-mastery',
+    tag: 'Coming soon',
+    highlights: ['8 modules', 'Capstone app', 'Best practices'],
+    accent: 'from-emerald-200/60 via-white to-white',
+    cta: 'Coming soon',
+    filters: ['coding'],
+    disabled: true,
+  },
+  {
+    id: 'frontend-foundations',
+    title: 'Frontend Foundations',
+    description:
+      'Design systems, accessibility, and responsive layouts that feel premium.',
+    icon: '🖥️',
+    path: '/resources/frontend-foundations',
+    tag: 'Coming soon',
+    highlights: ['UI systems', 'Accessibility', 'Responsive builds'],
+    accent: 'from-rose-200/60 via-white to-white',
+    cta: 'Coming soon',
+    filters: ['coding'],
+    disabled: true,
+  },
+  {
+    id: 'backend-apis',
+    title: 'Backend APIs',
+    description:
+      'Ship secure APIs with auth, rate limits, and clean data models.',
+    icon: '🧩',
+    path: '/resources/backend-apis',
+    tag: 'Coming soon',
+    highlights: ['REST + GraphQL', 'Auth flows', 'Rate limits'],
+    accent: 'from-indigo-200/60 via-white to-white',
+    cta: 'Coming soon',
+    filters: ['coding'],
+    disabled: true,
+  },
+  {
+    id: 'ai-product-lab',
+    title: 'AI Product Lab',
+    description:
+      'From idea to prototype: prompts, evals, and reliable UX patterns.',
+    icon: '🧠',
+    path: '/resources/ai-product-lab',
+    tag: 'Coming soon',
+    highlights: ['Prompt ops', 'Eval loops', 'UX patterns'],
+    accent: 'from-sky-200/60 via-white to-white',
+    cta: 'Coming soon',
+    filters: ['coding'],
+    disabled: true,
+  },
+  {
+    id: 'devops-launchpad',
+    title: 'DevOps Launchpad',
+    description:
+      'Deploy with confidence using CI/CD, observability, and infra basics.',
+    icon: '🚀',
+    path: '/resources/devops-launchpad',
+    tag: 'Coming soon',
+    highlights: ['CI/CD', 'Monitoring', 'Release playbooks'],
+    accent: 'from-amber-200/60 via-white to-white',
+    cta: 'Coming soon',
+    filters: ['coding'],
+    disabled: true,
+  },
+  {
+    id: 'testing-strategy',
+    title: 'Testing Strategy',
+    description:
+      'Unit, integration, and E2E testing habits for reliable shipping.',
+    icon: '🧪',
+    path: '/resources/testing-strategy',
+    tag: 'Coming soon',
+    highlights: ['Test plans', 'Mocks + fixtures', 'CI gates'],
+    accent: 'from-teal-200/60 via-white to-white',
+    cta: 'Coming soon',
+    filters: ['coding'],
+    disabled: true,
+  },
+  {
     id: 'crashcourse',
     title: 'Automate Boring Stuff with Python',
     description:
@@ -255,7 +339,12 @@ function ResourcesPage() {
                   <Button
                     variant="secondary"
                     size="sm"
-                    onClick={() => router.push(resource.path)}
+                    onClick={() => {
+                      if (!resource.disabled) {
+                        router.push(resource.path)
+                      }
+                    }}
+                    disabled={resource.disabled}
                     className="group/button"
                   >
                     {resource.cta}
