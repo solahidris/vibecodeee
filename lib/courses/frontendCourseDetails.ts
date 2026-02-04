@@ -26,7 +26,8 @@ export const frontendCourseDetails: Record<string, FrontendCourseDetail> = {
   'frontend-html5': {
     id: 'frontend-html5',
     title: 'HTML5 & Semantic Web',
-    description: 'Beyond <div> tags; accessibility and SEO structure.',
+    description:
+      'Go beyond <div> tags with semantic landmarks, accessible forms, and metadata that helps users and search engines. Build page skeletons that read cleanly for people and bots.',
     overview:
       'Practice semantic HTML, accessibility, and metadata patterns that help both users and search engines. Each check is text-only validation.',
     outcomes: [
@@ -121,7 +122,8 @@ export const frontendCourseDetails: Record<string, FrontendCourseDetail> = {
   'frontend-css-layouts': {
     id: 'frontend-css-layouts',
     title: 'CSS Flexbox & Grid',
-    description: 'Mastering modern layouts without the headaches.',
+    description:
+      'Design resilient layouts with Flexbox and Grid, from nav bars to complex dashboards. Learn alignment, spacing, and responsive patterns that scale.',
     overview:
       'Use Flexbox and Grid to build stable, responsive layouts without extra wrapper divs. Each check is text-only validation.',
     outcomes: [
@@ -205,7 +207,8 @@ export const frontendCourseDetails: Record<string, FrontendCourseDetail> = {
   'frontend-tailwind-advanced': {
     id: 'frontend-tailwind-advanced',
     title: 'Advanced Tailwind CSS',
-    description: 'Custom configurations, plugins, and dark mode.',
+    description:
+      'Move past utility basics with configuration, custom themes, and component patterns. Master plugins, variants, and dark mode strategies for production UIs.',
     overview:
       'Customize Tailwind to match a brand system and scale it across components. Each check is text-only validation.',
     outcomes: [
@@ -291,7 +294,8 @@ export const frontendCourseDetails: Record<string, FrontendCourseDetail> = {
   'frontend-js-fundamentals': {
     id: 'frontend-js-fundamentals',
     title: 'JavaScript Fundamentals',
-    description: 'Variables, loops, and data types.',
+    description:
+      'Build confidence in variables, functions, loops, and objects through practical UI examples. Strengthen the mental model behind events and data flow.',
     overview:
       'Practice the core JavaScript syntax used in every frontend codebase. Each check is text-only validation.',
     outcomes: [
@@ -370,7 +374,8 @@ export const frontendCourseDetails: Record<string, FrontendCourseDetail> = {
   'frontend-es6': {
     id: 'frontend-es6',
     title: 'ES6+ Modern JS',
-    description: 'Arrow functions, destructuring, and asynchronous code (async/await).',
+    description:
+      'Use modern syntax like destructuring, modules, and template literals to write cleaner code. Practice promises and async/await for real-world data loading.',
     overview:
       'Level up to ES6+ syntax that modern frontend teams use daily. Each check is text-only validation.',
     outcomes: [
@@ -452,7 +457,8 @@ export const frontendCourseDetails: Record<string, FrontendCourseDetail> = {
   'frontend-react-components': {
     id: 'frontend-react-components',
     title: 'React: Components & Props',
-    description: 'The building blocks of the UI.',
+    description:
+      'Create reusable components, compose layouts, and pass data with props. Learn how to structure a component tree that stays readable.',
     overview:
       'Practice creating React components and passing data through props. Each check is text-only validation.',
     outcomes: [
@@ -536,7 +542,8 @@ export const frontendCourseDetails: Record<string, FrontendCourseDetail> = {
   'frontend-react-state': {
     id: 'frontend-react-state',
     title: 'React: State & Effects',
-    description: 'Managing dynamic data with useState and useEffect.',
+    description:
+      'Handle interactive UI with useState, useEffect, and derived state patterns. Learn to avoid common pitfalls like stale data and extra renders.',
     overview:
       'Practice the hooks that power dynamic React UIs. Each check is text-only validation.',
     outcomes: [
@@ -615,7 +622,8 @@ export const frontendCourseDetails: Record<string, FrontendCourseDetail> = {
   'frontend-nextjs-foundations': {
     id: 'frontend-nextjs-foundations',
     title: 'Next.js Foundations',
-    description: 'Server-side rendering and routing for modern SEO.',
+    description:
+      'Understand file-based routing, layouts, and server rendering for SEO-friendly apps. Learn when to use SSR, SSG, and client-side rendering.',
     overview:
       'Cover the key building blocks of the Next.js pages router. Each check is text-only validation.',
     outcomes: [
@@ -699,7 +707,8 @@ export const frontendCourseDetails: Record<string, FrontendCourseDetail> = {
   'frontend-typescript': {
     id: 'frontend-typescript',
     title: 'TypeScript for Frontend',
-    description: 'Adding "type safety" to catch bugs before they happen.',
+    description:
+      'Add strong typing to components, props, and API responses to catch bugs early. Learn interfaces, generics, and type narrowing you will use daily.',
     overview:
       'Apply TypeScript syntax that improves confidence in UI code. Each check is text-only validation.',
     outcomes: [
@@ -780,7 +789,8 @@ export const frontendCourseDetails: Record<string, FrontendCourseDetail> = {
   'frontend-performance': {
     id: 'frontend-performance',
     title: 'Web Performance',
-    description: 'Core Web Vitals, lazy loading, and image optimization.',
+    description:
+      'Improve Core Web Vitals with smart loading, caching, and asset strategy. Speed up perceived performance with image, font, and bundle techniques.',
     overview:
       'Focus on quick wins that improve performance and Core Web Vitals. Each check is text-only validation.',
     outcomes: [

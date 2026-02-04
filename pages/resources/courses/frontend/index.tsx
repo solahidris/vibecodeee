@@ -10,6 +10,7 @@ import { cn } from '@/lib/utils/cn'
 import { formatDate } from '@/lib/utils/formatters'
 import { Geist } from 'next/font/google'
 import { frontendCourses } from '@/lib/courses/frontendCourses'
+import { getFrontendCourseDetail } from '@/lib/courses/frontendCourseDetails'
 import {
   buildFrontendProgress,
   CourseProgressData,
@@ -177,6 +178,8 @@ function FrontendCoursesPage() {
         <div className="grid gap-6">
           {frontendCourses.map((course) => {
             const isCompleted = frontendProgress[course.id]
+            const detail = getFrontendCourseDetail(course.id)
+            const focusAreas = detail?.outcomes?.slice(0, 3) ?? []
 
             return (
               <Card
@@ -197,6 +200,18 @@ function FrontendCoursesPage() {
                     <p className="mt-2 text-sm text-gray-600">
                       {course.description}
                     </p>
+                    {focusAreas.length > 0 && (
+                      <div className="mt-3">
+                        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
+                          Focus areas
+                        </p>
+                        <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-gray-600">
+                          {focusAreas.map((outcome) => (
+                            <li key={outcome}>{outcome}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
                   </div>
 
                   <div className="flex flex-wrap items-center gap-3">
