@@ -32,28 +32,28 @@ export function Header({ showNavigation = true }: HeaderProps) {
           </button>
 
           {/* Right Side - Navigation Links + Avatar */}
-          {user && (
-            <div className="flex items-center gap-8">
-              {/* Navigation Links */}
-              {showNavigation && (
-                <nav className="hidden sm:flex items-center gap-8">
-                  {navigationLinks.map((link) => (
-                    <button
-                      key={link.path}
-                      onClick={() => router.push(link.path)}
-                      className={`text-sm font-normal transition-colors cursor-pointer ${
-                        currentPath === link.path
-                          ? 'text-zinc-900'
-                          : 'text-zinc-600 hover:text-zinc-900'
-                      }`}
-                    >
-                      {link.label}
-                    </button>
-                  ))}
-                </nav>
-              )}
+          <div className="flex items-center gap-8">
+            {/* Navigation Links */}
+            {showNavigation && (
+              <nav className="hidden sm:flex items-center gap-8">
+                {navigationLinks.map((link) => (
+                  <button
+                    key={link.path}
+                    onClick={() => router.push(link.path)}
+                    className={`text-sm font-normal transition-colors cursor-pointer ${
+                      currentPath === link.path
+                        ? 'text-zinc-900'
+                        : 'text-zinc-600 hover:text-zinc-900'
+                    }`}
+                  >
+                    {link.label}
+                  </button>
+                ))}
+              </nav>
+            )}
 
-              {/* Avatar */}
+            {/* Avatar - Only show if logged in */}
+            {user && (
               <button
                 onClick={() => router.push('/profile')}
                 className="transition-opacity hover:opacity-80 cursor-pointer"
@@ -64,8 +64,8 @@ export function Header({ showNavigation = true }: HeaderProps) {
                   name={user.user_metadata?.full_name || user.email}
                 />
               </button>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </header>
