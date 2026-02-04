@@ -1,23 +1,27 @@
 import { useScrollAnimation } from '@/hooks/useScrollAnimation'
+import Image from 'next/image'
 
 const benefits = [
   {
     icon: '🌟',
     title: 'Premium Content',
     description: 'Access exclusive resources, guides, and tools available only to members',
-    features: ['Expert tutorials', 'Curated resources', 'Private workshops']
+    features: ['Expert tutorials', 'Curated resources', 'Private workshops'],
+    image: 'https://images.unsplash.com/photo-1432888622747-4eb9a8f2c293?w=400&q=80'
   },
   {
     icon: '🤝',
     title: 'Active Community',
     description: 'Connect and collaborate with passionate members from around the world',
-    features: ['Daily discussions', 'Networking events', 'Peer support']
+    features: ['Daily discussions', 'Networking events', 'Peer support'],
+    image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=400&q=80'
   },
   {
     icon: '📚',
     title: 'Continuous Learning',
     description: 'Stay ahead with the latest AI news, tools, and industry insights',
-    features: ['Weekly updates', 'Industry trends', 'Skill development']
+    features: ['Weekly updates', 'Industry trends', 'Skill development'],
+    image: 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=400&q=80'
   },
 ]
 
@@ -25,11 +29,9 @@ export function Benefits() {
   const { ref, isVisible } = useScrollAnimation()
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-violet-600 via-purple-600 to-blue-600 py-32">
-      {/* Decorative Elements */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:4rem_4rem]"></div>
-      <div className="absolute -left-48 top-0 h-96 w-96 rounded-full bg-white/5 blur-3xl"></div>
-      <div className="absolute -right-48 bottom-0 h-96 w-96 rounded-full bg-white/5 blur-3xl"></div>
+    <section className="relative overflow-hidden bg-white py-32">
+      {/* Subtle Pattern */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#00000005_1px,transparent_1px),linear-gradient(to_bottom,#00000005_1px,transparent_1px)] bg-[size:4rem_4rem]"></div>
 
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div
@@ -39,14 +41,14 @@ export function Benefits() {
           }`}
         >
           {/* Heading */}
-          <span className="mb-4 inline-block rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-sm font-semibold text-white backdrop-blur-sm">
+          <span className="mb-4 inline-block rounded-full border border-zinc-200 bg-zinc-50 px-4 py-1.5 text-sm font-semibold text-zinc-700 transition-all duration-300 hover:border-zinc-300">
             Member Benefits
           </span>
-          <h2 className="mb-6 text-5xl font-black tracking-tight text-white sm:text-6xl">
+          <h2 className="mb-6 text-5xl font-black tracking-tight text-zinc-900 sm:text-6xl">
             Why Join Our Community?
           </h2>
-          <p className="mx-auto mb-20 max-w-3xl text-xl leading-relaxed text-violet-100">
-            Unlock exclusive benefits designed to accelerate your growth and connect you with like-minded individuals
+          <p className="mx-auto mb-20 max-w-3xl text-xl leading-relaxed text-zinc-600">
+            Unlock exclusive benefits designed to accelerate your growth
           </p>
 
           {/* Benefits Grid */}
@@ -54,55 +56,66 @@ export function Benefits() {
             {benefits.map((benefit, index) => (
               <div
                 key={benefit.title}
-                className="group relative overflow-hidden rounded-3xl border border-white/20 bg-white/10 p-8 backdrop-blur-lg transition-all duration-300 hover:-translate-y-2 hover:bg-white/15 hover:shadow-2xl"
+                className="group relative overflow-hidden rounded-3xl border border-zinc-200 bg-white transition-all duration-500 hover:-translate-y-2 hover:border-zinc-300 hover:shadow-2xl"
                 style={{
                   animationDelay: `${index * 100}ms`,
                 }}
               >
-                {/* Icon */}
-                <div className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-white/20 text-4xl backdrop-blur-sm transition-transform duration-300 group-hover:scale-110">
-                  {benefit.icon}
+                {/* Image Background */}
+                <div className="relative h-64 overflow-hidden bg-zinc-100">
+                  <Image
+                    src={benefit.image}
+                    alt={benefit.title}
+                    width={400}
+                    height={300}
+                    className="h-full w-full object-cover grayscale transition-all duration-500 group-hover:scale-110 group-hover:grayscale-0"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-white to-transparent"></div>
+
+                  {/* Icon on Image */}
+                  <div className="absolute bottom-4 left-4 flex h-16 w-16 items-center justify-center rounded-2xl border border-zinc-200 bg-white/90 backdrop-blur-sm text-4xl transition-transform duration-300 group-hover:scale-110">
+                    {benefit.icon}
+                  </div>
                 </div>
 
                 {/* Content */}
-                <h3 className="mb-3 text-2xl font-bold text-white">
-                  {benefit.title}
-                </h3>
-                <p className="mb-6 leading-relaxed text-violet-100">
-                  {benefit.description}
-                </p>
+                <div className="p-8 text-left">
+                  <h3 className="mb-3 text-2xl font-bold text-zinc-900">
+                    {benefit.title}
+                  </h3>
+                  <p className="mb-6 leading-relaxed text-zinc-600">
+                    {benefit.description}
+                  </p>
 
-                {/* Features List */}
-                <ul className="space-y-2 text-left">
-                  {benefit.features.map((feature) => (
-                    <li key={feature} className="flex items-center gap-2 text-sm text-violet-100">
-                      <svg className="h-5 w-5 flex-shrink-0 text-violet-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                      </svg>
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
-
-                {/* Hover Gradient */}
-                <div className="absolute inset-0 -z-10 bg-gradient-to-br from-white/5 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+                  {/* Features List */}
+                  <ul className="space-y-2">
+                    {benefit.features.map((feature) => (
+                      <li key={feature} className="flex items-center gap-2 text-sm text-zinc-600">
+                        <svg className="h-5 w-5 flex-shrink-0 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                        </svg>
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
             ))}
           </div>
 
           {/* Stats Section */}
-          <div className="mt-20 grid gap-8 sm:grid-cols-3">
+          <div className="mt-20 grid gap-8 rounded-3xl border border-zinc-200 bg-zinc-50 p-12 sm:grid-cols-3">
             <div className="text-center">
-              <div className="mb-2 text-5xl font-black text-white">500+</div>
-              <div className="text-lg text-violet-200">Active Members</div>
+              <div className="mb-2 text-5xl font-black text-zinc-900">500+</div>
+              <div className="text-lg text-zinc-600">Active Members</div>
             </div>
             <div className="text-center">
-              <div className="mb-2 text-5xl font-black text-white">50+</div>
-              <div className="text-lg text-violet-200">Resources Shared</div>
+              <div className="mb-2 text-5xl font-black text-zinc-900">50+</div>
+              <div className="text-lg text-zinc-600">Resources Shared</div>
             </div>
             <div className="text-center">
-              <div className="mb-2 text-5xl font-black text-white">24/7</div>
-              <div className="text-lg text-violet-200">Community Support</div>
+              <div className="mb-2 text-5xl font-black text-zinc-900">24/7</div>
+              <div className="text-lg text-zinc-600">Community Support</div>
             </div>
           </div>
         </div>

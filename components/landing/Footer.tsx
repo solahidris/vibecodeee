@@ -5,27 +5,27 @@ export function Footer() {
   const currentYear = new Date().getFullYear()
 
   return (
-    <footer className="relative border-t border-gray-200 bg-white">
+    <footer className="relative border-t border-zinc-200 bg-white">
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         {/* Main Footer Content */}
         <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-4">
           {/* Brand Column */}
           <div className="lg:col-span-2">
             <div className="mb-4 flex items-center gap-2">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet-600 to-purple-600 shadow-lg shadow-violet-500/30">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-zinc-900 shadow-lg transition-all duration-300 hover:scale-110">
                 <span className="text-lg font-bold text-white">V</span>
               </div>
-              <span className="text-2xl font-bold text-gray-900">VibeCodE</span>
+              <span className="text-2xl font-bold text-zinc-900">VibeCodE</span>
             </div>
-            <p className="mb-6 max-w-md text-gray-600 leading-relaxed">
-              Join our exclusive community of creators, learners, and innovators. Access premium resources and grow together.
+            <p className="mb-6 max-w-md text-zinc-600 leading-relaxed">
+              A minimalist community for creators, learners, and innovators. Premium resources. Expert insights. Zero noise.
             </p>
             <div className="flex gap-4">
               <a
                 href="https://tinyurl.com/a1-community"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100 text-gray-600 transition-all hover:bg-violet-100 hover:text-violet-600"
+                className="flex h-10 w-10 items-center justify-center rounded-lg border border-zinc-200 text-zinc-600 transition-all duration-300 hover:border-zinc-900 hover:bg-zinc-900 hover:text-white hover:scale-110"
                 aria-label="Telegram"
               >
                 <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
@@ -36,7 +36,7 @@ export function Footer() {
                 href="https://twitter.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100 text-gray-600 transition-all hover:bg-violet-100 hover:text-violet-600"
+                className="flex h-10 w-10 items-center justify-center rounded-lg border border-zinc-200 text-zinc-600 transition-all duration-300 hover:border-zinc-900 hover:bg-zinc-900 hover:text-white hover:scale-110"
                 aria-label="Twitter"
               >
                 <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
@@ -47,7 +47,7 @@ export function Footer() {
                 href="https://github.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100 text-gray-600 transition-all hover:bg-violet-100 hover:text-violet-600"
+                className="flex h-10 w-10 items-center justify-center rounded-lg border border-zinc-200 text-zinc-600 transition-all duration-300 hover:border-zinc-900 hover:bg-zinc-900 hover:text-white hover:scale-110"
                 aria-label="GitHub"
               >
                 <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
@@ -59,14 +59,14 @@ export function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-gray-900">
+            <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-zinc-900">
               Quick Links
             </h3>
             <ul className="space-y-3">
               <li>
                 <button
                   onClick={() => router.push('/resources')}
-                  className="text-gray-600 transition-colors hover:text-violet-600"
+                  className="text-zinc-600 transition-colors duration-300 hover:text-zinc-900"
                 >
                   Resources
                 </button>
@@ -74,7 +74,7 @@ export function Footer() {
               <li>
                 <button
                   onClick={() => router.push('/basicprompt')}
-                  className="text-gray-600 transition-colors hover:text-violet-600"
+                  className="text-zinc-600 transition-colors duration-300 hover:text-zinc-900"
                 >
                   Courses
                 </button>
@@ -82,7 +82,7 @@ export function Footer() {
               <li>
                 <button
                   onClick={() => router.push('/profile')}
-                  className="text-gray-600 transition-colors hover:text-violet-600"
+                  className="text-zinc-600 transition-colors duration-300 hover:text-zinc-900"
                 >
                   Profile
                 </button>
@@ -92,7 +92,7 @@ export function Footer() {
                   href="https://tinyurl.com/a1-community"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-gray-600 transition-colors hover:text-violet-600"
+                  className="text-zinc-600 transition-colors duration-300 hover:text-zinc-900"
                 >
                   Telegram Community
                 </a>
@@ -102,27 +102,27 @@ export function Footer() {
 
           {/* Legal */}
           <div>
-            <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-gray-900">
+            <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-zinc-900">
               Legal
             </h3>
             <ul className="space-y-3">
               <li>
-                <button className="text-gray-600 transition-colors hover:text-violet-600">
+                <button className="text-zinc-600 transition-colors duration-300 hover:text-zinc-900">
                   Privacy Policy
                 </button>
               </li>
               <li>
-                <button className="text-gray-600 transition-colors hover:text-violet-600">
+                <button className="text-zinc-600 transition-colors duration-300 hover:text-zinc-900">
                   Terms of Service
                 </button>
               </li>
               <li>
-                <button className="text-gray-600 transition-colors hover:text-violet-600">
+                <button className="text-zinc-600 transition-colors duration-300 hover:text-zinc-900">
                   Cookie Policy
                 </button>
               </li>
               <li>
-                <button className="text-gray-600 transition-colors hover:text-violet-600">
+                <button className="text-zinc-600 transition-colors duration-300 hover:text-zinc-900">
                   Contact Us
                 </button>
               </li>
@@ -131,13 +131,13 @@ export function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="mt-12 border-t border-gray-200 pt-8">
+        <div className="mt-12 border-t border-zinc-200 pt-8">
           <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-zinc-600">
               © {currentYear} VibeCodE. All rights reserved.
             </p>
-            <p className="text-sm text-gray-500">
-              Made with ❤️ for the community
+            <p className="text-sm text-zinc-500">
+              Crafted with precision
             </p>
           </div>
         </div>

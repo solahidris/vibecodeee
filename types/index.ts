@@ -38,4 +38,5 @@ export interface Topic {
   name: string
   icon: string
   description?: string
+  image?: string
 }
