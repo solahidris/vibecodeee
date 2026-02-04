@@ -25,15 +25,18 @@ function MarqueeRow({ items, reverse = false }: { items: Topic[]; reverse?: bool
   return (
     <div className="relative overflow-hidden py-4">
       <div
-        className={`flex gap-4 ${
+        className={`flex gap-4 w-max ${
           reverse ? 'animate-marquee-right' : 'animate-marquee-left'
         }`}
+        style={{
+          willChange: 'transform',
+        }}
       >
         {/* Duplicate items for seamless loop */}
         {[...items, ...items, ...items].map((topic, index) => (
           <div
             key={`${topic.name}-${index}`}
-            className="flex-shrink-0 flex items-center gap-3 rounded-full border border-zinc-200 bg-white px-6 py-3 shadow-sm transition-all duration-300 hover:border-zinc-900 hover:shadow-md"
+            className="flex-shrink-0 flex items-center gap-3 rounded-full border border-zinc-200 bg-white px-6 py-3 shadow-sm hover:border-zinc-900 hover:shadow-md"
           >
             <span className="text-2xl">{topic.icon}</span>
             <span className="text-sm font-semibold text-zinc-900 whitespace-nowrap">
