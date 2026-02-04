@@ -399,7 +399,7 @@ function CoursesPage() {
                   syncing={syncing}
                 />
                 <Button
-                  variant="secondary"
+                  variant="primary"
                   size="md"
                   onClick={() => router.push('/resources/courses/frontend')}
                 >
@@ -450,7 +450,7 @@ function CoursesPage() {
                   syncing={syncing}
                 />
                 <Button
-                  variant="secondary"
+                  variant="primary"
                   size="md"
                   onClick={() => router.push('/resources/courses/backend')}
                 >
@@ -501,7 +501,7 @@ function CoursesPage() {
                   syncing={syncing}
                 />
                 <Button
-                  variant="secondary"
+                  variant="primary"
                   size="md"
                   onClick={() =>
                     router.push('/resources/courses/ai-data-science')
@@ -554,7 +554,7 @@ function CoursesPage() {
                   syncing={syncing}
                 />
                 <Button
-                  variant="secondary"
+                  variant="primary"
                   size="md"
                   onClick={() => router.push('/resources/courses/career')}
                 >
