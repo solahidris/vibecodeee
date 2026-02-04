@@ -69,6 +69,15 @@ const mergeCourseProgress = (
       },
       {}
     ),
+    careerDevops: careerDevopsCourses.reduce<Record<string, boolean>>(
+      (acc, course) => {
+        acc[course.id] = Boolean(
+          server.careerDevops?.[course.id] || local.careerDevops?.[course.id]
+        )
+        return acc
+      },
+      {}
+    ),
   }
 
   const crashcourse = mergeChecklistProgress(
@@ -117,6 +126,12 @@ const needsProgressSync = (
       merged.aiDataScience?.[course.id] &&
       !server.aiDataScience?.[course.id]
     ) {
+      return true
+    }
+  }
+
+  for (const course of careerDevopsCourses) {
+    if (merged.careerDevops?.[course.id] && !server.careerDevops?.[course.id]) {
       return true
     }
   }

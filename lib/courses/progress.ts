@@ -1,10 +1,12 @@
 import { aiDataScienceCourses } from '@/lib/courses/aiDataScienceCourses'
 import { backendCourses } from '@/lib/courses/backendCourses'
+import { careerDevopsCourses } from '@/lib/courses/careerDevopsCourses'
 import { foundationCourses } from '@/lib/courses/foundationCourses'
 import { frontendCourses } from '@/lib/courses/frontendCourses'
 
 export type CourseProgressData = {
   backend?: Record<string, boolean>
+  careerDevops?: Record<string, boolean>
   foundation?: Record<string, boolean>
   frontend?: Record<string, boolean>
   aiDataScience?: Record<string, boolean>
@@ -37,6 +39,13 @@ const emptyBackendProgress = backendCourses.reduce<Record<string, boolean>>(
 )
 
 const emptyAiDataScienceProgress = aiDataScienceCourses.reduce<
+  Record<string, boolean>
+>((acc, course) => {
+  acc[course.id] = false
+  return acc
+}, {})
+
+const emptyCareerDevopsProgress = careerDevopsCourses.reduce<
   Record<string, boolean>
 >((acc, course) => {
   acc[course.id] = false
@@ -107,6 +116,19 @@ export const buildAiDataScienceProgress = (
   return Object.keys(emptyAiDataScienceProgress).reduce<Record<string, boolean>>(
     (acc, courseId) => {
       acc[courseId] = Boolean(aiProgress[courseId])
+      return acc
+    },
+    {}
+  )
+}
+
+export const buildCareerDevopsProgress = (
+  progressData: CourseProgressData
+): Record<string, boolean> => {
+  const careerProgress = progressData.careerDevops ?? {}
+  return Object.keys(emptyCareerDevopsProgress).reduce<Record<string, boolean>>(
+    (acc, courseId) => {
+      acc[courseId] = Boolean(careerProgress[courseId])
       return acc
     },
     {}
