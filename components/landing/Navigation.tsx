@@ -14,9 +14,9 @@ export function Navigation() {
           {/* Logo */}
           <button
             onClick={() => router.push('/')}
-            className="group flex items-center gap-2 transition-all duration-300 hover:opacity-80"
+            className="group flex items-center gap-2 transition-all duration-300 hover:opacity-80 cursor-pointer"
           >
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-zinc-900 shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:shadow-xl">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-zinc-900 shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:shadow-xl">
               <span className="text-lg font-bold text-white">V</span>
             </div>
             <span className="text-xl font-bold tracking-tight text-zinc-900 transition-all duration-300 group-hover:tracking-tight">
@@ -32,19 +32,18 @@ export function Navigation() {
                   variant="ghost"
                   size="sm"
                   onClick={() => router.push('/resources')}
-                  className="hidden sm:inline-flex text-zinc-600 hover:text-zinc-900 transition-all duration-300"
+                  className="hidden sm:inline-flex text-zinc-600 hover:text-zinc-900 transition-all duration-300 cursor-pointer"
                 >
                   Resources
                 </Button>
                 <button
                   onClick={() => router.push('/profile')}
-                  className="cursor-pointer transition-transform duration-300 hover:scale-110"
+                  className="cursor-pointer transition-opacity hover:opacity-80"
                   aria-label="Go to profile"
                 >
                   <Avatar
                     src={user.user_metadata?.avatar_url}
                     name={user.user_metadata?.full_name || user.email}
-                    size="sm"
                   />
                 </button>
               </>
@@ -53,7 +52,7 @@ export function Navigation() {
                 variant="primary"
                 size="sm"
                 onClick={() => router.push('/login')}
-                className="bg-zinc-900 text-white border-zinc-900 hover:bg-zinc-800 transition-all duration-300 hover:scale-105"
+                className="bg-zinc-900 text-white border-zinc-900 hover:bg-zinc-800 transition-all duration-300 hover:scale-105 cursor-pointer"
               >
                 Login
               </Button>
