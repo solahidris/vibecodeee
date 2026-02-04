@@ -67,7 +67,7 @@ function SubscribePage() {
             </span>
             Join 500+ Active Members
           </div>
-          <h1 className="mb-6 text-5xl font-black text-zinc-900 sm:text-6xl lg:text-7xl">
+          <h1 className="mb-6 pb-4 text-5xl font-black text-zinc-900 sm:text-6xl lg:text-7xl">
             Unlock Your Full Potential
           </h1>
           <p className="mb-8 text-xl leading-relaxed text-zinc-600 mx-auto max-w-3xl">
@@ -94,7 +94,7 @@ function SubscribePage() {
           <div>
             {/* What You Get Section */}
             <div className="mb-12">
-              <h2 className="mb-8 text-3xl font-bold text-zinc-900">What You'll Get</h2>
+              <h2 className="mb-8 pb-4 text-3xl font-bold text-zinc-900">What You'll Get</h2>
               <div className="space-y-6">
                 <div className="flex items-start gap-4">
                   <div className="flex-shrink-0 flex h-10 w-10 items-center justify-center rounded-xl bg-green-100">
@@ -196,7 +196,7 @@ function SubscribePage() {
 
             {/* Community Highlights */}
             <div className="rounded-2xl border border-zinc-200 bg-gradient-to-br from-zinc-50 to-zinc-100 p-8">
-              <h3 className="mb-6 text-2xl font-bold text-zinc-900">Why Members Love Us</h3>
+              <h3 className="mb-6 pb-4 text-2xl font-bold text-zinc-900">Why Members Love Us</h3>
               <div className="space-y-4">
                 <div className="flex items-start gap-3">
                   <svg className="h-6 w-6 flex-shrink-0 text-zinc-900" fill="currentColor" viewBox="0 0 20 20">
@@ -344,7 +344,7 @@ function SubscribePage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                 </svg>
               </div>
-              <h3 className="mb-2 font-bold text-green-900">Not satisfied?</h3>
+              <h3 className="mb-2 pb-4 font-bold text-green-900">Not satisfied?</h3>
               <p className="text-sm text-green-700">Cancel anytime within your first month for a full refund. No questions asked.</p>
             </div>
           </div>
