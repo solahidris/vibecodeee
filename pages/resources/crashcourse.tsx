@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { DM_Serif_Display, Sora } from "next/font/google";
 import { Header } from "@/components/layout/Header";
+import { ConfettiCannons } from "@/components/ui/Celebration";
 import { useAuth } from "@/contexts/AuthContext";
+import { useCelebration } from "@/hooks/useCelebration";
 import { createClient } from "@/lib/supabase/client";
 import {
   CourseProgressData,
@@ -87,6 +89,7 @@ export default function CrashCoursePage() {
   const [loading, setLoading] = useState(true);
   const [syncError, setSyncError] = useState<string | null>(null);
   const [lastSyncedAt, setLastSyncedAt] = useState<string | null>(null);
+  const { confettiVisible, confettiKey, trigger } = useCelebration();
 
   const completed = useMemo(() => done.filter(Boolean).length, [done]);
   const percent = Math.round((completed / days.length) * 100);
@@ -196,6 +199,9 @@ export default function CrashCoursePage() {
   const handleToggle = (index: number) => {
     setDone((current) => {
       const nextDone = current.map((value, i) => (i === index ? !value : value));
+      if (!current[index]) {
+        trigger(`Day ${index + 1} complete`);
+      }
       const nextProgress = {
         ...progressData,
         crashcourse: nextDone,
@@ -211,6 +217,7 @@ export default function CrashCoursePage() {
   return (
     <div className={`${display.variable} ${body.variable} font-[var(--font-body)]`}>
       <Header />
+      {confettiVisible && <ConfettiCannons burstKey={confettiKey} />}
       <div className="min-h-screen bg-[#f6f3ef]">
         <div className="relative">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,#c9e4ff,transparent_55%)]" />
