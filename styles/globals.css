@@ -164,6 +164,11 @@ html {
   animation-name: confetti-right;
 }
 
+.confetti-scale {
+  transform: scale(var(--confetti-scale, 1));
+  transform-origin: center;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);

@@ -256,10 +256,10 @@ function ResourcesPage() {
                 }}
               >
                 <div
-                  className={`absolute inset-0 bg-gradient-to-br ${resource.accent} opacity-60 transition-opacity duration-500 group-hover:opacity-100`}
+                  className={`absolute inset-0 z-0 bg-gradient-to-br ${resource.accent} opacity-60 transition-opacity duration-500 group-hover:opacity-100`}
                 />
                 {resource.confetti && confettiTarget === resource.id && (
-                  <ConfettiBurst burstKey={confettiKey} className="z-0" />
+                  <ConfettiBurst burstKey={confettiKey} className="z-[1]" scale={0.45} />
                 )}
                 <div className="relative z-10 flex items-center justify-between">
                   <span className="text-4xl transition-transform duration-300 group-hover:scale-110">

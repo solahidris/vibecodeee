@@ -56,30 +56,38 @@ export function ConfettiCannons({ burstKey }: { burstKey: number }) {
 type ConfettiBurstProps = {
   burstKey: number
   className?: string
+  scale?: number
 }
 
-export function ConfettiBurst({ burstKey, className }: ConfettiBurstProps) {
+export function ConfettiBurst({
+  burstKey,
+  className,
+  scale = 1,
+}: ConfettiBurstProps) {
   return (
     <div
       key={burstKey}
       className={cn('pointer-events-none absolute inset-0 overflow-hidden', className)}
+      style={{ '--confetti-scale': String(scale) } as CSSProperties}
       aria-hidden="true"
     >
       <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-        {confettiPieces.map((piece, index) => (
-          <span
-            key={`burst-left-${index}`}
-            className="confetti-piece confetti-left"
-            style={pieceStyle(piece)}
-          />
-        ))}
-        {confettiPieces.map((piece, index) => (
-          <span
-            key={`burst-right-${index}`}
-            className="confetti-piece confetti-right"
-            style={pieceStyle(piece)}
-          />
-        ))}
+        <div className="confetti-scale">
+          {confettiPieces.map((piece, index) => (
+            <span
+              key={`burst-left-${index}`}
+              className="confetti-piece confetti-left"
+              style={pieceStyle(piece)}
+            />
+          ))}
+          {confettiPieces.map((piece, index) => (
+            <span
+              key={`burst-right-${index}`}
+              className="confetti-piece confetti-right"
+              style={pieceStyle(piece)}
+            />
+          ))}
+        </div>
       </div>
     </div>
   )
