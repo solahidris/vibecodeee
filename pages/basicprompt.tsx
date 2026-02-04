@@ -84,7 +84,7 @@ export default function BasicPromptPage() {
   return (
     <div className={`${display.variable} ${body.variable} font-[var(--font-body)]`}>
       <div className="min-h-screen bg-[#f6f3ef]">
-        <div className="relative overflow-hidden">
+        <div className="relative">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,#c9e4ff,transparent_55%)]" />
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_80%,#ffe6bf,transparent_60%)]" />
           <div className="relative mx-auto max-w-5xl px-6 py-16 sm:px-10">
@@ -122,7 +122,10 @@ export default function BasicPromptPage() {
               </p>
             </div>
 
-            <div className="mt-10 rounded-2xl border border-neutral-200/80 bg-white/80 p-6 shadow-[0_20px_60px_-40px_rgba(15,23,42,0.7)] backdrop-blur fade-in" style={{ animationDelay: "0.1s" }}>
+            <div
+              className="sticky top-4 z-40 mt-10 rounded-2xl border border-neutral-200/80 bg-white/80 p-6 shadow-[0_20px_60px_-40px_rgba(15,23,42,0.7)] backdrop-blur fade-in"
+              style={{ animationDelay: "0.1s" }}
+            >
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <p className="text-sm font-semibold text-neutral-900">Progress</p>
