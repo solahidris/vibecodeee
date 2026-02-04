@@ -67,10 +67,10 @@ export default async function handler(req: Request) {
     if (!WHITELIST_PHONE_NUMBERS.includes(sanitizedPhone)) {
       return new Response(
         JSON.stringify({
-          error: 'Phone number not found in our Day 1 supporters list. Please check the number and try again.'
+          error: 'Unable to verify phone number. Please check and try again, or contact support if the issue persists.'
         }),
         {
-          status: 403,
+          status: 400,
           headers: { 'Content-Type': 'application/json' },
         }
       )
@@ -105,8 +105,12 @@ export default async function handler(req: Request) {
 
     if (updateError) {
       console.error('Error updating profile:', updateError)
+      console.error('Full error details:', JSON.stringify(updateError))
       return new Response(
-        JSON.stringify({ error: 'Failed to activate subscription', details: updateError.message }),
+        JSON.stringify({
+          error: 'Unable to complete verification. Please try again or contact support.',
+          debug: updateError.message
+        }),
         {
           status: 500,
           headers: { 'Content-Type': 'application/json' },
