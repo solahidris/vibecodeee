@@ -325,7 +325,6 @@ export default function BasicPromptPage() {
               ))}
             </div>
           </main>
-        </div>
     </div>
     </>
   );
