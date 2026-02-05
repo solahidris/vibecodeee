@@ -1,23 +1,23 @@
-import { useRouter } from 'next/router'
-import { useAuth } from '@/contexts/AuthContext'
-import { Button } from '@/components/ui/Button'
-import { ThreeBackground } from '@/components/ThreeBackground'
-import { EncryptedText } from '@/components/ui/encrypted-text'
-import Image from 'next/image'
+import { useRouter } from "next/router";
+import { useAuth } from "@/contexts/AuthContext";
+import { Button } from "@/components/ui/Button";
+import { ThreeBackground } from "@/components/ThreeBackground";
+import { EncryptedText } from "@/components/ui/encrypted-text";
+import Image from "next/image";
 
 export function Hero() {
-  const router = useRouter()
-  const { user } = useAuth()
+  const router = useRouter();
+  const { user } = useAuth();
 
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden pt-20 bg-white">
+    <section className="relative min-h-screen flex items-center overflow-hidden bg-white">
       {/* Three.js Background */}
       <ThreeBackground />
 
       {/* Subtle Grid Pattern */}
       <div className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,#f4f4f510_1px,transparent_1px),linear-gradient(to_bottom,#f4f4f510_1px,transparent_1px)] bg-[size:4rem_4rem]"></div>
 
-      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-20">
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-0 lg:py-12">
         <div className="grid gap-12 lg:grid-cols-2 lg:gap-20 items-center">
           {/* Left Column - Content */}
           <div className="text-left">
@@ -43,7 +43,9 @@ export function Hero() {
             {/* Subheading */}
             <p className="mb-12 max-w-2xl text-xl leading-relaxed text-zinc-600 sm:text-2xl">
               A minimalist community for creators, learners, and innovators.
-              <span className="block mt-2 text-zinc-500">Premium resources. Expert insights. Zero noise.</span>
+              <span className="block mt-2 text-zinc-500">
+                Premium resources. Expert insights. Zero noise.
+              </span>
             </p>
 
             {/* CTA Buttons */}
@@ -52,13 +54,23 @@ export function Hero() {
                 <Button
                   variant="primary"
                   size="lg"
-                  onClick={() => router.push('/resources')}
+                  onClick={() => router.push("/resources")}
                   className="group relative overflow-hidden px-8 py-4 text-lg font-semibold bg-zinc-900 text-white border-zinc-900 hover:bg-zinc-800 transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-zinc-900/20"
                 >
                   <span className="relative z-10 flex items-center gap-2">
                     Go to Dashboard
-                    <svg className="h-5 w-5 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    <svg
+                      className="h-5 w-5 transition-transform group-hover:translate-x-1"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2.5}
+                        d="M13 7l5 5m0 0l-5 5m5-5H6"
+                      />
                     </svg>
                   </span>
                 </Button>
@@ -67,13 +79,23 @@ export function Hero() {
                   <Button
                     variant="primary"
                     size="lg"
-                    onClick={() => router.push('/login')}
+                    onClick={() => router.push("/login")}
                     className="group relative overflow-hidden px-8 py-4 text-lg font-semibold bg-zinc-900 text-white border-zinc-900 hover:bg-zinc-800 transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-zinc-900/20"
                   >
                     <span className="relative z-10 flex items-center gap-2">
                       Start Your Journey
-                      <svg className="h-5 w-5 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                      <svg
+                        className="h-5 w-5 transition-transform group-hover:translate-x-1"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2.5}
+                          d="M13 7l5 5m0 0l-5 5m5-5H6"
+                        />
                       </svg>
                     </span>
                   </Button>
@@ -81,7 +103,9 @@ export function Hero() {
                     variant="secondary"
                     size="lg"
                     onClick={() => {
-                      document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })
+                      document
+                        .getElementById("features")
+                        ?.scrollIntoView({ behavior: "smooth" });
                     }}
                     className="px-8 py-4 text-lg font-medium border-zinc-300 text-zinc-700 hover:border-zinc-900 hover:text-zinc-900 transition-all duration-300"
                   >
@@ -155,5 +179,5 @@ export function Hero() {
         </div>
       </div>
     </section>
-  )
+  );
 }
