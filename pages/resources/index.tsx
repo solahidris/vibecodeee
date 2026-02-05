@@ -212,10 +212,10 @@ function ResourcesPage() {
 
     const message = `Hi! I'm interested in mentorship:
 
-*Nickname:* ${mentorshipForm.nickname}
-*Phone:* ${mentorshipForm.phone}
-*Skill Level:* ${mentorshipForm.skillLevel}
-*Goal:* ${mentorshipForm.goal}
+Nickname: ${mentorshipForm.nickname}
+Phone: ${mentorshipForm.phone}
+Skill Level: ${mentorshipForm.skillLevel}
+Goal: ${mentorshipForm.goal}
 
 Looking forward to connecting!`
 

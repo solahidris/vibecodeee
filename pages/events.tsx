@@ -51,13 +51,13 @@ export default function EventsPage() {
     // Format the message for WhatsApp
     const message = `Hi Nabil! I'd like to feature an event:
 
-*Event Name:* ${formData.eventName}
-*Date:* ${formData.eventDate}
-*Time:* ${formData.eventTime}
-*Location:* ${formData.location}
-*Description:* ${formData.description}
+Event Name: ${formData.eventName}
+Date: ${formData.eventDate}
+Time: ${formData.eventTime}
+Location: ${formData.location}
+Description: ${formData.description}
 
-*Organizer Details:*
+Organizer Details:
 Name: ${formData.organizerName}
 Contact: ${formData.organizerContact}
 
