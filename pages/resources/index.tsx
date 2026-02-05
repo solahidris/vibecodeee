@@ -305,7 +305,7 @@ function ResourcesPage() {
             {visibleResources.map((resource, index) => (
               <Card
                 key={resource.id}
-                className="group relative overflow-hidden rounded-3xl border border-zinc-200/80 bg-white/90 p-6 shadow-sm transition-all hover:shadow-xl hover:ring-1 hover:ring-zinc-900/10 animate-fade-in-up"
+                className="group relative col-span-full w-full overflow-hidden rounded-3xl border border-zinc-200/80 bg-white/90 p-6 shadow-sm transition-all hover:shadow-xl hover:ring-1 hover:ring-zinc-900/10 animate-fade-in-up sm:col-span-2 lg:col-span-3"
                 style={{ animationDelay: `${0.1 + index * 0.08}s` }}
               >
                 <div
