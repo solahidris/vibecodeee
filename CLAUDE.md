@@ -55,6 +55,7 @@ Get HitPay Webhook Salt from: https://dashboard.hit-pay.com/settings/webhooks (u
   - `/pages/api` - API routes for auth and resources
   - `/pages/auth` - Auth callback handler
   - `/pages/resources` - Protected member dashboard
+  - `/pages/events.tsx` - Upcoming events calendar page
   - `/pages/login.tsx` - Google OAuth sign-in page
   - `/pages/profile.tsx` - User profile page with subscription status
   - `/pages/payment/subscribe.tsx` - Subscription/pricing page (black card design)
@@ -155,8 +156,9 @@ export const config = { runtime: 'edge' }
 - Scroll-triggered animations via `useScrollAnimation` hook
 
 **Navigation & Layout**:
-- Header navigation visible to all users (Telegram, Resources links)
-- Avatar only shown for authenticated users
+- Header navigation visible to all users (Events, Community, Resources links)
+- Mobile navigation via slide-in sheet (shadcn) with hamburger menu
+- Avatar only shown for authenticated users (desktop only)
 - Footer uses anchor tags (`<a>`) for proper URL preview on hover
 - All internal links support right-click "Open in new tab"
 
@@ -174,6 +176,21 @@ export const config = { runtime: 'edge' }
 - White CTA button stands out against dark background
 - Benefit icons use black and white outline style (no colors)
 - Consistent border-2 border-zinc-900 for all feature icons
+
+**Events Page** (`/events`):
+- Showcases upcoming community events, meetups, and workshops
+- Card-based grid layout (responsive: 1 col mobile, 2 cols tablet, 3 cols desktop)
+- Each event card displays:
+  - Cover image with hover zoom effect
+  - Event title, date & time, location details
+  - Brief description with line clamp (3 lines max)
+  - Host information
+  - External link to Luma event page
+- Premium design with hover animations (scale on card hover, image zoom)
+- Compact spacing (p-5, mb-3) for clean, efficient layout
+- Events sourced from Luma platform (lu.ma)
+- Gradient background (zinc-50 to white) matching design system
+- Empty state message when no events are scheduled
 
 ## Educational Content Pages
 

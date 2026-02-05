@@ -17,6 +17,7 @@ export function Header({ showNavigation = true }: HeaderProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navigationLinks = [
+    { label: "Events", path: "/events" },
     { label: "Community", path: "/payment/subscribe" },
     { label: "Resources", path: "/resources" },
   ];
