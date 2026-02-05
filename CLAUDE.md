@@ -35,10 +35,12 @@ SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
 # HitPay Payment Gateway
 HITPAY_API_KEY=your_hitpay_api_key
 HITPAY_API_SALT=your_hitpay_api_salt
+HITPAY_WEBHOOK_SALT=your_hitpay_webhook_salt
 ```
 
 Get Supabase keys from: https://app.supabase.com -> Project Settings -> API
-Get HitPay keys from: https://dashboard.hit-pay.com/settings/api-keys
+Get HitPay API keys from: https://dashboard.hit-pay.com/settings/api-keys
+Get HitPay Webhook Salt from: https://dashboard.hit-pay.com/settings/webhooks (under Event Webhooks)
 
 ## Architecture
 
@@ -55,8 +57,8 @@ Get HitPay keys from: https://dashboard.hit-pay.com/settings/api-keys
   - `/pages/resources` - Protected member dashboard
   - `/pages/login.tsx` - Google OAuth sign-in page
   - `/pages/profile.tsx` - User profile page with subscription status
-  - `/pages/payment/subscribe.tsx` - Subscription/pricing page
-  - `/pages/payment/success.tsx` - Payment success page
+  - `/pages/payment/subscribe.tsx` - Subscription/pricing page (black card design)
+  - `/pages/payment/success.tsx` - Payment success page with auto-activation fallback
   - `/pages/resources/basicprompt.tsx` - Educational course page (basic prompting)
   - `/pages/index.tsx` - Public landing page
 - `/components` - Reusable UI and landing page components
@@ -194,19 +196,32 @@ export const config = { runtime: 'edge' }
   - Optional params: `customer_name`, `plan_id`
   - Returns checkout URL to redirect user
 - `POST /api/hitpay-webhook` - Handle payment notifications (HMAC validation)
+- `POST /api/payment/manual-activate` - Manual subscription activation (fallback)
+  - Required params: `reference` (user_id)
+  - Used when webhook fails or is delayed
 
 **Payment Flow**:
 1. User clicks subscription button
 2. Frontend calls `/api/payment/create-subscription` with user details
 3. Backend creates recurring billing and returns HitPay checkout URL
 4. User is redirected to HitPay to enter payment details
-5. After payment, user is redirected to `/payment/success`
-6. HitPay sends webhook POST to `/api/hitpay-webhook`
-7. Webhook validates HMAC signature and grants access
+5. After payment, user is redirected to `/payment/success?reference={user_id}`
+6. Success page waits 5 seconds for webhook to activate subscription
+7. If webhook hasn't activated by then, calls `/api/payment/manual-activate`
+8. User gets immediate access even if webhook is delayed/failed
+
+**Webhook Flow (Parallel to Step 6-7)**:
+- HitPay sends webhook POST to `/api/hitpay-webhook`
+- Webhook validates HMAC signature using `HITPAY_WEBHOOK_SALT`
+- On success, updates Supabase to activate subscription
+- Returns HTTP 200 to acknowledge receipt
 
 **Webhook Validation**:
 - All webhook requests include HMAC signature for security
-- Signature validated using `HITPAY_API_SALT`
+- Signature validated using `HITPAY_WEBHOOK_SALT` (separate from API salt)
+- **IMPORTANT**: HitPay uses different salts for API calls vs webhooks
+  - API calls: Use `HITPAY_API_SALT` (from API Keys tab)
+  - Webhooks: Use `HITPAY_WEBHOOK_SALT` (from Event Webhooks tab)
 - Returns HTTP 200 to acknowledge receipt
 - Payment reference contains `user_id` for tracking
 - On successful payment, updates Supabase `profiles` table:
@@ -219,11 +234,45 @@ export const config = { runtime: 'edge' }
 - Profile badges and Telegram access controlled by this status
 - Header shows Telegram link to all users (subscribed or not)
 
+**Activation Fallback System**:
+- Success page automatically activates subscription after 5 seconds if webhook hasn't fired
+- Ensures users get immediate access even during webhook delays or failures
+- Uses `UserContext.refetch()` to update UI in real-time
+- Shows activation status: loading spinner or error message if activation fails
+
+**Environment Variables Required**:
+- `HITPAY_API_KEY` - For creating subscriptions
+- `HITPAY_API_SALT` - For API request signing
+- `HITPAY_WEBHOOK_SALT` - For webhook HMAC validation (different from API salt!)
+- `NEXT_PUBLIC_SUPABASE_URL` - Supabase project URL
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY` - Public anon key
+- `SUPABASE_SERVICE_ROLE_KEY` - Service role key for webhook/manual activation
+- `NEXT_PUBLIC_SITE_URL` - Site URL for redirects (e.g., https://vibecodeee.com)
+
 **Important**:
 - Use live API keys in production
-- Webhook URL must be HTTPS
+- Webhook URL must be HTTPS and configured in HitPay dashboard
 - Always validate HMAC before processing payments
 - Webhook uses Supabase service role key to bypass RLS policies
+- **Critical**: Use `HITPAY_WEBHOOK_SALT` for webhooks, not `HITPAY_API_SALT`
+- Manual activation fallback ensures zero failed payments due to webhook issues
+
+**Troubleshooting Payment Issues**:
+
+*Issue: Subscription not activated after payment*
+- Check if `HITPAY_WEBHOOK_SALT` is set in environment variables
+- Verify webhook URL is configured in HitPay dashboard: Settings → Webhooks
+- Check Cloudflare/hosting logs for webhook 401/500 errors
+- Manual activation fallback should activate after 5 seconds on success page
+
+*Issue: Webhook returning 401 Unauthorized*
+- Ensure using `HITPAY_WEBHOOK_SALT` (not API salt) for validation
+- Webhook salt is found in HitPay: Settings → Webhooks → Event Webhooks
+
+*Issue: User shows "Free Access" instead of "Community Member"*
+- Check Supabase `profiles` table: `has_active_subscription` should be `true`
+- Refresh page or call `UserContext.refetch()` to update UI
+- Visit `/payment/success?reference={user_id}` to trigger manual activation
 
 ## Pages Router Conventions
 

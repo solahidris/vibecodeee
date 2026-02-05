@@ -1,5 +1,8 @@
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { withAuth } from '@/lib/auth/withAuth'
+import { useAuth } from '@/contexts/AuthContext'
+import { useUser } from '@/contexts/UserContext'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/landing/Footer'
 import { Button } from '@/components/ui/Button'
@@ -14,6 +17,52 @@ const TELEGRAM_GROUP_URL = 'https://t.me/+wKbaL8tiEZs4Y2E9'
 
 function PaymentSuccessPage() {
   const router = useRouter()
+  const { user } = useAuth()
+  const { hasActiveSubscription, loading: userLoading, refreshProfile } = useUser()
+  const [activating, setActivating] = useState(false)
+  const [activationError, setActivationError] = useState<string | null>(null)
+
+  // Auto-activate subscription if webhook hasn't fired
+  useEffect(() => {
+    if (!user?.id || userLoading || activating) return
+
+    // Wait 5 seconds for webhook to process
+    const timeoutId = setTimeout(async () => {
+      // Check if subscription is still not active
+      await refreshProfile()
+
+      if (!hasActiveSubscription) {
+        console.log('Subscription not activated by webhook, attempting manual activation...')
+        setActivating(true)
+        setActivationError(null)
+
+        try {
+          const response = await fetch('/api/payment/manual-activate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ reference: user.id }), // Use logged-in user's ID
+          })
+
+          const data = await response.json()
+
+          if (!response.ok) {
+            throw new Error(data.error || 'Failed to activate subscription')
+          }
+
+          console.log('Subscription activated successfully:', data)
+          // Refresh user data to update UI
+          await refreshProfile()
+        } catch (err) {
+          console.error('Manual activation error:', err)
+          setActivationError(err instanceof Error ? err.message : 'Failed to activate subscription')
+        } finally {
+          setActivating(false)
+        }
+      }
+    }, 5000) // Wait 5 seconds
+
+    return () => clearTimeout(timeoutId)
+  }, [user?.id, hasActiveSubscription, userLoading, refreshProfile, activating])
 
   return (
     <div className={`${geistSans.variable} min-h-screen bg-white font-sans`}>
@@ -43,9 +92,27 @@ function PaymentSuccessPage() {
           <h1 className="mb-4 text-5xl font-black text-zinc-900">
             Payment Successful!
           </h1>
-          <p className="mb-12 text-xl text-zinc-600 mx-auto max-w-2xl">
+          <p className="mb-8 text-xl text-zinc-600 mx-auto max-w-2xl">
             Welcome to the VibeCodeee community! Your subscription is now active and you have full access to our exclusive Telegram group.
           </p>
+
+          {/* Activation Status */}
+          {activating && (
+            <div className="mb-8 mx-auto max-w-md rounded-xl border border-blue-200 bg-blue-50 p-4">
+              <div className="flex items-center gap-3">
+                <div className="h-5 w-5 animate-spin rounded-full border-2 border-blue-600 border-t-transparent"></div>
+                <p className="text-sm text-blue-700">Activating your subscription...</p>
+              </div>
+            </div>
+          )}
+
+          {activationError && (
+            <div className="mb-8 mx-auto max-w-md rounded-xl border border-red-200 bg-red-50 p-4">
+              <p className="text-sm text-red-700">
+                {activationError}. Please contact support if the issue persists.
+              </p>
+            </div>
+          )}
 
           {/* Main CTA - Join Telegram */}
           <div className="mb-12">

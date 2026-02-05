@@ -12,7 +12,7 @@ export function Header({ showNavigation = true }: HeaderProps) {
   const currentPath = router.pathname
 
   const navigationLinks = [
-    { label: 'Telegram', path: '/payment/subscribe' },
+    { label: 'Community', path: '/payment/subscribe' },
     { label: 'Resources', path: '/resources' },
   ]
 

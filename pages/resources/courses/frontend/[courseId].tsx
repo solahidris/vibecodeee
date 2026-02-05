@@ -503,7 +503,7 @@ function FrontendCoursePage() {
                         })
                       }}
                       onKeyDown={(event) => {
-                        if (event.isComposing) return
+                        if (event.nativeEvent.isComposing) return
                         if (
                           event.key === 'Enter' &&
                           (event.metaKey || event.ctrlKey)

@@ -184,12 +184,12 @@ function ResourcesPage() {
                 focused sprints.
               </p>
 
-              <div className="mt-6 flex flex-wrap gap-3">
+              <div className="mt-6 flex flex-wrap gap-2">
                 {['Structured lanes', 'Short sprints', 'Reusable prompts'].map(
                   (item) => (
                     <span
                       key={item}
-                      className="rounded-full border border-zinc-200 bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.15em] text-zinc-500"
+                      className="rounded-md bg-zinc-100 px-2.5 py-1 text-xs font-medium text-zinc-600"
                     >
                       {item}
                     </span>
@@ -218,42 +218,6 @@ function ResourcesPage() {
                 </Button>
               </div>
             </div>
-
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="rounded-2xl border border-zinc-200/80 bg-white p-5 shadow-sm">
-                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">
-                  Recommended path
-                </p>
-                <p className="mt-3 text-lg font-semibold text-zinc-900">
-                  Foundations to Frontend to Backend
-                </p>
-                <p className="mt-2 text-sm text-zinc-600">
-                  Build confidence one lane at a time.
-                </p>
-              </div>
-              <div className="rounded-2xl border border-zinc-200/80 bg-white p-5 shadow-sm">
-                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">
-                  Quick wins
-                </p>
-                <p className="mt-3 text-lg font-semibold text-zinc-900">
-                  Short sprints, real output
-                </p>
-                <p className="mt-2 text-sm text-zinc-600">
-                  Short sprints with reusable templates.
-                </p>
-              </div>
-              <div className="rounded-2xl border border-zinc-900 bg-zinc-900 p-5 text-white shadow-sm sm:col-span-2">
-                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-200">
-                  Member only
-                </p>
-                <p className="mt-3 text-lg font-semibold">
-                  Everything here is designed to be practical.
-                </p>
-                <p className="mt-2 text-sm text-zinc-200">
-                  Pick a lane, ship a sprint, and keep the momentum going.
-                </p>
-              </div>
-            </div>
           </div>
         </section>
 
@@ -267,7 +231,10 @@ function ResourcesPage() {
                 Choose a path or jump into a quick-start.
               </p>
             </div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">
+            <div className="inline-flex items-center gap-1.5 rounded-md bg-zinc-100 px-2.5 py-1 text-xs font-medium text-zinc-600">
+              <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
               Curated for members
             </div>
           </div>
@@ -303,51 +270,51 @@ function ResourcesPage() {
             className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
           >
             {visibleResources.map((resource, index) => (
-              <Card
+              <div
                 key={resource.id}
-                className="group relative col-span-full w-full overflow-hidden rounded-3xl border border-zinc-200/80 bg-white/90 p-6 shadow-sm transition-all hover:shadow-xl hover:ring-1 hover:ring-zinc-900/10 animate-fade-in-up sm:col-span-2 lg:col-span-3"
+                className="group relative col-span-full w-full overflow-hidden rounded-2xl border border-zinc-200 bg-white p-6 transition-shadow hover:shadow-lg animate-fade-in-up sm:col-span-2 lg:col-span-3"
                 style={{ animationDelay: `${0.1 + index * 0.08}s` }}
               >
-                <div
-                  className={`absolute inset-0 z-0 bg-gradient-to-br ${resource.accent} opacity-60 transition-opacity duration-500 group-hover:opacity-100`}
-                />
-                <div className="relative z-10 flex items-center justify-between">
-                  <span className="text-4xl transition-transform duration-300 group-hover:scale-110">
+                <div className="flex items-start justify-between mb-4">
+                  <span className="text-4xl">
                     {resource.icon}
                   </span>
-                  <span className="rounded-full border border-zinc-200 bg-white/80 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-zinc-500">
+                  <span className="rounded-md bg-zinc-100 px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider text-zinc-600">
                     {resource.tag}
                   </span>
                 </div>
-                <h3 className="relative z-10 mt-5 text-xl font-semibold text-zinc-900">
+
+                <h3 className="text-xl font-bold text-zinc-900 mb-2">
                   {resource.title}
                 </h3>
-                <p className="relative z-10 mt-2 text-sm text-zinc-600">
+                <p className="text-sm text-zinc-600 mb-4">
                   {resource.description}
                 </p>
-                <div className="relative z-10 mt-5 flex flex-wrap gap-2 text-xs text-zinc-600">
+
+                <div className="flex flex-wrap gap-1.5 mb-6">
                   {resource.highlights.map((highlight) => (
                     <span
                       key={highlight}
-                      className="rounded-full border border-zinc-200/80 bg-white/80 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-zinc-500"
+                      className="rounded-md bg-zinc-50 px-2 py-0.5 text-[11px] font-medium text-zinc-500"
                     >
                       {highlight}
                     </span>
                   ))}
                 </div>
-                <div className="relative z-10 mt-6">
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    onClick={() => {
-                      if (!resource.disabled) {
-                        router.push(resource.path)
-                      }
-                    }}
-                    disabled={resource.disabled}
-                    className="group/button"
-                  >
-                    {resource.cta}
+
+                <Button
+                  variant={resource.disabled ? "secondary" : "primary"}
+                  size="sm"
+                  onClick={() => {
+                    if (!resource.disabled) {
+                      router.push(resource.path)
+                    }
+                  }}
+                  disabled={resource.disabled}
+                  className="w-full group/button"
+                >
+                  {resource.cta}
+                  {!resource.disabled && (
                     <svg
                       className="h-4 w-4 transition-transform duration-300 group-hover/button:translate-x-1"
                       fill="none"
@@ -361,9 +328,9 @@ function ResourcesPage() {
                         d="M13 7l5 5m0 0l-5 5m5-5H6"
                       />
                     </svg>
-                  </Button>
-                </div>
-              </Card>
+                  )}
+                </Button>
+              </div>
             ))}
           </div>
         </section>

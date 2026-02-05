@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import { Geist } from 'next/font/google'
-import { Navigation } from '@/components/landing/Navigation'
+import { Header } from '@/components/layout/Header'
 import { Hero } from '@/components/landing/Hero'
 import { TopicsGrid } from '@/components/landing/TopicsGrid'
 import { Benefits } from '@/components/landing/Benefits'
@@ -22,7 +22,7 @@ export default function Home() {
         <meta name="twitter:title" content="VibeCodeee - Premium Community Platform" />
       </Head>
       <div className={`${geistSans.variable} font-sans`}>
-        <Navigation />
+        <Header />
         <Hero />
         <TopicsGrid />
         <Benefits />

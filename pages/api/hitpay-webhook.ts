@@ -1,4 +1,3 @@
-import crypto from 'crypto'
 import { createClient } from '@supabase/supabase-js'
 
 export const config = { runtime: 'edge' }
@@ -13,19 +12,31 @@ interface WebhookPayload {
   hmac: string
 }
 
-// Validate HMAC signature
-function validateWebhookSignature(payload: Record<string, string>, secret: string): boolean {
+// Validate HMAC signature using Web Crypto API
+async function validateWebhookSignature(payload: Record<string, string>, secret: string): Promise<boolean> {
   const { hmac: receivedHmac, ...data } = payload
 
   // Sort keys alphabetically and concatenate values
   const sortedKeys = Object.keys(data).sort()
   const signatureString = sortedKeys.map(key => `${key}${data[key]}`).join('')
 
-  // Calculate HMAC
-  const calculatedHmac = crypto
-    .createHmac('sha256', secret)
-    .update(signatureString)
-    .digest('hex')
+  // Calculate HMAC using Web Crypto API
+  const encoder = new TextEncoder()
+  const keyData = encoder.encode(secret)
+  const messageData = encoder.encode(signatureString)
+
+  const cryptoKey = await crypto.subtle.importKey(
+    'raw',
+    keyData,
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign']
+  )
+
+  const signature = await crypto.subtle.sign('HMAC', cryptoKey, messageData)
+  const calculatedHmac = Array.from(new Uint8Array(signature))
+    .map(b => b.toString(16).padStart(2, '0'))
+    .join('')
 
   return calculatedHmac === receivedHmac
 }
@@ -39,9 +50,10 @@ export default async function handler(req: Request) {
   }
 
   try {
-    const salt = process.env.HITPAY_API_SALT
+    // Use webhook salt (different from API salt)
+    const salt = process.env.HITPAY_WEBHOOK_SALT || process.env.HITPAY_API_SALT
     if (!salt) {
-      console.error('HITPAY_API_SALT not configured')
+      console.error('HITPAY_WEBHOOK_SALT or HITPAY_API_SALT not configured')
       return new Response(JSON.stringify({ error: 'Server configuration error' }), {
         status: 500,
         headers: { 'Content-Type': 'application/json' },
@@ -57,7 +69,8 @@ export default async function handler(req: Request) {
     })
 
     // Validate HMAC signature
-    if (!validateWebhookSignature(payload, salt)) {
+    const isValidSignature = await validateWebhookSignature(payload, salt)
+    if (!isValidSignature) {
       console.error('Invalid webhook signature')
       return new Response(JSON.stringify({ error: 'Invalid signature' }), {
         status: 401,

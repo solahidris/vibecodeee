@@ -8,6 +8,7 @@ import { Avatar } from '@/components/ui/Avatar'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { ConfirmModal } from '@/components/ui/ConfirmModal'
+import { PhoneVerificationModal } from '@/components/ui/PhoneVerificationModal'
 import { formatDate } from '@/lib/utils/formatters'
 import { Geist } from 'next/font/google'
 
@@ -20,9 +21,10 @@ const TELEGRAM_GROUP_URL = 'https://t.me/+wKbaL8tiEZs4Y2E9'
 
 function ProfilePage() {
   const { user, signOut } = useAuth()
-  const { hasActiveSubscription, loading } = useUser()
+  const { hasActiveSubscription, loading, refreshProfile } = useUser()
   const router = useRouter()
   const [showSignOutModal, setShowSignOutModal] = useState(false)
+  const [showPhoneVerificationModal, setShowPhoneVerificationModal] = useState(false)
 
   return (
     <div className={`${geistSans.variable} min-h-screen bg-gray-50 font-sans`}>
@@ -108,13 +110,26 @@ function ProfilePage() {
                   <span className="text-3xl font-bold text-gray-900">RM10</span>
                   <span className="text-gray-600">/month</span>
                 </div>
-                <Button
-                  variant="primary"
-                  size="md"
-                  onClick={() => router.push('/payment/subscribe')}
-                >
-                  Subscribe to Join Community
-                </Button>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <Button
+                    variant="primary"
+                    size="md"
+                    onClick={() => router.push('/payment/subscribe')}
+                  >
+                    Subscribe to Join Community
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="md"
+                    onClick={() => setShowPhoneVerificationModal(true)}
+                    className="border border-gray-300"
+                  >
+                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                    Day 1 Supporter
+                  </Button>
+                </div>
               </div>
             )}
           </Card>
@@ -153,6 +168,16 @@ function ProfilePage() {
         cancelText="Cancel"
         confirmVariant="danger"
       />
+
+      {/* Phone Verification Modal */}
+      {user?.id && (
+        <PhoneVerificationModal
+          isOpen={showPhoneVerificationModal}
+          onClose={() => setShowPhoneVerificationModal(false)}
+          userId={user.id}
+          onSuccess={refreshProfile}
+        />
+      )}
     </div>
   )
 }
