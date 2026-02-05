@@ -5,7 +5,6 @@ import { Hero } from "@/components/landing/Hero";
 import { TopicsGrid } from "@/components/landing/TopicsGrid";
 import { Benefits } from "@/components/landing/Benefits";
 import { Footer } from "@/components/landing/Footer";
-import { ThreeBackground } from "@/components/ThreeBackground";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,9 +33,6 @@ export default function Home() {
         />
       </Head>
       <div className={`${geistSans.variable} font-sans relative`}>
-        {/* Three.js Background for entire homepage */}
-        <ThreeBackground />
-        
         {/* Grid Pattern overlay for entire page */}
         <div className="fixed inset-0 z-0 bg-[linear-gradient(to_right,#d4d4d8_1px,transparent_1px),linear-gradient(to_bottom,#d4d4d8_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-40 pointer-events-none"></div>
         
