@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import Head from 'next/head'
 import { withAuth } from '@/lib/auth/withAuth'
 import { useAuth } from '@/contexts/AuthContext'
 import { useUser } from '@/contexts/UserContext'
@@ -27,11 +28,18 @@ function ProfilePage() {
   const [showPhoneVerificationModal, setShowPhoneVerificationModal] = useState(false)
 
   return (
-    <div className={`${geistSans.variable} min-h-screen bg-gray-50 font-sans`}>
-      <Header />
+    <>
+      <Head>
+        <title>Your Profile - VibeCodeee | Manage Your Account</title>
+        <meta name="description" content="Manage your VibeCodeee profile, subscription status, and account settings. Access the Telegram community and view your membership details." />
+        <meta name="robots" content="noindex, nofollow" />
+        <meta property="og:title" content="Your Profile - VibeCodeee" />
+      </Head>
+      <div className={`${geistSans.variable} min-h-screen bg-gray-50 font-sans`}>
+        <Header />
 
-      {/* Main Content */}
-      <main className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
+        {/* Main Content */}
+        <main className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-12">
           <h2 className="mb-3 text-4xl font-bold tracking-tight text-gray-900">
@@ -169,16 +177,17 @@ function ProfilePage() {
         confirmVariant="danger"
       />
 
-      {/* Phone Verification Modal */}
-      {user?.id && (
-        <PhoneVerificationModal
-          isOpen={showPhoneVerificationModal}
-          onClose={() => setShowPhoneVerificationModal(false)}
-          userId={user.id}
-          onSuccess={refreshProfile}
-        />
-      )}
-    </div>
+        {/* Phone Verification Modal */}
+        {user?.id && (
+          <PhoneVerificationModal
+            isOpen={showPhoneVerificationModal}
+            onClose={() => setShowPhoneVerificationModal(false)}
+            userId={user.id}
+            onSuccess={refreshProfile}
+          />
+        )}
+      </div>
+    </>
   )
 }
 

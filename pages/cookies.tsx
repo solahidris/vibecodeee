@@ -1,10 +1,21 @@
+import Head from 'next/head'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/landing/Footer'
 
 export default function CookiePolicy() {
   return (
-    <div className="min-h-screen bg-white">
-      <Header />
+    <>
+      <Head>
+        <title>Cookie Policy - VibeCodeee | How We Use Cookies</title>
+        <meta name="description" content="Learn how VibeCodeee uses cookies and tracking technologies. Understand your options for managing cookie preferences on our platform." />
+        <meta property="og:title" content="Cookie Policy - VibeCodeee" />
+        <meta property="og:description" content="Learn how VibeCodeee uses cookies and tracking technologies." />
+        <meta property="og:url" content="https://vibecodeee.com/cookies" />
+        <meta name="twitter:title" content="Cookie Policy - VibeCodeee" />
+        <meta name="twitter:description" content="Learn how VibeCodeee uses cookies on our platform." />
+      </Head>
+      <div className="min-h-screen bg-white">
+        <Header />
 
       <main className="mx-auto max-w-4xl px-4 py-32 sm:px-6 lg:px-8">
         <h1 className="mb-8 text-5xl font-black text-zinc-900">Cookie Policy</h1>
@@ -296,7 +307,8 @@ export default function CookiePolicy() {
         </div>
       </main>
 
-      <Footer />
-    </div>
+        <Footer />
+      </div>
+    </>
   )
 }

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { withAuth } from '@/lib/auth/withAuth'
 import { useAuth } from '@/contexts/AuthContext'
@@ -65,10 +66,17 @@ function PaymentSuccessPage() {
   }, [user?.id, hasActiveSubscription, userLoading, refreshProfile, activating])
 
   return (
-    <div className={`${geistSans.variable} min-h-screen bg-white font-sans`}>
-      <Header />
+    <>
+      <Head>
+        <title>Payment Successful - VibeCodeee | Welcome to the Community</title>
+        <meta name="description" content="Your payment was successful! Welcome to the VibeCodeee community. Access your exclusive resources and join our Telegram group." />
+        <meta name="robots" content="noindex, nofollow" />
+        <meta property="og:title" content="Payment Successful - VibeCodeee" />
+      </Head>
+      <div className={`${geistSans.variable} min-h-screen bg-white font-sans`}>
+        <Header />
 
-      <main className="mx-auto max-w-4xl px-4 py-32 sm:px-6 lg:px-8">
+        <main className="mx-auto max-w-4xl px-4 py-32 sm:px-6 lg:px-8">
         <div className="text-center">
           {/* Success Icon */}
           <div className="mb-8 flex justify-center">
@@ -195,8 +203,9 @@ function PaymentSuccessPage() {
         </div>
       </main>
 
-      <Footer />
-    </div>
+        <Footer />
+      </div>
+    </>
   )
 }
 

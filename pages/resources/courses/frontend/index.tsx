@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { withAuth } from '@/lib/auth/withAuth'
 import { createClient } from '@/lib/supabase/client'
@@ -135,8 +136,16 @@ function FrontendCoursesPage() {
     user?.user_metadata?.full_name || user?.email || 'Community Member'
 
   return (
-    <div className={`${geistSans.variable} min-h-screen bg-gray-50 font-sans`}>
-      <Header />
+    <>
+      <Head>
+        <title>Frontend Courses - VibeCodeee | Master Web Development</title>
+        <meta name="description" content="Learn frontend development with our comprehensive courses. Master HTML, CSS, JavaScript, React, and modern web technologies to build stunning user interfaces." />
+        <meta name="robots" content="noindex, nofollow" />
+        <meta property="og:title" content="Frontend Courses - VibeCodeee" />
+        <meta property="og:description" content="Master frontend development with our comprehensive web development courses." />
+      </Head>
+      <div className={`${geistSans.variable} min-h-screen bg-gray-50 font-sans`}>
+        <Header />
 
       <main className="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="mb-8 flex items-center gap-2 text-sm text-gray-600">
@@ -276,8 +285,9 @@ function FrontendCoursesPage() {
             Back to Resources
           </Button>
         </div>
-      </main>
-    </div>
+        </main>
+      </div>
+    </>
   )
 }
 

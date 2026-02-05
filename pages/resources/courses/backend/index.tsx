@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { withAuth } from '@/lib/auth/withAuth'
 import { createClient } from '@/lib/supabase/client'
@@ -134,8 +135,16 @@ function BackendCoursesPage() {
     user?.user_metadata?.full_name || user?.email || 'Community Member'
 
   return (
-    <div className={`${geistSans.variable} min-h-screen bg-gray-50 font-sans`}>
-      <Header />
+    <>
+      <Head>
+        <title>Backend Courses - VibeCodeee | Server-Side Development</title>
+        <meta name="description" content="Learn backend development with our expert-led courses. Master APIs, databases, server architecture, and build scalable applications." />
+        <meta name="robots" content="noindex, nofollow" />
+        <meta property="og:title" content="Backend Courses - VibeCodeee" />
+        <meta property="og:description" content="Master backend development and server-side technologies with our courses." />
+      </Head>
+      <div className={`${geistSans.variable} min-h-screen bg-gray-50 font-sans`}>
+        <Header />
 
       <main className="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="mb-8 flex items-center gap-2 text-sm text-gray-600">
@@ -261,8 +270,9 @@ function BackendCoursesPage() {
             Back to Resources
           </Button>
         </div>
-      </main>
-    </div>
+        </main>
+      </div>
+    </>
   )
 }
 

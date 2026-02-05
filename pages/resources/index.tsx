@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { withAuth } from '@/lib/auth/withAuth'
 import { createClient } from '@/lib/supabase/client'
@@ -361,10 +362,18 @@ function ResourcesPage() {
   }, [supabase, user?.id])
 
   return (
-    <div
-      className={`${geistSans.variable} relative min-h-screen overflow-hidden bg-[#f7f7f8] font-sans`}
-    >
-      <Header />
+    <>
+      <Head>
+        <title>Member Resources - VibeCodeee | Courses, Guides & Learning Paths</title>
+        <meta name="description" content="Access exclusive member resources including structured courses, AI prompting guides, coding tutorials, and career development content. Start learning today." />
+        <meta name="robots" content="noindex, nofollow" />
+        <meta property="og:title" content="Member Resources - VibeCodeee" />
+        <meta property="og:description" content="Access exclusive member resources including courses, guides, and learning paths." />
+      </Head>
+      <div
+        className={`${geistSans.variable} relative min-h-screen overflow-hidden bg-[#f7f7f8] font-sans`}
+      >
+        <Header />
 
       <div className="pointer-events-none absolute inset-0 -z-10">
         <div className="absolute -top-40 right-0 h-72 w-72 rounded-full bg-zinc-200/70 blur-3xl" />
@@ -929,8 +938,9 @@ function ResourcesPage() {
             </div>
           </section>
         )}
-      </main>
-    </div>
+        </main>
+      </div>
+    </>
   )
 }
 

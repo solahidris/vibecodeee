@@ -1,3 +1,4 @@
+import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/landing/Footer'
@@ -13,8 +14,15 @@ export default function Custom404() {
   const router = useRouter()
 
   return (
-    <div className={`${geistSans.variable} min-h-screen bg-white font-sans`}>
-      <Header />
+    <>
+      <Head>
+        <title>Page Not Found - VibeCodeee</title>
+        <meta name="description" content="The page you're looking for doesn't exist. Return to VibeCodeee homepage or explore our resources." />
+        <meta name="robots" content="noindex, nofollow" />
+        <meta property="og:title" content="Page Not Found - VibeCodeee" />
+      </Head>
+      <div className={`${geistSans.variable} min-h-screen bg-white font-sans`}>
+        <Header />
 
       <main className="mx-auto max-w-4xl px-4 py-32 sm:px-6 lg:px-8">
         <div className="text-center">
@@ -103,7 +111,8 @@ export default function Custom404() {
         </div>
       </main>
 
-      <Footer />
-    </div>
+        <Footer />
+      </div>
+    </>
   )
 }

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { withAuth } from '@/lib/auth/withAuth'
 import { createClient } from '@/lib/supabase/client'
@@ -135,8 +136,16 @@ function FoundationPage() {
     user?.user_metadata?.full_name || user?.email || 'Community Member'
 
   return (
-    <div className={`${geistSans.variable} min-h-screen bg-gray-50 font-sans`}>
-      <Header />
+    <>
+      <Head>
+        <title>Foundation Courses - VibeCodeee | Build Your Tech Fundamentals</title>
+        <meta name="description" content="Master the fundamentals of programming with our foundation courses. Learn essential concepts, tools, and best practices to kickstart your tech journey." />
+        <meta name="robots" content="noindex, nofollow" />
+        <meta property="og:title" content="Foundation Courses - VibeCodeee" />
+        <meta property="og:description" content="Master the fundamentals of programming with our foundation courses." />
+      </Head>
+      <div className={`${geistSans.variable} min-h-screen bg-gray-50 font-sans`}>
+        <Header />
 
       <main className="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="mb-8 flex items-center gap-2 text-sm text-gray-600">
@@ -389,8 +398,9 @@ function FoundationPage() {
           </Card>
         </div>
 
-      </main>
-    </div>
+        </main>
+      </div>
+    </>
   )
 }
 

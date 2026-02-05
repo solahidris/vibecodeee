@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import Head from "next/head";
 import { Geist } from "next/font/google";
 import { Header } from "@/components/layout/Header";
 import { ConfettiCannons } from "@/components/ui/Celebration";
@@ -208,9 +209,17 @@ export default function CrashCoursePage() {
   };
 
   return (
-    <div className={`${geistSans.variable} relative min-h-screen overflow-hidden bg-[#f7f7f8] font-sans`}>
-      <Header />
-      {confettiVisible && <ConfettiCannons burstKey={confettiKey} />}
+    <>
+      <Head>
+        <title>Python Automation Crash Course - VibeCodeee | 5-Day AI + Python</title>
+        <meta name="description" content="Master Python automation in 5 days with AI-powered prompts. Learn to automate file management, Excel tasks, emails, PDF extraction, and web scraping." />
+        <meta name="robots" content="noindex, nofollow" />
+        <meta property="og:title" content="Python Automation Crash Course - VibeCodeee" />
+        <meta property="og:description" content="Master Python automation in 5 days with AI-powered prompts." />
+      </Head>
+      <div className={`${geistSans.variable} relative min-h-screen overflow-hidden bg-[#f7f7f8] font-sans`}>
+        <Header />
+        {confettiVisible && <ConfettiCannons burstKey={confettiKey} />}
 
       <div className="pointer-events-none absolute inset-0 -z-10">
         <div className="absolute -top-40 right-0 h-72 w-72 rounded-full bg-zinc-200/70 blur-3xl" />
@@ -359,6 +368,7 @@ export default function CrashCoursePage() {
               </section>
             </div>
           </main>
-    </div>
+      </div>
+    </>
   );
 }

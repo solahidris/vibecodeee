@@ -1,10 +1,21 @@
+import Head from 'next/head'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/landing/Footer'
 
 export default function PrivacyPolicy() {
   return (
-    <div className="min-h-screen bg-white">
-      <Header />
+    <>
+      <Head>
+        <title>Privacy Policy - VibeCodeee | How We Protect Your Data</title>
+        <meta name="description" content="Learn how VibeCodeee collects, uses, and protects your personal information. Our privacy policy explains your rights and our data practices." />
+        <meta property="og:title" content="Privacy Policy - VibeCodeee" />
+        <meta property="og:description" content="Learn how VibeCodeee collects, uses, and protects your personal information." />
+        <meta property="og:url" content="https://vibecodeee.com/privacy" />
+        <meta name="twitter:title" content="Privacy Policy - VibeCodeee" />
+        <meta name="twitter:description" content="Learn how VibeCodeee protects your personal information." />
+      </Head>
+      <div className="min-h-screen bg-white">
+        <Header />
 
       <main className="mx-auto max-w-4xl px-4 py-32 sm:px-6 lg:px-8">
         <h1 className="mb-8 text-5xl font-black text-zinc-900">Privacy Policy</h1>
@@ -215,7 +226,8 @@ export default function PrivacyPolicy() {
         </div>
       </main>
 
-      <Footer />
-    </div>
+        <Footer />
+      </div>
+    </>
   )
 }

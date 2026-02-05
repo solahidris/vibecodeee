@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { withAuth } from '@/lib/auth/withAuth'
 import { useAuth } from '@/contexts/AuthContext'
@@ -54,10 +55,20 @@ function SubscribePage() {
   }
 
   return (
-    <div className={`${geistSans.variable} min-h-screen bg-white font-sans`}>
-      <Header />
+    <>
+      <Head>
+        <title>Subscribe - VibeCodeee | Join Our Premium Tech Community</title>
+        <meta name="description" content="Join the VibeCodeee premium community for just RM10/month. Get access to exclusive courses, Telegram community, and expert resources to accelerate your tech career." />
+        <meta property="og:title" content="Subscribe to VibeCodeee - Premium Tech Community" />
+        <meta property="og:description" content="Join our premium community for RM10/month. Access exclusive courses, Telegram community, and expert resources." />
+        <meta property="og:url" content="https://vibecodeee.com/payment/subscribe" />
+        <meta name="twitter:title" content="Subscribe to VibeCodeee" />
+        <meta name="twitter:description" content="Join our premium tech community for just RM10/month." />
+      </Head>
+      <div className={`${geistSans.variable} min-h-screen bg-white font-sans`}>
+        <Header />
 
-      <main className="mx-auto max-w-6xl px-4 py-24 sm:px-6 lg:px-8">
+        <main className="mx-auto max-w-6xl px-4 py-24 sm:px-6 lg:px-8">
         {/* Hero Section */}
         <div className="text-center mb-20">
           <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-zinc-50 px-4 py-2 text-sm font-medium text-zinc-700">
@@ -334,8 +345,9 @@ function SubscribePage() {
         </div>
       </main>
 
-      <Footer />
-    </div>
+        <Footer />
+      </div>
+    </>
   )
 }
 

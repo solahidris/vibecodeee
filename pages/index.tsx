@@ -18,7 +18,7 @@ export default function Home() {
         <title>VibeCodeee - Premium Community Platform | Connect & Grow Together</title>
         <meta name="description" content="Join our exclusive premium community platform. Access expert resources, AI tools, prompting guides, and connect with like-minded professionals. Start your journey today." />
         <meta property="og:title" content="VibeCodeee - Premium Community Platform | Connect & Grow Together" />
-        <meta property="og:url" content="https://vibecode.com" />
+        <meta property="og:url" content="https://vibecodeee.com" />
         <meta name="twitter:title" content="VibeCodeee - Premium Community Platform" />
       </Head>
       <div className={`${geistSans.variable} font-sans`}>

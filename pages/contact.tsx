@@ -1,3 +1,4 @@
+import Head from 'next/head'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/landing/Footer'
 
@@ -5,8 +6,18 @@ export default function Contact() {
   const whatsappNumber = '60182934765' // Format: country code + number without spaces
 
   return (
-    <div className="min-h-screen bg-white">
-      <Header />
+    <>
+      <Head>
+        <title>Contact Us - VibeCodeee | Get Support via WhatsApp</title>
+        <meta name="description" content="Get in touch with VibeCodeee support. Reach out to us on WhatsApp for quick assistance with your membership, courses, or any questions." />
+        <meta property="og:title" content="Contact Us - VibeCodeee" />
+        <meta property="og:description" content="Get in touch with VibeCodeee support. Reach out to us on WhatsApp for quick assistance." />
+        <meta property="og:url" content="https://vibecodeee.com/contact" />
+        <meta name="twitter:title" content="Contact Us - VibeCodeee" />
+        <meta name="twitter:description" content="Get in touch with VibeCodeee support via WhatsApp." />
+      </Head>
+      <div className="min-h-screen bg-white">
+        <Header />
 
       <main className="mx-auto max-w-4xl px-4 py-32 sm:px-6 lg:px-8">
         <div className="text-center">
@@ -92,7 +103,8 @@ export default function Contact() {
         </div>
       </main>
 
-      <Footer />
-    </div>
+        <Footer />
+      </div>
+    </>
   )
 }
