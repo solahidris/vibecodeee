@@ -236,10 +236,16 @@ function CoursesPage() {
           <Button
             variant="ghost"
             size="sm"
-            className="mb-6"
+            className="group mb-6 w-fit rounded-full border border-zinc-200 bg-white/60 px-3 py-2 text-zinc-700 shadow-sm backdrop-blur transition hover:border-zinc-300 hover:bg-white hover:text-zinc-900 hover:shadow"
             onClick={() => router.push('/resources')}
           >
-            ← Back to Resources
+            <span
+              aria-hidden="true"
+              className="transition-transform group-hover:-translate-x-0.5"
+            >
+              ←
+            </span>
+            <span>Back to Resources</span>
           </Button>
           <h2 className="mb-3 text-4xl font-bold tracking-tight text-gray-900">
             Courses
