@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { useRouter } from 'next/router'
 import { withAuth } from '@/lib/auth/withAuth'
 import { Header } from '@/components/layout/Header'
@@ -9,12 +9,6 @@ const geistSans = Geist({
   variable: '--font-geist-sans',
   subsets: ['latin'],
 })
-
-const resourceFilters = [
-  { id: 'all', label: 'All', helper: 'Everything' },
-  { id: 'coding', label: 'Coding', helper: 'Courses only' },
-  { id: 'crash', label: 'Crash Course', helper: 'Quick sprints' },
-]
 
 const resourceLinks = [
   {
@@ -142,54 +136,22 @@ const resourceLinks = [
   },
 ]
 
-const resourceLinkIndex = new Map(
-  resourceLinks.map((resource, index) => [resource.id, index])
-)
-
-function getResourceRank(resource: {
-  id: string
-  disabled?: boolean
-  filters: string[]
-}) {
-  if (resource.id === 'courses') return 0
-  if (!resource.disabled && resource.filters.includes('crash')) return 1
-  if (resource.disabled) return 2
-  return 1
-}
-
 function ResourcesPage() {
   const router = useRouter()
-  const [activeFilter, setActiveFilter] = useState('all')
-
-  const visibleResources = useMemo(() => {
-    const filteredResources =
-      activeFilter === 'all'
-        ? resourceLinks
-        : resourceLinks.filter((resource) =>
-            resource.filters.includes(activeFilter)
-          )
-
-    return [...filteredResources].sort((resourceA, resourceB) => {
-      const rankA = getResourceRank(resourceA)
-      const rankB = getResourceRank(resourceB)
-
-      if (rankA !== rankB) return rankA - rankB
-
-      const indexA = resourceLinkIndex.get(resourceA.id) ?? 0
-      const indexB = resourceLinkIndex.get(resourceB.id) ?? 0
-
-      return indexA - indexB
-    })
-  }, [activeFilter])
 
   const availableResources = useMemo(
-    () => visibleResources.filter((r) => !r.disabled),
-    [visibleResources]
+    () => resourceLinks.filter((r) => !r.disabled && r.filters.includes('coding')),
+    []
+  )
+
+  const promptTemplateResources = useMemo(
+    () => resourceLinks.filter((r) => !r.disabled && r.filters.includes('crash')),
+    []
   )
 
   const comingSoonResources = useMemo(
-    () => visibleResources.filter((r) => r.disabled),
-    [visibleResources]
+    () => resourceLinks.filter((r) => r.disabled),
+    []
   )
 
   return (
@@ -277,32 +239,6 @@ function ResourcesPage() {
             </div>
           </div>
 
-          <div className="mb-8 flex flex-wrap items-center gap-3">
-            <span className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">
-              Filter
-            </span>
-            <div className="flex flex-wrap gap-2">
-              {resourceFilters.map((filter) => {
-                const isActive = activeFilter === filter.id
-                return (
-                  <button
-                    key={filter.id}
-                    type="button"
-                    onClick={() => setActiveFilter(filter.id)}
-                    aria-pressed={isActive}
-                    className={`rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] transition ${
-                      isActive
-                        ? 'border-zinc-900 bg-zinc-900 text-white shadow-sm'
-                        : 'border-zinc-200 bg-white text-zinc-500 hover:border-zinc-300 hover:text-zinc-700'
-                    }`}
-                  >
-                    {filter.label}
-                  </button>
-                )
-              })}
-            </div>
-          </div>
-
           <div
             id="resource-grid"
             className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
@@ -310,7 +246,7 @@ function ResourcesPage() {
             {availableResources.map((resource, index) => (
               <div
                 key={resource.id}
-                className="group relative col-span-full w-full overflow-hidden rounded-2xl border border-zinc-200 bg-white p-6 transition-shadow hover:shadow-lg animate-fade-in-up sm:col-span-2 lg:col-span-3"
+                className="group relative overflow-hidden rounded-2xl border border-zinc-200 bg-white p-6 transition-shadow hover:shadow-lg animate-fade-in-up"
                 style={{ animationDelay: `${0.1 + index * 0.08}s` }}
               >
                 <div className="flex items-start justify-between mb-4">
@@ -366,14 +302,86 @@ function ResourcesPage() {
           </div>
         </section>
 
+        {promptTemplateResources.length > 0 && (
+          <section className="mt-16">
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-zinc-900">
+                Prompt Templates
+              </h2>
+              <p className="text-sm text-zinc-600">
+                Quick-start courses with ready-to-use prompts and templates.
+              </p>
+            </div>
+
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {promptTemplateResources.map((resource, index) => (
+                <div
+                  key={resource.id}
+                  className="group relative overflow-hidden rounded-2xl border border-zinc-200 bg-white p-6 transition-shadow hover:shadow-lg animate-fade-in-up"
+                  style={{ animationDelay: `${0.1 + index * 0.08}s` }}
+                >
+                  <div className="flex items-start justify-between mb-4">
+                    <span className="text-4xl">
+                      {resource.icon}
+                    </span>
+                    <span className="rounded-md bg-zinc-100 px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider text-zinc-600">
+                      {resource.tag}
+                    </span>
+                  </div>
+
+                  <h3 className="text-xl font-bold text-zinc-900 mb-2">
+                    {resource.title}
+                  </h3>
+                  <p className="text-sm text-zinc-600 mb-4">
+                    {resource.description}
+                  </p>
+
+                  <div className="flex flex-wrap gap-1.5 mb-6">
+                    {resource.highlights.map((highlight) => (
+                      <span
+                        key={highlight}
+                        className="rounded-md bg-zinc-50 px-2 py-0.5 text-[11px] font-medium text-zinc-500"
+                      >
+                        {highlight}
+                      </span>
+                    ))}
+                  </div>
+
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    onClick={() => router.push(resource.path)}
+                    className="w-full group/button"
+                  >
+                    {resource.cta}
+                    <svg
+                      className="h-4 w-4 transition-transform duration-300 group-hover/button:translate-x-1"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2.5}
+                        d="M13 7l5 5m0 0l-5 5m5-5H6"
+                      />
+                    </svg>
+                  </Button>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
         {comingSoonResources.length > 0 && (
           <section className="mt-16">
             <div className="mb-6">
               <h2 className="text-2xl font-bold text-zinc-900">
-                Explore the library
+                Coming Soon
               </h2>
               <p className="text-sm text-zinc-600">
-                Choose a path or jump into a quick-start.
+                New courses and resources launching soon.
               </p>
             </div>
 
