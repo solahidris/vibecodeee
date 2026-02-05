@@ -359,7 +359,6 @@ export default function CrashCoursePage() {
               </section>
             </div>
           </main>
-        </div>
     </div>
   );
 }
