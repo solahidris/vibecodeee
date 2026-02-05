@@ -143,15 +143,44 @@ const resourceLinks = [
   },
 ]
 
+const resourceLinkIndex = new Map(
+  resourceLinks.map((resource, index) => [resource.id, index])
+)
+
+function getResourceRank(resource: {
+  id: string
+  disabled?: boolean
+  filters: string[]
+}) {
+  if (resource.id === 'courses') return 0
+  if (!resource.disabled && resource.filters.includes('crash')) return 1
+  if (resource.disabled) return 2
+  return 1
+}
+
 function ResourcesPage() {
   const router = useRouter()
   const [activeFilter, setActiveFilter] = useState('all')
 
   const visibleResources = useMemo(() => {
-    if (activeFilter === 'all') return resourceLinks
-    return resourceLinks.filter((resource) =>
-      resource.filters.includes(activeFilter)
-    )
+    const filteredResources =
+      activeFilter === 'all'
+        ? resourceLinks
+        : resourceLinks.filter((resource) =>
+            resource.filters.includes(activeFilter)
+          )
+
+    return [...filteredResources].sort((resourceA, resourceB) => {
+      const rankA = getResourceRank(resourceA)
+      const rankB = getResourceRank(resourceB)
+
+      if (rankA !== rankB) return rankA - rankB
+
+      const indexA = resourceLinkIndex.get(resourceA.id) ?? 0
+      const indexB = resourceLinkIndex.get(resourceB.id) ?? 0
+
+      return indexA - indexB
+    })
   }, [activeFilter])
 
   return (
