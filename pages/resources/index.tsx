@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useRouter } from 'next/router'
 import { withAuth } from '@/lib/auth/withAuth'
-import { Card } from '@/components/ui/Card'
 import { Header } from '@/components/layout/Header'
 import { Button } from '@/components/ui/Button'
 import { Geist } from 'next/font/google'
@@ -143,15 +142,44 @@ const resourceLinks = [
   },
 ]
 
+const resourceLinkIndex = new Map(
+  resourceLinks.map((resource, index) => [resource.id, index])
+)
+
+function getResourceRank(resource: {
+  id: string
+  disabled?: boolean
+  filters: string[]
+}) {
+  if (resource.id === 'courses') return 0
+  if (!resource.disabled && resource.filters.includes('crash')) return 1
+  if (resource.disabled) return 2
+  return 1
+}
+
 function ResourcesPage() {
   const router = useRouter()
   const [activeFilter, setActiveFilter] = useState('all')
 
   const visibleResources = useMemo(() => {
-    if (activeFilter === 'all') return resourceLinks
-    return resourceLinks.filter((resource) =>
-      resource.filters.includes(activeFilter)
-    )
+    const filteredResources =
+      activeFilter === 'all'
+        ? resourceLinks
+        : resourceLinks.filter((resource) =>
+            resource.filters.includes(activeFilter)
+          )
+
+    return [...filteredResources].sort((resourceA, resourceB) => {
+      const rankA = getResourceRank(resourceA)
+      const rankB = getResourceRank(resourceB)
+
+      if (rankA !== rankB) return rankA - rankB
+
+      const indexA = resourceLinkIndex.get(resourceA.id) ?? 0
+      const indexB = resourceLinkIndex.get(resourceB.id) ?? 0
+
+      return indexA - indexB
+    })
   }, [activeFilter])
 
   const availableResources = useMemo(
@@ -228,57 +256,6 @@ function ResourcesPage() {
                 </Button>
               </div>
             </div>
-
-            <div className="space-y-4">
-              <div className="rounded-xl bg-zinc-50 p-5 border border-zinc-100">
-                <div className="mb-3 inline-flex items-center gap-1.5">
-                  <svg className="h-3.5 w-3.5 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <p className="text-xs font-semibold uppercase tracking-wider text-zinc-500">
-                    Recommended path
-                  </p>
-                </div>
-                <p className="text-base font-semibold text-zinc-900">
-                  Foundations to Frontend to Backend
-                </p>
-                <p className="mt-1 text-sm text-zinc-600">
-                  Build confidence one lane at a time.
-                </p>
-              </div>
-              <div className="rounded-xl bg-zinc-50 p-5 border border-zinc-100">
-                <div className="mb-3 inline-flex items-center gap-1.5">
-                  <svg className="h-3.5 w-3.5 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                  </svg>
-                  <p className="text-xs font-semibold uppercase tracking-wider text-zinc-500">
-                    Quick wins
-                  </p>
-                </div>
-                <p className="text-base font-semibold text-zinc-900">
-                  Short sprints, real output
-                </p>
-                <p className="mt-1 text-sm text-zinc-600">
-                  Short sprints with reusable templates.
-                </p>
-              </div>
-              <div className="rounded-xl bg-zinc-900 p-5 border border-zinc-800">
-                <div className="mb-3 inline-flex items-center gap-1.5">
-                  <svg className="h-3.5 w-3.5 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                  </svg>
-                  <p className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
-                    Member only
-                  </p>
-                </div>
-                <p className="text-base font-semibold text-white">
-                  Everything here is designed to be practical.
-                </p>
-                <p className="mt-1 text-sm text-zinc-300">
-                  Pick a lane, ship a sprint, and keep the momentum going.
-                </p>
-              </div>
-            </div>
           </div>
         </section>
 
@@ -333,7 +310,7 @@ function ResourcesPage() {
             {availableResources.map((resource, index) => (
               <div
                 key={resource.id}
-                className="group relative overflow-hidden rounded-2xl border border-zinc-200 bg-white p-6 transition-shadow hover:shadow-lg animate-fade-in-up"
+                className="group relative col-span-full w-full overflow-hidden rounded-2xl border border-zinc-200 bg-white p-6 transition-shadow hover:shadow-lg animate-fade-in-up sm:col-span-2 lg:col-span-3"
                 style={{ animationDelay: `${0.1 + index * 0.08}s` }}
               >
                 <div className="flex items-start justify-between mb-4">

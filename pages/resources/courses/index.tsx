@@ -233,6 +233,14 @@ function CoursesPage() {
 
       <main className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="mb-12">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="mb-6"
+            onClick={() => router.push('/resources')}
+          >
+            ← Back to Resources
+          </Button>
           <h2 className="mb-3 text-4xl font-bold tracking-tight text-gray-900">
             Courses
           </h2>
