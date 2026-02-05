@@ -1,20 +1,21 @@
-import { useRouter } from 'next/router'
-import { useAuth } from '@/contexts/AuthContext'
-import { Avatar } from '@/components/ui/Avatar'
+import Image from "next/image";
+import { useRouter } from "next/router";
+import { useAuth } from "@/contexts/AuthContext";
+import { Avatar } from "@/components/ui/Avatar";
 
 interface HeaderProps {
-  showNavigation?: boolean
+  showNavigation?: boolean;
 }
 
 export function Header({ showNavigation = true }: HeaderProps) {
-  const router = useRouter()
-  const { user } = useAuth()
-  const currentPath = router.pathname
+  const router = useRouter();
+  const { user } = useAuth();
+  const currentPath = router.pathname;
 
   const navigationLinks = [
-    { label: 'Community', path: '/payment/subscribe' },
-    { label: 'Resources', path: '/resources' },
-  ]
+    { label: "Community", path: "/payment/subscribe" },
+    { label: "Resources", path: "/resources" },
+  ];
 
   return (
     <header className="sticky top-0 z-50 border-b border-gray-200 bg-white/80 backdrop-blur-lg">
@@ -22,11 +23,17 @@ export function Header({ showNavigation = true }: HeaderProps) {
         <div className="flex items-center justify-between">
           {/* Logo/Brand */}
           <button
-            onClick={() => router.push('/')}
+            onClick={() => router.push("/")}
             className="flex items-center gap-2 transition-opacity hover:opacity-80 cursor-pointer"
           >
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-zinc-900 shadow-lg">
-              <span className="text-lg font-bold text-white">V</span>
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl overflow-hidden">
+              <Image
+                src="/android-chrome-512x512.png"
+                alt="VibeCodeee logo"
+                width={40}
+                height={40}
+                className="object-contain"
+              />
             </div>
             <span className="text-xl font-bold text-zinc-900">VibeCodeee</span>
           </button>
@@ -42,8 +49,8 @@ export function Header({ showNavigation = true }: HeaderProps) {
                     onClick={() => router.push(link.path)}
                     className={`text-sm font-normal transition-colors cursor-pointer ${
                       currentPath === link.path
-                        ? 'text-zinc-900'
-                        : 'text-zinc-600 hover:text-zinc-900'
+                        ? "text-zinc-900"
+                        : "text-zinc-600 hover:text-zinc-900"
                     }`}
                   >
                     {link.label}
@@ -55,7 +62,7 @@ export function Header({ showNavigation = true }: HeaderProps) {
             {/* Avatar - Only show if logged in */}
             {user && (
               <button
-                onClick={() => router.push('/profile')}
+                onClick={() => router.push("/profile")}
                 className="transition-opacity hover:opacity-80 cursor-pointer"
                 aria-label="Go to profile"
               >
@@ -69,5 +76,5 @@ export function Header({ showNavigation = true }: HeaderProps) {
         </div>
       </div>
     </header>
-  )
+  );
 }
