@@ -30,9 +30,7 @@ export function Footer() {
             </p>
             <div className="flex gap-4">
               <a
-                href="https://tinyurl.com/a1-community"
-                target="_blank"
-                rel="noopener noreferrer"
+                href="/payment/subscribe"
                 className="flex h-10 w-10 items-center justify-center rounded-lg border border-zinc-200 text-zinc-600 transition-all duration-300 hover:border-zinc-900 hover:bg-zinc-900 hover:text-white hover:scale-110"
                 aria-label="Telegram"
               >
