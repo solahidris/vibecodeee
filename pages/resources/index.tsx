@@ -154,6 +154,16 @@ function ResourcesPage() {
     )
   }, [activeFilter])
 
+  const availableResources = useMemo(
+    () => visibleResources.filter((r) => !r.disabled),
+    [visibleResources]
+  )
+
+  const comingSoonResources = useMemo(
+    () => visibleResources.filter((r) => r.disabled),
+    [visibleResources]
+  )
+
   return (
     <div
       className={`${geistSans.variable} relative min-h-screen overflow-hidden bg-[#f7f7f8] font-sans`}
@@ -276,10 +286,10 @@ function ResourcesPage() {
           <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
             <div>
               <h2 className="text-2xl font-bold text-zinc-900">
-                Explore the library
+                Available Now
               </h2>
               <p className="text-sm text-zinc-600">
-                Choose a path or jump into a quick-start.
+                Start learning with these ready-to-use resources.
               </p>
             </div>
             <div className="inline-flex items-center gap-1.5 rounded-md bg-zinc-100 px-2.5 py-1 text-xs font-medium text-zinc-600">
@@ -320,7 +330,7 @@ function ResourcesPage() {
             id="resource-grid"
             className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
           >
-            {visibleResources.map((resource, index) => (
+            {availableResources.map((resource, index) => (
               <div
                 key={resource.id}
                 className="group relative overflow-hidden rounded-2xl border border-zinc-200 bg-white p-6 transition-shadow hover:shadow-lg animate-fade-in-up"
@@ -354,37 +364,89 @@ function ResourcesPage() {
                 </div>
 
                 <Button
-                  variant={resource.disabled ? "secondary" : "primary"}
+                  variant="primary"
                   size="sm"
-                  onClick={() => {
-                    if (!resource.disabled) {
-                      router.push(resource.path)
-                    }
-                  }}
-                  disabled={resource.disabled}
+                  onClick={() => router.push(resource.path)}
                   className="w-full group/button"
                 >
                   {resource.cta}
-                  {!resource.disabled && (
-                    <svg
-                      className="h-4 w-4 transition-transform duration-300 group-hover/button:translate-x-1"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2.5}
-                        d="M13 7l5 5m0 0l-5 5m5-5H6"
-                      />
-                    </svg>
-                  )}
+                  <svg
+                    className="h-4 w-4 transition-transform duration-300 group-hover/button:translate-x-1"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2.5}
+                      d="M13 7l5 5m0 0l-5 5m5-5H6"
+                    />
+                  </svg>
                 </Button>
               </div>
             ))}
           </div>
         </section>
+
+        {comingSoonResources.length > 0 && (
+          <section className="mt-16">
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-zinc-900">
+                Explore the library
+              </h2>
+              <p className="text-sm text-zinc-600">
+                Choose a path or jump into a quick-start.
+              </p>
+            </div>
+
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {comingSoonResources.map((resource, index) => (
+                <div
+                  key={resource.id}
+                  className="group relative overflow-hidden rounded-2xl border border-zinc-200 bg-white p-6 transition-shadow hover:shadow-lg animate-fade-in-up opacity-60"
+                  style={{ animationDelay: `${0.1 + index * 0.08}s` }}
+                >
+                  <div className="flex items-start justify-between mb-4">
+                    <span className="text-4xl">
+                      {resource.icon}
+                    </span>
+                    <span className="rounded-md bg-zinc-100 px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider text-zinc-600">
+                      {resource.tag}
+                    </span>
+                  </div>
+
+                  <h3 className="text-xl font-bold text-zinc-900 mb-2">
+                    {resource.title}
+                  </h3>
+                  <p className="text-sm text-zinc-600 mb-4">
+                    {resource.description}
+                  </p>
+
+                  <div className="flex flex-wrap gap-1.5 mb-6">
+                    {resource.highlights.map((highlight) => (
+                      <span
+                        key={highlight}
+                        className="rounded-md bg-zinc-50 px-2 py-0.5 text-[11px] font-medium text-zinc-500"
+                      >
+                        {highlight}
+                      </span>
+                    ))}
+                  </div>
+
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    disabled
+                    className="w-full"
+                  >
+                    {resource.cta}
+                  </Button>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
       </main>
     </div>
   )
