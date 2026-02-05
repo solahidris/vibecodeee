@@ -219,7 +219,7 @@ function CareerDevopsCoursesPage() {
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
-                      Course {String(course.number ?? index + 1).padStart(2, '0')}
+                      Topic {String(course.number ?? index + 1).padStart(2, '0')}
                     </p>
                     <h3 className="mt-1 text-xl font-semibold text-gray-900">
                       {course.title}
