@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import Head from "next/head";
-import { DM_Serif_Display, Sora } from "next/font/google";
+import { Geist } from "next/font/google";
 import { useAuth } from "@/contexts/AuthContext";
 import { createClient } from "@/lib/supabase/client";
 import { Header } from "@/components/layout/Header";
@@ -15,16 +15,9 @@ import {
 } from "@/lib/courses/progress";
 import { formatDate } from "@/lib/utils/formatters";
 
-const display = DM_Serif_Display({
-  subsets: ["latin"],
-  weight: ["400"],
-  variable: "--font-display",
-});
-
-const body = Sora({
-  subsets: ["latin"],
-  weight: ["300", "400", "600"],
-  variable: "--font-body",
+const geistSans = Geist({
+  variable: '--font-geist-sans',
+  subsets: ['latin'],
 });
 
 const lessons = [
@@ -220,28 +213,31 @@ export default function BasicPromptPage() {
         <meta property="og:description" content="Free interactive course teaching clear, reliable prompt engineering in 5 short lessons. Perfect for beginners." />
         <meta name="twitter:title" content="Basic Prompting Course - Master AI Prompting" />
       </Head>
-      <div className={`${display.variable} ${body.variable} font-[var(--font-body)]`}>
-        <div className="min-h-screen bg-[#f6f3ef]">
-          <Header />
-          {confettiVisible && <ConfettiCannons burstKey={confettiKey} />}
-          <div className="relative">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,#c9e4ff,transparent_55%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_80%,#ffe6bf,transparent_60%)]" />
-          <div className="relative mx-auto max-w-5xl px-6 py-16 sm:px-10">
+      <div className={`${geistSans.variable} relative min-h-screen overflow-hidden bg-[#f7f7f8] font-sans`}>
+        <Header />
+        {confettiVisible && <ConfettiCannons burstKey={confettiKey} />}
+
+        <div className="pointer-events-none absolute inset-0 -z-10">
+          <div className="absolute -top-40 right-0 h-72 w-72 rounded-full bg-zinc-200/70 blur-3xl" />
+          <div className="absolute bottom-0 left-0 h-72 w-72 rounded-full bg-amber-100/70 blur-3xl" />
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,#e5e7eb_1px,transparent_1px),linear-gradient(to_bottom,#e5e7eb_1px,transparent_1px)] bg-[size:6rem_6rem] opacity-40" />
+        </div>
+
+        <main className="mx-auto max-w-5xl px-4 pb-20 pt-16 sm:px-6 lg:px-8">
             {showToast && (
               <div
-                className="fade-in fixed right-6 top-6 z-50 max-w-sm rounded-2xl border border-neutral-200 bg-white px-5 py-4 text-sm text-neutral-800 shadow-lg"
+                className="animate-fade-in-up fixed right-6 top-6 z-50 max-w-sm rounded-2xl border border-zinc-200 bg-white px-5 py-4 text-sm text-zinc-800 shadow-lg"
                 role="status"
                 aria-live="polite"
               >
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    <p className="font-semibold text-neutral-900">Course complete</p>
-                    <p className="text-neutral-600">{completed} of {lessons.length} lessons done.</p>
+                    <p className="font-semibold text-zinc-900">Course complete</p>
+                    <p className="text-zinc-600">{completed} of {lessons.length} lessons done.</p>
                   </div>
                   <button
                     type="button"
-                    className="text-xs font-semibold uppercase tracking-wide text-neutral-500 transition hover:text-neutral-800"
+                    className="text-xs font-semibold uppercase tracking-wide text-zinc-500 transition hover:text-zinc-800"
                     onClick={() => setShowToast(false)}
                   >
                     Close
@@ -249,38 +245,38 @@ export default function BasicPromptPage() {
                 </div>
               </div>
             )}
-            <div className="fade-in">
-              <p className="mb-3 text-sm uppercase tracking-[0.3em] text-neutral-600">
+            <div className="animate-fade-in-up">
+              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-white px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-zinc-600">
                 Basic Prompting Course
-              </p>
-              <h1 className="mb-4 font-[var(--font-display)] text-4xl text-neutral-900 sm:text-5xl">
+              </div>
+              <h1 className="mb-4 text-4xl font-black tracking-tight text-zinc-900 sm:text-5xl">
                 Five short lessons for clear, reliable prompts
               </h1>
-              <p className="max-w-2xl text-lg text-neutral-700">
+              <p className="max-w-2xl text-lg text-zinc-600">
                 This is a quick, text-only course you can finish in one sitting. Mark each lesson as done to track
                 progress.
               </p>
             </div>
 
             <div
-              className="sticky top-4 z-40 mt-10 rounded-2xl border border-neutral-200/80 bg-white/80 p-6 shadow-[0_20px_60px_-40px_rgba(15,23,42,0.7)] backdrop-blur fade-in"
+              className="sticky top-4 z-40 mt-10 rounded-3xl border border-zinc-200 bg-white/80 p-6 shadow-[0_30px_80px_-60px_rgba(15,23,42,0.6)] backdrop-blur animate-fade-in-up"
               style={{ animationDelay: "0.1s" }}
             >
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                  <p className="text-sm font-semibold text-neutral-900">Progress</p>
-                  <p className="text-sm text-neutral-600">{completed} of {lessons.length} lessons completed</p>
+                  <p className="text-sm font-semibold text-zinc-900">Progress</p>
+                  <p className="text-sm text-zinc-600">{completed} of {lessons.length} lessons completed</p>
                 </div>
-                <div className="text-2xl font-semibold text-neutral-900">{percent}%</div>
+                <div className="text-2xl font-semibold text-zinc-900">{percent}%</div>
               </div>
-              <div className="mt-4 h-3 w-full rounded-full bg-neutral-200" aria-label="Course progress">
+              <div className="mt-4 h-3 w-full rounded-full bg-zinc-200" aria-label="Course progress">
                 <div
-                  className="h-full rounded-full bg-neutral-900 transition-all duration-500"
+                  className="h-full rounded-full bg-zinc-900 transition-all duration-500"
                   style={{ width: `${percent}%` }}
                 />
               </div>
               {user?.id && (
-                <p className="mt-3 text-xs text-neutral-500">
+                <p className="mt-3 text-xs text-zinc-500">
                   {syncError
                     ? syncError
                     : lastSyncedAt
@@ -296,20 +292,20 @@ export default function BasicPromptPage() {
               {lessons.map((lesson, index) => (
                 <section
                   key={lesson.title}
-                  className="fade-in rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm"
+                  className="animate-fade-in-up rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-lg"
                   style={{ animationDelay: `${0.15 + index * 0.05}s` }}
                 >
                   <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                     <div>
-                      <h2 className="font-[var(--font-display)] text-2xl text-neutral-900">
+                      <h2 className="text-2xl font-bold text-zinc-900">
                         {lesson.title}
                       </h2>
-                      <p className="mt-2 text-neutral-700">{lesson.summary}</p>
+                      <p className="mt-2 text-zinc-600">{lesson.summary}</p>
                     </div>
-                    <label className="flex items-center gap-2 text-sm font-semibold text-neutral-800">
+                    <label className="flex items-center gap-2 text-sm font-semibold text-zinc-800">
                       <input
                         type="checkbox"
-                        className="h-5 w-5 accent-neutral-900"
+                        className="h-5 w-5 accent-zinc-900"
                         checked={done[index]}
                         onChange={() => handleToggle(index)}
                       />
@@ -317,35 +313,19 @@ export default function BasicPromptPage() {
                     </label>
                   </div>
 
-                  <div className="mt-5 rounded-xl border border-neutral-200 bg-neutral-50 p-4">
-                    <p className="text-sm font-semibold text-neutral-900">Try this prompt</p>
-                    <p className="mt-2 text-sm text-neutral-700">
-                      <span className="font-mono text-xs text-neutral-600">{lesson.template}</span>
+                  <div className="mt-5 rounded-xl border border-zinc-200 bg-zinc-50 p-4">
+                    <p className="text-sm font-semibold text-zinc-900">Try this prompt</p>
+                    <p className="mt-2 text-sm text-zinc-600">
+                      <span className="font-mono text-xs text-zinc-600">{lesson.template}</span>
                     </p>
                   </div>
 
-                  <p className="mt-4 text-sm text-neutral-600">{lesson.tip}</p>
+                  <p className="mt-4 text-sm text-zinc-600">{lesson.tip}</p>
                 </section>
               ))}
             </div>
-          </div>
+          </main>
         </div>
-      </div>
-
-      <style jsx>{`
-        .fade-in {
-          opacity: 0;
-          transform: translateY(12px);
-          animation: fadeUp 0.6s ease-out forwards;
-        }
-
-        @keyframes fadeUp {
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-      `}</style>
     </div>
     </>
   );
