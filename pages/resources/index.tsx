@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useRouter } from 'next/router'
 import { withAuth } from '@/lib/auth/withAuth'
-import { Card } from '@/components/ui/Card'
 import { Header } from '@/components/layout/Header'
 import { Button } from '@/components/ui/Button'
 import { Geist } from 'next/font/google'
