@@ -1,29 +1,77 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/router'
 import { withAuth } from '@/lib/auth/withAuth'
+import { createClient } from '@/lib/supabase/client'
+import { useAuth } from '@/contexts/AuthContext'
 import { Header } from '@/components/layout/Header'
+import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Geist } from 'next/font/google'
+import { foundationCourses } from '@/lib/courses/foundationCourses'
+import { backendCourses } from '@/lib/courses/backendCourses'
+import { frontendCourses } from '@/lib/courses/frontendCourses'
+import { aiDataScienceCourses } from '@/lib/courses/aiDataScienceCourses'
+import { careerDevopsCourses } from '@/lib/courses/careerDevopsCourses'
+import { fetchCourseSummaries } from '@/lib/courses/supabaseCourses'
+import type { CourseSummary } from '@/lib/courses/types'
+import {
+  buildAiDataScienceProgress,
+  buildBackendProgress,
+  buildCareerDevopsProgress,
+  buildFoundationProgress,
+  buildFrontendProgress,
+  CourseProgressData,
+  getLocalProgress,
+  mergeCourseProgress,
+  needsProgressSync,
+  parseCourseProgress,
+  setLocalProgress,
+} from '@/lib/courses/progress'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
   subsets: ['latin'],
 })
 
+const resourceFilters = [
+  { id: 'all', label: 'All', helper: 'Everything' },
+  { id: 'coding', label: 'Coding', helper: 'Courses only' },
+  { id: 'crash', label: 'Crash Course', helper: 'Quick sprints' },
+]
+
+const ProgressSummary = ({
+  completed,
+  total,
+  syncing,
+}: {
+  completed: number
+  total: number
+  syncing: boolean
+}) => {
+  const percent = total > 0 ? Math.round((completed / total) * 100) : 0
+
+  return (
+    <div>
+      <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
+        Progress
+      </p>
+      <p className="mt-1 text-sm font-semibold text-gray-900">
+        {`${completed} of ${total} completed`}
+      </p>
+      <div className="mt-2 h-1.5 w-full max-w-[200px] rounded-full bg-gray-200">
+        <div
+          className="h-1.5 rounded-full bg-zinc-900 transition-all"
+          style={{ width: `${percent}%` }}
+        />
+      </div>
+      <p className="mt-2 text-xs text-gray-400">
+        {syncing ? 'Syncing progress...' : 'Up to date'}
+      </p>
+    </div>
+  )
+}
+
 const resourceLinks = [
-  {
-    id: 'courses',
-    title: 'Courses',
-    description:
-      'Structured learning lanes that build lasting developer fundamentals.',
-    icon: '📚',
-    path: '/resources/courses',
-    tag: 'Core path',
-    highlights: ['3 lanes', 'Structured', 'Self-paced'],
-    accent: 'from-zinc-900/10 via-white to-white',
-    cta: 'Open Courses',
-    filters: ['coding'],
-  },
   {
     id: 'nextjs-mastery',
     title: 'Next.js Mastery',
@@ -138,21 +186,187 @@ const resourceLinks = [
 
 function ResourcesPage() {
   const router = useRouter()
+  const { user } = useAuth()
+  const supabase = useMemo(() => createClient(), [])
+  const [activeFilter, setActiveFilter] = useState('all')
+  const [progressData, setProgressData] = useState<CourseProgressData>({})
+  const [syncing, setSyncing] = useState(true)
+  const [laneCourses, setLaneCourses] = useState<{
+    foundation: CourseSummary[]
+    frontend: CourseSummary[]
+    backend: CourseSummary[]
+    aiDataScience: CourseSummary[]
+    careerDevops: CourseSummary[]
+  }>({
+    foundation: foundationCourses,
+    frontend: frontendCourses,
+    backend: backendCourses,
+    aiDataScience: aiDataScienceCourses,
+    careerDevops: careerDevopsCourses,
+  })
+
+  const visibleResources = useMemo(() => {
+    if (activeFilter === 'all') return resourceLinks
+    return resourceLinks.filter((resource) =>
+      resource.filters.includes(activeFilter)
+    )
+  }, [activeFilter])
 
   const availableResources = useMemo(
-    () => resourceLinks.filter((r) => !r.disabled && r.filters.includes('coding')),
-    []
-  )
-
-  const promptTemplateResources = useMemo(
-    () => resourceLinks.filter((r) => !r.disabled && r.filters.includes('crash')),
-    []
+    () => visibleResources.filter((r) => !r.disabled),
+    [visibleResources]
   )
 
   const comingSoonResources = useMemo(
-    () => resourceLinks.filter((r) => r.disabled),
-    []
+    () => visibleResources.filter((r) => r.disabled),
+    [visibleResources]
   )
+
+  const showCourses = activeFilter === 'all' || activeFilter === 'coding'
+
+  const foundationProgress = useMemo(
+    () => buildFoundationProgress(progressData, laneCourses.foundation),
+    [progressData, laneCourses.foundation]
+  )
+  const frontendProgress = useMemo(
+    () => buildFrontendProgress(progressData, laneCourses.frontend),
+    [progressData, laneCourses.frontend]
+  )
+  const backendProgress = useMemo(
+    () => buildBackendProgress(progressData, laneCourses.backend),
+    [progressData, laneCourses.backend]
+  )
+  const aiDataScienceProgress = useMemo(
+    () => buildAiDataScienceProgress(progressData, laneCourses.aiDataScience),
+    [progressData, laneCourses.aiDataScience]
+  )
+  const careerDevopsProgress = useMemo(
+    () => buildCareerDevopsProgress(progressData, laneCourses.careerDevops),
+    [progressData, laneCourses.careerDevops]
+  )
+
+  const foundationCompleted = useMemo(
+    () => Object.values(foundationProgress).filter(Boolean).length,
+    [foundationProgress]
+  )
+  const frontendCompleted = useMemo(
+    () => Object.values(frontendProgress).filter(Boolean).length,
+    [frontendProgress]
+  )
+  const backendCompleted = useMemo(
+    () => Object.values(backendProgress).filter(Boolean).length,
+    [backendProgress]
+  )
+  const aiDataScienceCompleted = useMemo(
+    () => Object.values(aiDataScienceProgress).filter(Boolean).length,
+    [aiDataScienceProgress]
+  )
+  const careerDevopsCompleted = useMemo(
+    () => Object.values(careerDevopsProgress).filter(Boolean).length,
+    [careerDevopsProgress]
+  )
+
+  useEffect(() => {
+    let isMounted = true
+
+    const loadCourses = async () => {
+      if (!user?.id) return
+      try {
+        const [
+          foundation,
+          frontend,
+          backend,
+          aiDataScience,
+          careerDevopsPrimary,
+        ] = await Promise.all([
+          fetchCourseSummaries(supabase, 'foundation'),
+          fetchCourseSummaries(supabase, 'frontend'),
+          fetchCourseSummaries(supabase, 'backend'),
+          fetchCourseSummaries(supabase, 'ai-data-science'),
+          fetchCourseSummaries(supabase, 'career'),
+        ])
+
+        const careerDevops =
+          careerDevopsPrimary.length > 0
+            ? careerDevopsPrimary
+            : await fetchCourseSummaries(supabase, 'career-devops')
+
+        if (!isMounted) return
+
+        setLaneCourses({
+          foundation: foundation.length ? foundation : foundationCourses,
+          frontend: frontend.length ? frontend : frontendCourses,
+          backend: backend.length ? backend : backendCourses,
+          aiDataScience: aiDataScience.length
+            ? aiDataScience
+            : aiDataScienceCourses,
+          careerDevops: careerDevops.length ? careerDevops : careerDevopsCourses,
+        })
+      } catch (error) {
+        console.error('Error loading courses:', error)
+      }
+    }
+
+    void loadCourses()
+
+    return () => {
+      isMounted = false
+    }
+  }, [supabase, user?.id])
+
+  useEffect(() => {
+    if (!user?.id) return
+
+    const syncProgress = async () => {
+      setSyncing(true)
+      try {
+        const localProgress = getLocalProgress(user.id) || {}
+        setProgressData(localProgress)
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('course_progress')
+          .eq('id', user.id)
+          .maybeSingle()
+
+        if (error) {
+          throw error
+        }
+
+        const serverProgress =
+          data?.course_progress !== null && data?.course_progress !== undefined
+            ? parseCourseProgress(data.course_progress)
+            : {}
+
+        const mergedProgress = mergeCourseProgress(serverProgress, localProgress)
+        setLocalProgress(user.id, mergedProgress)
+        setProgressData(mergedProgress)
+
+        if (needsProgressSync(serverProgress, mergedProgress)) {
+          const { error: upsertError } = await supabase
+            .from('profiles')
+            .upsert(
+              {
+                id: user.id,
+                course_progress: mergedProgress,
+              },
+              { onConflict: 'id' }
+            )
+
+          if (upsertError) {
+            throw upsertError
+          }
+        }
+      } catch (error) {
+        console.error('Error syncing course progress:', error)
+        const fallbackProgress = getLocalProgress(user.id) || {}
+        setProgressData(fallbackProgress)
+      } finally {
+        setSyncing(false)
+      }
+    }
+
+    void syncProgress()
+  }, [supabase, user?.id])
 
   return (
     <div
@@ -201,7 +415,14 @@ function ResourcesPage() {
                 <Button
                   variant="primary"
                   size="md"
-                  onClick={() => router.push('/resources/courses')}
+                  onClick={() => {
+                    setActiveFilter('coding')
+                    requestAnimationFrame(() =>
+                      document
+                        .getElementById('courses')
+                        ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                    )
+                  }}
                 >
                   Start with Courses
                 </Button>
@@ -218,6 +439,7 @@ function ResourcesPage() {
                 </Button>
               </div>
             </div>
+
           </div>
         </section>
 
@@ -239,6 +461,316 @@ function ResourcesPage() {
             </div>
           </div>
 
+          <div className="mb-8 flex flex-wrap items-center gap-3">
+            <span className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">
+              Filter
+            </span>
+            <div className="flex flex-wrap gap-2">
+              {resourceFilters.map((filter) => {
+                const isActive = activeFilter === filter.id
+                return (
+                  <button
+                    key={filter.id}
+                    type="button"
+                    onClick={() => setActiveFilter(filter.id)}
+                    aria-pressed={isActive}
+                    className={`rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] transition ${
+                      isActive
+                        ? 'border-zinc-900 bg-zinc-900 text-white shadow-sm'
+                        : 'border-zinc-200 bg-white text-zinc-500 hover:border-zinc-300 hover:text-zinc-700'
+                    }`}
+                  >
+                    {filter.label}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+
+          {showCourses && (
+            <div id="courses" className="mb-12 scroll-mt-28">
+              <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
+                <div>
+                  <h3 className="text-xl font-bold text-zinc-900">Courses</h3>
+                  <p className="text-sm text-zinc-600">
+                    Choose a lane and keep track of your progress.
+                  </p>
+                </div>
+              </div>
+
+              <div className="space-y-8">
+                <Card>
+                  <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
+                    <div className="flex-1">
+                      <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-zinc-900 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-white">
+                        Lane 1
+                      </div>
+                      <h3 className="mb-2 text-2xl font-bold text-gray-900">
+                        The Foundations
+                      </h3>
+                      <p className="text-base text-gray-600">
+                        The must-haves every modern developer should feel
+                        confident with. Start here before diving into advanced
+                        workflows.
+                      </p>
+
+                      <div className="mt-6 grid gap-3 text-sm text-gray-700 sm:grid-cols-2">
+                        {laneCourses.foundation.map((course, index) => (
+                          <div key={course.id} className="flex items-start gap-3">
+                            <span className="mt-0.5 text-xs font-semibold text-gray-400">
+                              {String(course.number ?? index + 1).padStart(
+                                2,
+                                '0'
+                              )}
+                            </span>
+                            <div>
+                              <p className="font-semibold text-gray-900">
+                                {course.title}
+                              </p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col gap-3">
+                      <ProgressSummary
+                        completed={foundationCompleted}
+                        total={laneCourses.foundation.length}
+                        syncing={syncing}
+                      />
+                      <Button
+                        variant="primary"
+                        size="md"
+                        onClick={() => router.push('/resources/courses/foundation')}
+                      >
+                        Open Lane
+                      </Button>
+                      <p className="text-xs text-gray-500">
+                        Progress syncs to your profile when you&apos;re signed in.
+                      </p>
+                    </div>
+                  </div>
+                </Card>
+
+                <Card>
+                  <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
+                    <div className="flex-1">
+                      <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-zinc-900 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-white">
+                        Lane 2
+                      </div>
+                      <h3 className="mb-2 text-2xl font-bold text-gray-900">
+                        Frontend Mastery
+                      </h3>
+                      <p className="text-base text-gray-600">
+                        A focused path for modern UI engineering, from semantic
+                        HTML to performance-obsessed experiences.
+                      </p>
+
+                      <div className="mt-6 grid gap-3 text-sm text-gray-700 sm:grid-cols-2">
+                        {laneCourses.frontend.map((course, index) => (
+                          <div key={course.id} className="flex items-start gap-3">
+                            <span className="mt-0.5 text-xs font-semibold text-gray-400">
+                              {String(course.number ?? index + 1).padStart(
+                                2,
+                                '0'
+                              )}
+                            </span>
+                            <div>
+                              <p className="font-semibold text-gray-900">
+                                {course.title}
+                              </p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col gap-3">
+                      <ProgressSummary
+                        completed={frontendCompleted}
+                        total={laneCourses.frontend.length}
+                        syncing={syncing}
+                      />
+                      <Button
+                        variant="primary"
+                        size="md"
+                        onClick={() => router.push('/resources/courses/frontend')}
+                      >
+                        Open Lane
+                      </Button>
+                      <p className="text-xs text-gray-500">
+                        Progress syncs to your profile when you&apos;re signed in.
+                      </p>
+                    </div>
+                  </div>
+                </Card>
+
+                <Card>
+                  <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
+                    <div className="flex-1">
+                      <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-zinc-900 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-white">
+                        Lane 3
+                      </div>
+                      <h3 className="mb-2 text-2xl font-bold text-gray-900">
+                        Backend &amp; Systems
+                      </h3>
+                      <p className="text-base text-gray-600">
+                        A systems-first track covering runtimes, data stores,
+                        APIs, security, and deployment workflows.
+                      </p>
+
+                      <div className="mt-6 grid gap-3 text-sm text-gray-700 sm:grid-cols-2">
+                        {laneCourses.backend.map((course, index) => (
+                          <div key={course.id} className="flex items-start gap-3">
+                            <span className="mt-0.5 text-xs font-semibold text-gray-400">
+                              {String(course.number ?? index + 1).padStart(
+                                2,
+                                '0'
+                              )}
+                            </span>
+                            <div>
+                              <p className="font-semibold text-gray-900">
+                                {course.title}
+                              </p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col gap-3">
+                      <ProgressSummary
+                        completed={backendCompleted}
+                        total={laneCourses.backend.length}
+                        syncing={syncing}
+                      />
+                      <Button
+                        variant="primary"
+                        size="md"
+                        onClick={() => router.push('/resources/courses/backend')}
+                      >
+                        Open Lane
+                      </Button>
+                      <p className="text-xs text-gray-500">
+                        Built for modern backend teams and solo builders alike.
+                      </p>
+                    </div>
+                  </div>
+                </Card>
+
+                <Card>
+                  <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
+                    <div className="flex-1">
+                      <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-zinc-900 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-white">
+                        Lane 4
+                      </div>
+                      <h3 className="mb-2 text-2xl font-bold text-gray-900">
+                        AI & Data Science
+                      </h3>
+                      <p className="text-base text-gray-600">
+                        Practical AI workflows, production-ready tooling, and
+                        the fundamentals behind modern machine learning.
+                      </p>
+
+                      <div className="mt-6 grid gap-3 text-sm text-gray-700 sm:grid-cols-2">
+                        {laneCourses.aiDataScience.map((course, index) => (
+                          <div key={course.id} className="flex items-start gap-3">
+                            <span className="mt-0.5 text-xs font-semibold text-gray-400">
+                              {String(course.number ?? index + 1).padStart(
+                                2,
+                                '0'
+                              )}
+                            </span>
+                            <div>
+                              <p className="font-semibold text-gray-900">
+                                {course.title}
+                              </p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col gap-3">
+                      <ProgressSummary
+                        completed={aiDataScienceCompleted}
+                        total={laneCourses.aiDataScience.length}
+                        syncing={syncing}
+                      />
+                      <Button
+                        variant="primary"
+                        size="md"
+                        onClick={() =>
+                          router.push('/resources/courses/ai-data-science')
+                        }
+                      >
+                        Open Lane
+                      </Button>
+                      <p className="text-xs text-gray-500">
+                        Track your progress as you complete each AI course.
+                      </p>
+                    </div>
+                  </div>
+                </Card>
+
+                <Card>
+                  <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
+                    <div className="flex-1">
+                      <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-zinc-900 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-white">
+                        Lane 5
+                      </div>
+                      <h3 className="mb-2 text-2xl font-bold text-gray-900">
+                        Career, DevOps & Pro Skills
+                      </h3>
+                      <p className="text-base text-gray-600">
+                        The career-ready track covering deployment, security,
+                        testing, and the business of being a developer.
+                      </p>
+
+                      <div className="mt-6 grid gap-3 text-sm text-gray-700 sm:grid-cols-2">
+                        {laneCourses.careerDevops.map((course, index) => (
+                          <div key={course.id} className="flex items-start gap-3">
+                            <span className="mt-0.5 text-xs font-semibold text-gray-400">
+                              {String(course.number ?? index + 1).padStart(
+                                2,
+                                '0'
+                              )}
+                            </span>
+                            <div>
+                              <p className="font-semibold text-gray-900">
+                                {course.title}
+                              </p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col gap-3">
+                      <ProgressSummary
+                        completed={careerDevopsCompleted}
+                        total={laneCourses.careerDevops.length}
+                        syncing={syncing}
+                      />
+                      <Button
+                        variant="primary"
+                        size="md"
+                        onClick={() => router.push('/resources/courses/career')}
+                      >
+                        Open Lane
+                      </Button>
+                      <p className="text-xs text-gray-500">
+                        Deployment, security, and career growth essentials in one
+                        track.
+                      </p>
+                    </div>
+                  </div>
+                </Card>
+              </div>
+            </div>
+          )}
+
           <div
             id="resource-grid"
             className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
@@ -246,7 +778,7 @@ function ResourcesPage() {
             {availableResources.map((resource, index) => (
               <div
                 key={resource.id}
-                className="group relative overflow-hidden rounded-2xl border border-zinc-200 bg-white p-6 transition-shadow hover:shadow-lg animate-fade-in-up"
+                className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-white p-6 transition-shadow hover:shadow-lg animate-fade-in-up"
                 style={{ animationDelay: `${0.1 + index * 0.08}s` }}
               >
                 <div className="flex items-start justify-between mb-4">
@@ -276,114 +808,40 @@ function ResourcesPage() {
                   ))}
                 </div>
 
-                <div className="flex justify-end">
-                  <Button
-                    variant="primary"
-                    size="sm"
-                    onClick={() => router.push(resource.path)}
-                    className="group/button"
+                <Button
+                  variant="primary"
+                  size="sm"
+                  onClick={() => router.push(resource.path)}
+                  className="mt-auto w-full group/button"
+                >
+                  {resource.cta}
+                  <svg
+                    className="h-4 w-4 transition-transform duration-300 group-hover/button:translate-x-1"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
                   >
-                    {resource.cta}
-                    <svg
-                      className="h-4 w-4 transition-transform duration-300 group-hover/button:translate-x-1"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2.5}
-                        d="M13 7l5 5m0 0l-5 5m5-5H6"
-                      />
-                    </svg>
-                  </Button>
-                </div>
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2.5}
+                      d="M13 7l5 5m0 0l-5 5m5-5H6"
+                    />
+                  </svg>
+                </Button>
               </div>
             ))}
           </div>
         </section>
 
-        {promptTemplateResources.length > 0 && (
-          <section className="mt-16">
-            <div className="mb-6">
-              <h2 className="text-2xl font-bold text-zinc-900">
-                Prompt Templates
-              </h2>
-              <p className="text-sm text-zinc-600">
-                Quick-start courses with ready-to-use prompts and templates.
-              </p>
-            </div>
-
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {promptTemplateResources.map((resource, index) => (
-                <div
-                  key={resource.id}
-                  className="group relative overflow-hidden rounded-2xl border border-zinc-200 bg-white p-6 transition-shadow hover:shadow-lg animate-fade-in-up"
-                  style={{ animationDelay: `${0.1 + index * 0.08}s` }}
-                >
-                  <div className="flex items-start justify-between mb-4">
-                    <span className="text-4xl">
-                      {resource.icon}
-                    </span>
-                    <span className="rounded-md bg-zinc-100 px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider text-zinc-600">
-                      {resource.tag}
-                    </span>
-                  </div>
-
-                  <h3 className="text-xl font-bold text-zinc-900 mb-2">
-                    {resource.title}
-                  </h3>
-                  <p className="text-sm text-zinc-600 mb-4">
-                    {resource.description}
-                  </p>
-
-                  <div className="flex flex-wrap gap-1.5 mb-6">
-                    {resource.highlights.map((highlight) => (
-                      <span
-                        key={highlight}
-                        className="rounded-md bg-zinc-50 px-2 py-0.5 text-[11px] font-medium text-zinc-500"
-                      >
-                        {highlight}
-                      </span>
-                    ))}
-                  </div>
-
-                  <Button
-                    variant="primary"
-                    size="sm"
-                    onClick={() => router.push(resource.path)}
-                    className="w-full group/button"
-                  >
-                    {resource.cta}
-                    <svg
-                      className="h-4 w-4 transition-transform duration-300 group-hover/button:translate-x-1"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2.5}
-                        d="M13 7l5 5m0 0l-5 5m5-5H6"
-                      />
-                    </svg>
-                  </Button>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
-
         {comingSoonResources.length > 0 && (
           <section className="mt-16">
             <div className="mb-6">
               <h2 className="text-2xl font-bold text-zinc-900">
-                Coming Soon
+                Explore the library
               </h2>
               <p className="text-sm text-zinc-600">
-                New courses and resources launching soon.
+                Choose a path or jump into a quick-start.
               </p>
             </div>
 
@@ -391,7 +849,7 @@ function ResourcesPage() {
               {comingSoonResources.map((resource, index) => (
                 <div
                   key={resource.id}
-                  className="group relative overflow-hidden rounded-2xl border border-zinc-200 bg-white p-6 transition-shadow hover:shadow-lg animate-fade-in-up opacity-60"
+                  className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-white p-6 transition-shadow hover:shadow-lg animate-fade-in-up opacity-60"
                   style={{ animationDelay: `${0.1 + index * 0.08}s` }}
                 >
                   <div className="flex items-start justify-between mb-4">
@@ -418,18 +876,17 @@ function ResourcesPage() {
                       >
                         {highlight}
                       </span>
-                    ))}
+                  ))}
                   </div>
 
-                  <div className="flex justify-end">
-                    <Button
-                      variant="secondary"
-                      size="sm"
-                      disabled
-                    >
-                      {resource.cta}
-                    </Button>
-                  </div>
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    disabled
+                    className="mt-auto w-full"
+                  >
+                    {resource.cta}
+                  </Button>
                 </div>
               ))}
             </div>

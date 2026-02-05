@@ -141,10 +141,10 @@ function FrontendCoursesPage() {
       <main className="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="mb-8 flex items-center gap-2 text-sm text-gray-600">
           <button
-            onClick={() => router.push('/resources/courses')}
+            onClick={() => router.push('/resources#courses')}
             className="transition-colors hover:text-gray-900"
           >
-            Courses
+            Resources
           </button>
           <span>/</span>
           <span className="text-gray-900">Frontend Mastery</span>
@@ -271,9 +271,9 @@ function FrontendCoursesPage() {
           <Button
             variant="secondary"
             size="md"
-            onClick={() => router.push('/resources/courses')}
+            onClick={() => router.push('/resources#courses')}
           >
-            Back to Courses
+            Back to Resources
           </Button>
         </div>
       </main>

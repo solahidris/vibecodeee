@@ -70,7 +70,7 @@ export function Footer() {
               </li>
               <li>
                 <a
-                  href="/resources/courses"
+                  href="/resources#courses"
                   className="cursor-pointer text-zinc-600 transition-colors duration-300 hover:text-zinc-900"
                 >
                   Courses
