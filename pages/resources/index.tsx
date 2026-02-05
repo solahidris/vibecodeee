@@ -33,11 +33,6 @@ const geistSans = Geist({
   subsets: ['latin'],
 })
 
-const resourceFilters = [
-  { id: 'all', label: 'All', helper: 'Everything' },
-  { id: 'coding', label: 'Coding', helper: 'Courses only' },
-  { id: 'crash', label: 'Crash Course', helper: 'Quick sprints' },
-]
 
 const ProgressSummary = ({
   completed,
@@ -188,7 +183,6 @@ function ResourcesPage() {
   const router = useRouter()
   const { user } = useAuth()
   const supabase = useMemo(() => createClient(), [])
-  const [activeFilter, setActiveFilter] = useState('all')
   const [progressData, setProgressData] = useState<CourseProgressData>({})
   const [syncing, setSyncing] = useState(true)
   const [laneCourses, setLaneCourses] = useState<{
@@ -205,24 +199,22 @@ function ResourcesPage() {
     careerDevops: careerDevopsCourses,
   })
 
-  const visibleResources = useMemo(() => {
-    if (activeFilter === 'all') return resourceLinks
-    return resourceLinks.filter((resource) =>
-      resource.filters.includes(activeFilter)
-    )
-  }, [activeFilter])
-
   const availableResources = useMemo(
-    () => visibleResources.filter((r) => !r.disabled),
-    [visibleResources]
+    () => resourceLinks.filter((r) => !r.disabled && r.filters.includes('coding')),
+    []
+  )
+
+  const promptTemplateResources = useMemo(
+    () => resourceLinks.filter((r) => !r.disabled && r.filters.includes('crash')),
+    []
   )
 
   const comingSoonResources = useMemo(
-    () => visibleResources.filter((r) => r.disabled),
-    [visibleResources]
+    () => resourceLinks.filter((r) => r.disabled),
+    []
   )
 
-  const showCourses = activeFilter === 'all' || activeFilter === 'coding'
+  const showCourses = true
 
   const foundationProgress = useMemo(
     () => buildFoundationProgress(progressData, laneCourses.foundation),
@@ -416,7 +408,6 @@ function ResourcesPage() {
                   variant="primary"
                   size="md"
                   onClick={() => {
-                    setActiveFilter('coding')
                     requestAnimationFrame(() =>
                       document
                         .getElementById('courses')
@@ -458,32 +449,6 @@ function ResourcesPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
               Curated for members
-            </div>
-          </div>
-
-          <div className="mb-8 flex flex-wrap items-center gap-3">
-            <span className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">
-              Filter
-            </span>
-            <div className="flex flex-wrap gap-2">
-              {resourceFilters.map((filter) => {
-                const isActive = activeFilter === filter.id
-                return (
-                  <button
-                    key={filter.id}
-                    type="button"
-                    onClick={() => setActiveFilter(filter.id)}
-                    aria-pressed={isActive}
-                    className={`rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] transition ${
-                      isActive
-                        ? 'border-zinc-900 bg-zinc-900 text-white shadow-sm'
-                        : 'border-zinc-200 bg-white text-zinc-500 hover:border-zinc-300 hover:text-zinc-700'
-                    }`}
-                  >
-                    {filter.label}
-                  </button>
-                )
-              })}
             </div>
           </div>
 
