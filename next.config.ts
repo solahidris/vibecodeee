@@ -26,12 +26,22 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/basicprompt',
-        destination: '/resources/basicprompt',
+        destination: '/resources/prompt/basic',
+        permanent: true,
+      },
+      {
+        source: '/resources/basicprompt',
+        destination: '/resources/prompt/basic',
         permanent: true,
       },
       {
         source: '/crashcourse',
-        destination: '/resources/crashcourse',
+        destination: '/resources/prompt/python',
+        permanent: true,
+      },
+      {
+        source: '/resources/crashcourse',
+        destination: '/resources/prompt/python',
         permanent: true,
       },
       {

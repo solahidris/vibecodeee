@@ -59,7 +59,8 @@ Get HitPay Webhook Salt from: https://dashboard.hit-pay.com/settings/webhooks (u
   - `/pages/profile.tsx` - User profile page with subscription status
   - `/pages/payment/subscribe.tsx` - Subscription/pricing page (black card design)
   - `/pages/payment/success.tsx` - Payment success page with auto-activation fallback
-  - `/pages/resources/basicprompt.tsx` - Educational course page (basic prompting)
+  - `/pages/resources/prompt/basic.tsx` - Educational course page (basic prompting)
+  - `/pages/resources/prompt/python.tsx` - Educational course page (Python automation)
   - `/pages/index.tsx` - Public landing page
 - `/components` - Reusable UI and landing page components
   - `/components/ui` - Base UI components (Button, Card, Avatar, etc.)
@@ -79,7 +80,7 @@ Get HitPay Webhook Salt from: https://dashboard.hit-pay.com/settings/webhooks (u
 
 **TypeScript**: Path alias `@/*` maps to project root. Strict mode enabled.
 
-**Fonts**: Primary font is Geist Sans. Some pages use custom fonts (e.g., resources/basicprompt.tsx uses DM Serif Display + Sora).
+**Fonts**: Primary font is Geist Sans (used consistently across all pages).
 
 ## Authentication Flow
 
@@ -176,12 +177,20 @@ export const config = { runtime: 'edge' }
 
 ## Educational Content Pages
 
-**Basic Prompting Course** (`/resources/basicprompt`):
+**Prompt Template Courses** (under `/resources/prompt/`):
+
+**Basic Prompting Course** (`/resources/prompt/basic`):
 - Interactive course with 5 lessons on effective prompting
 - Features progress tracking with checkboxes and completion toast
-- Custom design with DM Serif Display (headings) and Sora (body)
-- Standalone page with unique styling (not using main premium design system)
+- Uses Geist Sans font (matching main resources page)
+- Premium design system with zinc color palette and grid backgrounds
 - Includes lesson templates, tips, and self-check guidance
+
+**Python Automation Course** (`/resources/prompt/python`):
+- 5-day crash course on automating tasks with Python + AI prompts
+- Interactive progress tracking with confetti celebrations
+- Matches premium design system of main resources page
+- Each day includes: skill overview, prompt template, and 15-min drill
 
 ## Payment Integration
 

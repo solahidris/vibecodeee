@@ -157,7 +157,7 @@ const resourceLinks = [
     description:
       'A quick-start series to automate boring tasks with Python + AI prompts.',
     icon: '⚡',
-    path: '/resources/crashcourse',
+    path: '/resources/prompt/python',
     tag: 'Quick sprint',
     highlights: ['5 days', 'Automation drills', 'Python + AI'],
     accent: 'from-amber-200/60 via-white to-white',
@@ -170,7 +170,7 @@ const resourceLinks = [
     description:
       'Five short lessons for clear, reliable prompts you can use right away.',
     icon: '✍️',
-    path: '/resources/basicprompt',
+    path: '/resources/prompt/basic',
     tag: 'Foundations',
     highlights: ['5 lessons', 'Prompt templates', 'Self-checks'],
     accent: 'from-sky-200/60 via-white to-white',
