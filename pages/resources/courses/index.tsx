@@ -1,5 +1,7 @@
 import type { GetServerSideProps } from 'next'
 
+export const config = { runtime: 'edge' }
+
 export const getServerSideProps: GetServerSideProps = async () => ({
   redirect: {
     destination: '/resources',
