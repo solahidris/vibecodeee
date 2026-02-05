@@ -36,7 +36,7 @@ function MarqueeRow({ items, reverse = false }: { items: Topic[]; reverse?: bool
         {[...items, ...items, ...items].map((topic, index) => (
           <div
             key={`${topic.name}-${index}`}
-            className="flex-shrink-0 flex items-center gap-3 rounded-full border border-zinc-200 bg-white px-6 py-3 shadow-sm"
+            className="flex-shrink-0 flex items-center gap-3 rounded-full border border-zinc-200/80 bg-white/80 backdrop-blur-sm px-6 py-3 shadow-sm"
           >
             <span className="text-2xl">{topic.icon}</span>
             <span className="text-sm font-semibold text-zinc-900 whitespace-nowrap">
@@ -53,13 +53,11 @@ export function TopicsGrid() {
   const { ref, isVisible } = useScrollAnimation()
 
   return (
-    <section id="features" className="relative py-32 overflow-hidden bg-white">
-      {/* Subtle Grid */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#00000005_1px,transparent_1px),linear-gradient(to_bottom,#00000005_1px,transparent_1px)] bg-[size:4rem_4rem]"></div>
+    <section id="features" className="relative py-32 overflow-hidden">
 
-      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-12 text-center">
-          <span className="mb-4 inline-block rounded-full bg-zinc-100 border border-zinc-200 px-4 py-1.5 text-sm font-semibold text-zinc-700 transition-all duration-300 hover:border-zinc-300 hover:scale-105">
+          <span className="mb-4 inline-block rounded-full bg-white/80 backdrop-blur-sm border border-zinc-200/80 px-4 py-1.5 text-sm font-semibold text-zinc-700 transition-all duration-300 hover:border-zinc-300 hover:scale-105">
             Endless Learning Community
           </span>
           <h2 className="mb-6 text-5xl font-black tracking-tight text-zinc-900 sm:text-6xl">

@@ -1,7 +1,6 @@
 import { useRouter } from "next/router";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/Button";
-import { ThreeBackground } from "@/components/ThreeBackground";
 import { EncryptedText } from "@/components/ui/encrypted-text";
 import Image from "next/image";
 
@@ -10,14 +9,8 @@ export function Hero() {
   const { user } = useAuth();
 
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden bg-white">
-      {/* Three.js Background */}
-      <ThreeBackground />
-
-      {/* Grid Pattern */}
-      <div className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,#d1d5db_1px,transparent_1px),linear-gradient(to_bottom,#d1d5db_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-60"></div>
-
-      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-0 lg:py-12">
+    <section className="relative min-h-screen flex items-center overflow-hidden">
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-0 lg:py-12">
         <div className="grid gap-12 lg:grid-cols-2 lg:gap-20 items-center">
           {/* Left Column - Content */}
           <div className="text-left">

@@ -29,11 +29,8 @@ export function Benefits() {
   const { ref, isVisible } = useScrollAnimation()
 
   return (
-    <section className="relative overflow-hidden bg-white py-32">
-      {/* Subtle Pattern */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#00000005_1px,transparent_1px),linear-gradient(to_bottom,#00000005_1px,transparent_1px)] bg-[size:4rem_4rem]"></div>
-
-      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <section className="relative overflow-hidden py-32">
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div
           ref={ref as React.RefObject<HTMLDivElement>}
           className={`text-center transition-all duration-1000 ${
@@ -41,7 +38,7 @@ export function Benefits() {
           }`}
         >
           {/* Heading */}
-          <span className="mb-4 inline-block rounded-full border border-zinc-200 bg-zinc-50 px-4 py-1.5 text-sm font-semibold text-zinc-700 transition-all duration-300 hover:border-zinc-300">
+          <span className="mb-4 inline-block rounded-full border border-zinc-200/80 bg-white/80 backdrop-blur-sm px-4 py-1.5 text-sm font-semibold text-zinc-700 transition-all duration-300 hover:border-zinc-300">
             Member Benefits
           </span>
           <h2 className="mb-6 text-5xl font-black tracking-tight text-zinc-900 sm:text-6xl">
@@ -56,7 +53,7 @@ export function Benefits() {
             {benefits.map((benefit, index) => (
               <div
                 key={benefit.title}
-                className="group relative overflow-hidden rounded-3xl bg-white ring-1 ring-zinc-200 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:ring-zinc-300"
+                className="group relative overflow-hidden rounded-3xl bg-white/90 backdrop-blur-sm ring-1 ring-zinc-200/80 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:ring-zinc-300"
                 style={{
                   animationDelay: `${index * 100}ms`,
                 }}
@@ -104,7 +101,7 @@ export function Benefits() {
           </div>
 
           {/* Stats Section */}
-          <div className="mt-20 grid gap-8 rounded-3xl border border-zinc-200 bg-zinc-50 p-12 sm:grid-cols-3">
+          <div className="mt-20 grid gap-8 rounded-3xl border border-zinc-200/80 bg-white/70 backdrop-blur-sm p-12 sm:grid-cols-3">
             <div className="text-center">
               <div className="mb-2 text-5xl font-black text-zinc-900">Quality</div>
               <div className="text-lg text-zinc-600">Active Members</div>
