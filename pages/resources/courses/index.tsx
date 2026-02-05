@@ -274,7 +274,6 @@ function CoursesPage() {
                         <p className="font-semibold text-gray-900">
                           {course.title}
                         </p>
-                        <p className="text-gray-500">{course.description}</p>
                       </div>
                     </div>
                   ))}
@@ -325,7 +324,6 @@ function CoursesPage() {
                         <p className="font-semibold text-gray-900">
                           {course.title}
                         </p>
-                        <p className="text-gray-500">{course.description}</p>
                       </div>
                     </div>
                   ))}
@@ -376,7 +374,6 @@ function CoursesPage() {
                         <p className="font-semibold text-gray-900">
                           {course.title}
                         </p>
-                        <p className="text-gray-500">{course.description}</p>
                       </div>
                     </div>
                   ))}
@@ -427,7 +424,6 @@ function CoursesPage() {
                         <p className="font-semibold text-gray-900">
                           {course.title}
                         </p>
-                        <p className="text-gray-500">{course.description}</p>
                       </div>
                     </div>
                   ))}
@@ -480,7 +476,6 @@ function CoursesPage() {
                         <p className="font-semibold text-gray-900">
                           {course.title}
                         </p>
-                        <p className="text-gray-500">{course.description}</p>
                       </div>
                     </div>
                   ))}

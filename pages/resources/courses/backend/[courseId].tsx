@@ -387,7 +387,7 @@ function BackendCoursePage() {
             </div>
             {courseIndex && (
               <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-gray-600">
-                Course {courseIndex}
+                Topic {courseIndex}
               </span>
             )}
           </div>
