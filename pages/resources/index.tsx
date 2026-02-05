@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { FormEvent, useEffect, useMemo, useState } from 'react'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { withAuth } from '@/lib/auth/withAuth'
@@ -199,6 +199,37 @@ function ResourcesPage() {
     aiDataScience: aiDataScienceCourses,
     careerDevops: careerDevopsCourses,
   })
+
+  const [mentorshipForm, setMentorshipForm] = useState({
+    nickname: '',
+    phone: '',
+    skillLevel: '',
+    goal: ''
+  })
+
+  const handleMentorshipSubmit = (e: FormEvent) => {
+    e.preventDefault()
+
+    const message = `Hi! I'm interested in mentorship:
+
+*Nickname:* ${mentorshipForm.nickname}
+*Phone:* ${mentorshipForm.phone}
+*Skill Level:* ${mentorshipForm.skillLevel}
+*Goal:* ${mentorshipForm.goal}
+
+Looking forward to connecting!`
+
+    const whatsappNumber = '60182934765'
+    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`
+    window.open(whatsappUrl, '_blank')
+  }
+
+  const handleMentorshipChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    setMentorshipForm({
+      ...mentorshipForm,
+      [e.target.name]: e.target.value
+    })
+  }
 
   const availableResources = useMemo(
     () => resourceLinks.filter((r) => !r.disabled && r.filters.includes('coding')),
@@ -938,6 +969,106 @@ function ResourcesPage() {
             </div>
           </section>
         )}
+
+        {/* Mentorship Section */}
+        <section className="mt-24 border-t border-zinc-200 pt-16">
+          <div className="mx-auto max-w-3xl">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold text-zinc-900 mb-3">
+                Looking for Mentorship?
+              </h2>
+              <p className="text-lg text-zinc-600">
+                Connect with experienced mentors to accelerate your learning journey
+              </p>
+            </div>
+
+            <Card className="p-8">
+              <form onSubmit={handleMentorshipSubmit} className="space-y-6">
+                {/* Nickname */}
+                <div>
+                  <label htmlFor="nickname" className="block text-sm font-medium text-zinc-900 mb-2">
+                    Nickname *
+                  </label>
+                  <input
+                    type="text"
+                    id="nickname"
+                    name="nickname"
+                    required
+                    value={mentorshipForm.nickname}
+                    onChange={handleMentorshipChange}
+                    className="w-full rounded-lg border border-zinc-300 px-4 py-3 text-zinc-900 focus:border-zinc-900 focus:outline-none focus:ring-2 focus:ring-zinc-900 focus:ring-offset-2 transition-all"
+                    placeholder="Your nickname"
+                  />
+                </div>
+
+                {/* Phone */}
+                <div>
+                  <label htmlFor="phone" className="block text-sm font-medium text-zinc-900 mb-2">
+                    Phone Number *
+                  </label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    required
+                    value={mentorshipForm.phone}
+                    onChange={handleMentorshipChange}
+                    className="w-full rounded-lg border border-zinc-300 px-4 py-3 text-zinc-900 focus:border-zinc-900 focus:outline-none focus:ring-2 focus:ring-zinc-900 focus:ring-offset-2 transition-all"
+                    placeholder="+60 12-345 6789"
+                  />
+                </div>
+
+                {/* Skill Level */}
+                <div>
+                  <label htmlFor="skillLevel" className="block text-sm font-medium text-zinc-900 mb-2">
+                    Skill Level *
+                  </label>
+                  <select
+                    id="skillLevel"
+                    name="skillLevel"
+                    required
+                    value={mentorshipForm.skillLevel}
+                    onChange={handleMentorshipChange}
+                    className="w-full rounded-lg border border-zinc-300 px-4 py-3 text-zinc-900 focus:border-zinc-900 focus:outline-none focus:ring-2 focus:ring-zinc-900 focus:ring-offset-2 transition-all"
+                  >
+                    <option value="">Select your skill level</option>
+                    <option value="Beginner">Beginner - Just starting out</option>
+                    <option value="Intermediate">Intermediate - Some experience</option>
+                    <option value="Advanced">Advanced - Looking to level up</option>
+                  </select>
+                </div>
+
+                {/* Goal */}
+                <div>
+                  <label htmlFor="goal" className="block text-sm font-medium text-zinc-900 mb-2">
+                    Your Goal *
+                  </label>
+                  <textarea
+                    id="goal"
+                    name="goal"
+                    required
+                    value={mentorshipForm.goal}
+                    onChange={handleMentorshipChange}
+                    rows={4}
+                    className="w-full rounded-lg border border-zinc-300 px-4 py-3 text-zinc-900 focus:border-zinc-900 focus:outline-none focus:ring-2 focus:ring-zinc-900 focus:ring-offset-2 transition-all resize-none"
+                    placeholder="What do you want to achieve? What areas need guidance?"
+                  />
+                </div>
+
+                {/* Submit Button */}
+                <div className="pt-2">
+                  <Button
+                    type="submit"
+                    variant="primary"
+                    className="w-full"
+                  >
+                    Contact Admin
+                  </Button>
+                </div>
+              </form>
+            </Card>
+          </div>
+        </section>
         </main>
       </div>
     </>
